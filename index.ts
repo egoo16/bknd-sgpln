@@ -15,6 +15,7 @@ server.app.use(express.json());
 server.app.use(morgan("tiny"));
 
 server.app.use(cors({ origin: true, credentials: true }));
+server.app.use(express.static("public"));
 
 server.app.use("/", router);
 
