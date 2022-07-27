@@ -9,3 +9,4 @@ appRouter.get("/", (req, res) => {
     });
 });
 exports.default = appRouter;
+//# sourceMappingURL=app.js.map
