@@ -1,8 +1,11 @@
 import { Request, Response } from "express";
 import Usuario from "../models/usuario";
+import Idea from '../models/BancoIdeas/idea';
+
 
 export const getUsuarios = async (req: Request, res: Response) => {
   const usuarios = await Usuario.findAll();
+  const ideas = await Idea.findAll();
 
   res.json({
     usuarios,
