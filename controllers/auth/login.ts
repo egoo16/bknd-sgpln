@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Usuario from "../../models/usuario";
 import jwt from "jsonwebtoken";
+import { SEED } from '../../global/environment';
 
 export const loginUsuario = async (req: Request, res: Response) => {
   try {
@@ -13,12 +14,12 @@ export const loginUsuario = async (req: Request, res: Response) => {
 
       if (usuario) {
         if (body.password === usuario.password) {
+            usuario.password = ":D";
           //Creacion del Token
 
-          const token = jwt.sign({ usuario }, "S33D-0F-P45W0ORD", {
+          const token = jwt.sign({ usuario }, SEED, {
             expiresIn: 14400,
           }); //4 horas de expiracion
-          usuario.password = ":D";
 
           res.status(200).json({
             ok: true,

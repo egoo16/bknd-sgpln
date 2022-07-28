@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUsuario = void 0;
 const usuario_1 = __importDefault(require("../../models/usuario"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const environment_1 = require("../../global/environment");
 const loginUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = req.body;
@@ -24,11 +25,11 @@ const loginUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             });
             if (usuario) {
                 if (body.password === usuario.password) {
+                    usuario.password = ":D";
                     //Creacion del Token
-                    const token = jsonwebtoken_1.default.sign({ usuario }, "S33D-0F-P45W0ORD", {
+                    const token = jsonwebtoken_1.default.sign({ usuario }, environment_1.SEED, {
                         expiresIn: 14400,
                     }); //4 horas de expiracion
-                    usuario.password = ":D";
                     res.status(200).json({
                         ok: true,
                         usuario,
