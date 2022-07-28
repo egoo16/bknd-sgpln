@@ -21,13 +21,15 @@ const getUsuarios = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     });
 });
 exports.getUsuarios = getUsuarios;
-const getUsuario = (req, res) => {
+const getUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
+    const usuario = yield usuario_1.default.findById(id);
     res.json({
         msg: "getUsuario",
         id,
+        usuario
     });
-};
+});
 exports.getUsuario = getUsuario;
 const postUsuario = (req, res) => {
     const { body } = req;

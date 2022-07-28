@@ -9,12 +9,14 @@ export const getUsuarios = async (req: Request, res: Response) => {
   });
 };
 
-export const getUsuario = (req: Request, res: Response) => {
+export const getUsuario = async(req: Request, res: Response) => {
   const { id } = req.params;
 
+  const usuario = await Usuario.findById(id);
   res.json({
     msg: "getUsuario",
     id,
+    usuario
   });
 };
 
