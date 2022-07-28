@@ -1,5 +1,5 @@
 import express from 'express';
-import sequelize from '../db/connection';
+import db from '../db/connection';
 import { SERVER_PORT } from '../global/environment';
 
 export default class Server {
@@ -15,8 +15,11 @@ export default class Server {
    async dbConnection() {
     try {
         
-        await sequelize.authenticate();
-        console.log('Database online');
+        await db.authenticate().then(() => {
+        // await db.sync().then(() => {
+          console.log("Database online");
+        });
+ 
     }
     catch (error) {
         throw new Error('Error de conexion: ' + error);

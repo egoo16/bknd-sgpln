@@ -24,8 +24,10 @@ class Server {
     dbConnection() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield connection_1.default.authenticate();
-                console.log('Database online');
+                yield connection_1.default.authenticate().then(() => {
+                    // await db.sync().then(() => {
+                    console.log("Database online");
+                });
             }
             catch (error) {
                 throw new Error('Error de conexion: ' + error);
