@@ -1,10 +1,9 @@
 import Sequelize from "sequelize-oracle";
+
 import db from "../../db/connection";
 
-import sectionBI from "./sectionBi";
-
-const Idea = db.define(
-  "Idea",
+const stage = db.define(
+  "stage",
   {
     codigo: {
       type: Sequelize.UUID,
@@ -13,7 +12,6 @@ const Idea = db.define(
       defaultValue: Sequelize.UUIDV4,
     },
     name: { type: Sequelize.STRING, required: true, allowNull: false },
-    state: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: true },
   },
   {
     underscoded: true,
@@ -21,6 +19,4 @@ const Idea = db.define(
   }
 );
 
-Idea.hasOne(sectionBI, { foreignKey: "IdeaId" });
-
-export default Idea;
+export default stage;

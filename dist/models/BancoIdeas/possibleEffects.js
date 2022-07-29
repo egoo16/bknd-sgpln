@@ -5,20 +5,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
-const sectionBi_1 = __importDefault(require("./sectionBi"));
-const Idea = connection_1.default.define("Idea", {
+const possibleEffects = connection_1.default.define("possibleEffects", {
     codigo: {
         type: sequelize_oracle_1.default.UUID,
         primaryKey: true,
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    name: { type: sequelize_oracle_1.default.STRING, required: true, allowNull: false },
-    state: { type: sequelize_oracle_1.default.BOOLEAN, allowNull: false, defaultValue: true },
+    description: { type: sequelize_oracle_1.default.STRING, required: true, allowNull: false },
+    problemDefinitionId: { type: sequelize_oracle_1.default.UUID, required: true },
 }, {
     underscoded: true,
     paranoid: true,
 });
-Idea.hasOne(sectionBi_1.default, { foreignKey: "IdeaId" });
-exports.default = Idea;
-//# sourceMappingURL=idea.js.map
+exports.default = possibleEffects;
+//# sourceMappingURL=possibleEffects.js.map

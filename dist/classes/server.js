@@ -25,7 +25,7 @@ class Server {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // await db.authenticate().then(() => {
-                //   await db.sync({ force: true }).then(() => {
+                // await db.sync({ force: true }).then(() => {
                 yield connection_1.default.sync().then(() => {
                     console.log("Database online");
                 });
