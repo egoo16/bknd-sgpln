@@ -2,7 +2,7 @@ import { Router } from "express";
 // Importaciones
 import appRouter from "./app";
 import loginRouter from "./auth/login";
-import generalRouter from "./bancoIdeas/generalInformation";
+import generalRouter from "./bancoIdeas/generalInformationRoute";
 import usuarioRouter from "./usuarios";
 
 const router = Router();

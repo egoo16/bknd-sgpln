@@ -1,6 +1,6 @@
 import { Router } from "express";
+import { postGeneralInformation } from "../../controllers/generalInformation";
 
-import { postGeneralInformation } from "../../controllers/generalInformation/generalInformation";
 
 const generalRouter = Router();
 
