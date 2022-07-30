@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import dataProponent from "../../models/BancoIdeas/dataProponent";
 
-export const postDataProponent = async (req: Request, res: Response) => {
+export const postGeneralInformation = async (req: Request, res: Response) => {
 	try {
 		const { body } = req;
 

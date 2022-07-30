@@ -12,9 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postDataProponent = void 0;
+exports.postGeneralInformation = void 0;
 const dataProponent_1 = __importDefault(require("../../models/BancoIdeas/dataProponent"));
-const postDataProponent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { body } = req;
         const dataProponentModel = body;
@@ -31,5 +31,5 @@ const postDataProponent = (req, res) => __awaiter(void 0, void 0, void 0, functi
         });
     }
 });
-exports.postDataProponent = postDataProponent;
+exports.postGeneralInformation = postGeneralInformation;
 //# sourceMappingURL=index.js.map
