@@ -13,12 +13,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postProblemDefinition = void 0;
+const possibleCauses_1 = __importDefault(require("../../models/BancoIdeas/possibleCauses"));
+const possibleEffects_1 = __importDefault(require("../../models/BancoIdeas/possibleEffects"));
 const problemDefinition_1 = __importDefault(require("../../models/BancoIdeas/problemDefinition"));
 const postProblemDefinition = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { body } = req;
         const insertModel = body;
         const dataIserted = yield problemDefinition_1.default.create(insertModel);
+        const effects = body.effects;
+        let resEffects = yield Promise.all(effects.map((effect) => __awaiter(void 0, void 0, void 0, function* () {
+            effect.problemDefinitionId = dataIserted.codigo;
+            let res = yield possibleEffects_1.default.create(effect);
+            return res;
+        })));
+        const causes = body.causes;
+        let resCauses = yield Promise.all(causes.map((cause) => __awaiter(void 0, void 0, void 0, function* () {
+            cause.problemDefinitionId = dataIserted.codigo;
+            let res = yield possibleCauses_1.default.create(cause);
+            return res;
+        })));
         res.status(201).json({
             msg: "Definicion de Problemas Insertados Correctamente",
             dataIserted
