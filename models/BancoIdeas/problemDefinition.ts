@@ -13,7 +13,7 @@ const problemDefinition = db.define(
       allowNull: false,
       defaultValue: Sequelize.UUIDV4,
     },
-    sectionBI: { type: Sequelize.UUID, required: true },
+    generalInformationId: { type: Sequelize.UUID, required: true },
     definitionPotentiality: { type: Sequelize.STRING },
     baseLine: { type: Sequelize.STRING },
     description: { type: Sequelize.STRING },
@@ -23,6 +23,8 @@ const problemDefinition = db.define(
     paranoid: true,
   }
 );
+
+
 
 problemDefinition.hasMany(possibleEffects, {
   foreignKey: "problemDefinitionId",

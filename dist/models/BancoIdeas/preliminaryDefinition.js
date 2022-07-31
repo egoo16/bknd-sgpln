@@ -13,7 +13,7 @@ const preliminaryDefinition = connection_1.default.define("preliminaryDefinition
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    sectionBI: { type: sequelize_oracle_1.default.UUID, required: true },
+    generalInformationId: { type: sequelize_oracle_1.default.UUID, required: true },
     generalObjective: { type: sequelize_oracle_1.default.STRING },
     expectedChange: { type: sequelize_oracle_1.default.STRING },
 }, {

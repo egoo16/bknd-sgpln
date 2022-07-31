@@ -11,7 +11,7 @@ const qualification = db.define(
       allowNull: false,
       defaultValue: Sequelize.UUIDV4,
     },
-    sectionBI: { type: Sequelize.UUID, required: true },
+    generalInformationId: { type: Sequelize.UUID, required: true },
     descriptionProblem: { type: Sequelize.INTEGER },
     generalObjective: { type: Sequelize.INTEGER },
     analysisDelimitation: { type: Sequelize.INTEGER },

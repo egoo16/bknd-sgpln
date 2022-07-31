@@ -12,7 +12,7 @@ const preliminaryDefinition = db.define(
       allowNull: false,
       defaultValue: Sequelize.UUIDV4,
     },
-    sectionBI: { type: Sequelize.UUID, required: true },
+    generalInformationId: { type: Sequelize.UUID, required: true },
     generalObjective: { type: Sequelize.STRING },
     expectedChange: { type: Sequelize.STRING },
   },

@@ -5,8 +5,9 @@ import { postProblemDefinition } from "../../controllers/problemDefinition";
 
 const generalRouter = Router();
 
-generalRouter.post("/", postGeneralInformation);
+generalRouter.post("/information", postGeneralInformation);
 generalRouter.post("/dataProponent", postDataProponent);
 generalRouter.post("/problemDefinition", postProblemDefinition);
+generalRouter.post("/preliminary", postProblemDefinition);
 
 export default generalRouter;

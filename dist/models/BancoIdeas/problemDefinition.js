@@ -14,7 +14,7 @@ const problemDefinition = connection_1.default.define("problemDefinition", {
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    sectionBI: { type: sequelize_oracle_1.default.UUID, required: true },
+    generalInformationId: { type: sequelize_oracle_1.default.UUID, required: true },
     definitionPotentiality: { type: sequelize_oracle_1.default.STRING },
     baseLine: { type: sequelize_oracle_1.default.STRING },
     description: { type: sequelize_oracle_1.default.STRING },
