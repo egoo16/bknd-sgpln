@@ -1,7 +1,6 @@
 import Sequelize from "sequelize-oracle";
 
 import db from "../../db/connection";
-import dataProponent from "./dataProponent";
 import preliminaryDefinition from "./preliminaryDefinition";
 import problemDefinition from "./problemDefinition";
 import qualification from "./qualification";
@@ -26,7 +25,16 @@ const generalInformation = db.define(
     description: { type: Sequelize.STRING },
     dateOut: {type: Sequelize.DATE},
     punctuation: { type: Sequelize.INTEGER},
-    state: { type: Sequelize.BOOLEAN, defaultValue: true}
+    state: { type: Sequelize.BOOLEAN, defaultValue: true},
+    idEntity: { type: Sequelize.STRING, required: true, allowNull: false },
+    nameEntity: { type: Sequelize.STRING, required: true, allowNull: false },
+    responsibleName: {
+      type: Sequelize.STRING,
+      required: true,
+      allowNull: false,
+    },
+    email: { type: Sequelize.STRING, required: true, allowNull: false },
+    phone: { type: Sequelize.STRING, required: true, allowNull: false },
   },
   {
     underscoded: true,
@@ -42,10 +50,6 @@ generalInformation.hasOne(qualification, { foreignKey: "generalInformationId" })
 generalInformation.belongsTo(stage, {
   foreignKey: "idStage",
   sourceKey: "codigo",
-});
-
-generalInformation.hasOne(dataProponent, {
-  foreignKey: "generalInformationId",
 });
 
 export default generalInformation;
