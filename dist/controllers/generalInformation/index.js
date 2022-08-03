@@ -20,6 +20,7 @@ const stage_1 = __importDefault(require("../../models/BancoIdeas/stage"));
 const possibleEffects_1 = __importDefault(require("../../models/BancoIdeas/possibleEffects"));
 const possibleCauses_1 = __importDefault(require("../../models/BancoIdeas/possibleCauses"));
 const possibleAlternatives_1 = __importDefault(require("../../models/BancoIdeas/possibleAlternatives"));
+const qualification_1 = __importDefault(require("../../models/BancoIdeas/qualification"));
 const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let transaction = yield connection_1.default.transaction();
     try {
@@ -67,7 +68,7 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
             transaction,
         });
         //#region Insertando Efectos
-        const effects = body.effects;
+        const effects = body.possibleEffects;
         if ((effects === null || effects === void 0 ? void 0 : effects.length) > 0) {
             let resEffects = yield Promise.all(effects.map((effect) => __awaiter(void 0, void 0, void 0, function* () {
                 effect.generalInformationId = informationIsert.codigo;
@@ -79,7 +80,7 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
         }
         //#endregion Finalizó la insercion de efectos
         //#region Insertando Causas
-        const causes = body.causes;
+        const causes = body.possibleCauses;
         if ((causes === null || causes === void 0 ? void 0 : causes.length) > 0) {
             let resCauses = yield Promise.all(causes.map((cause) => __awaiter(void 0, void 0, void 0, function* () {
                 cause.generalInformationId = informationIsert.codigo;
@@ -91,7 +92,7 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
         }
         //#endregion Finalizó la insercion de Causas
         //#region Insertando Alternativas
-        const alternatives = body.alternatives;
+        const alternatives = body.possibleAlternatives;
         if ((alternatives === null || alternatives === void 0 ? void 0 : alternatives.length) > 0) {
             let resAlternatives = yield Promise.all(alternatives.map((alternative) => __awaiter(void 0, void 0, void 0, function* () {
                 alternative.generalInformationId = informationIsert.codigo;
@@ -130,6 +131,12 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 },
                 {
                     model: possibleAlternatives_1.default
+                },
+                {
+                    model: stage_1.default
+                },
+                {
+                    model: qualification_1.default
                 }
             ]
         });

@@ -7,6 +7,7 @@ import stage from "../../models/BancoIdeas/stage";
 import possibleEffects from "../../models/BancoIdeas/possibleEffects";
 import possibleCauses from "../../models/BancoIdeas/possibleCauses";
 import possibleAlternatives from "../../models/BancoIdeas/possibleAlternatives";
+import qualification from "../../models/BancoIdeas/qualification";
 
 export const postGeneralInformation = async (req: Request, res: Response) => {
     let transaction = await models.transaction();
@@ -60,7 +61,7 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
 
 
         //#region Insertando Efectos
-        const effects = body.effects;
+        const effects = body.possibleEffects;
         if (effects?.length > 0) {
             let resEffects = await Promise.all(effects.map(async (effect: any) => {
                 effect.generalInformationId = informationIsert.codigo;
@@ -74,7 +75,7 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
 
         //#region Insertando Causas
 
-        const causes = body.causes;
+        const causes = body.possibleCauses;
         if (causes?.length > 0) {
 
             let resCauses = await Promise.all(causes.map(async (cause: any) => {
@@ -89,7 +90,7 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
 
         //#region Insertando Alternativas
 
-        const alternatives = body.alternatives;
+        const alternatives = body.possibleAlternatives;
         if (alternatives?.length > 0) {
             let resAlternatives = await Promise.all(alternatives.map(async (alternative: any) => {
                 alternative.generalInformationId = informationIsert.codigo;
@@ -131,6 +132,12 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
                 },
                 {
                     model: possibleAlternatives
+                },
+                {
+                    model: stage
+                }, 
+                {
+                    model: qualification
                 }
             ]
         });
