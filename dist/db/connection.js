@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Sequelize = require('sequelize-oracle');
 // oracledb.initOracleClient({ libDir: "C:Oracleinstantclient_21_6" });
 let db;
-db = new Sequelize('xepdb1', 'SYSTEM', 'database', {
+db = new Sequelize('xepdb1', 'SYSTEM', '123456', {
     host: 'localhost',
     dialect: 'oracle',
     // logging: false,
