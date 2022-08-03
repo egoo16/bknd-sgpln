@@ -13,7 +13,7 @@ const possibleEffects = connection_1.default.define("possibleEffects", {
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
     description: { type: sequelize_oracle_1.default.STRING, required: true, allowNull: false },
-    problemDefinitionId: { type: sequelize_oracle_1.default.UUID, required: true },
+    generalInformationId: { type: sequelize_oracle_1.default.UUID, required: true },
 }, {
     underscoded: true,
     paranoid: true,
