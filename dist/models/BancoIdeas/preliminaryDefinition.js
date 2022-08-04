@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
-const possibleAlternatives_1 = __importDefault(require("./possibleAlternatives"));
 const preliminaryDefinition = connection_1.default.define("preliminaryDefinition", {
     codigo: {
         type: sequelize_oracle_1.default.UUID,
@@ -19,9 +18,6 @@ const preliminaryDefinition = connection_1.default.define("preliminaryDefinition
 }, {
     underscoded: true,
     paranoid: true,
-});
-preliminaryDefinition.hasMany(possibleAlternatives_1.default, {
-    foreignKey: "preliminaryDefinitionId",
 });
 exports.default = preliminaryDefinition;
 //# sourceMappingURL=preliminaryDefinition.js.map

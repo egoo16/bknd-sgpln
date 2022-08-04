@@ -13,7 +13,7 @@ const possibleAlternatives = connection_1.default.define("possibleAlternatives",
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
     description: { type: sequelize_oracle_1.default.STRING, required: true, allowNull: false },
-    preliminaryDefinitionId: { type: sequelize_oracle_1.default.UUID, required: true },
+    generalInformationId: { type: sequelize_oracle_1.default.UUID, required: true },
 }, {
     underscoded: true,
     paranoid: true,
