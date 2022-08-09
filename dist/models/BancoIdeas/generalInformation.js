@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
+const ideaAlternative_1 = __importDefault(require("./ideaAlternative"));
 const preliminaryDefinition_1 = __importDefault(require("./preliminaryDefinition"));
 const problemDefinition_1 = __importDefault(require("./problemDefinition"));
 const qualification_1 = __importDefault(require("./qualification"));
@@ -42,7 +43,9 @@ const generalInformation = connection_1.default.define("generalInformation", {
 });
 generalInformation.hasOne(problemDefinition_1.default, { foreignKey: "generalInformationId" });
 generalInformation.hasOne(preliminaryDefinition_1.default, { foreignKey: "generalInformationId" });
+generalInformation.hasOne(preliminaryDefinition_1.default, { foreignKey: "generalInformationId" });
 generalInformation.hasOne(qualification_1.default, { foreignKey: "generalInformationId" });
+generalInformation.hasOne(ideaAlternative_1.default, { foreignKey: "sectionBIId", targetKey: "codigo" });
 generalInformation.belongsTo(stage_1.default, {
     foreignKey: "idStage",
     sourceKey: "codigo",

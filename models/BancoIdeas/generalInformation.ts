@@ -1,6 +1,7 @@
 import Sequelize from "sequelize-oracle";
 
 import db from "../../db/connection";
+import ideaAlternative from "./ideaAlternative";
 import preliminaryDefinition from "./preliminaryDefinition";
 import problemDefinition from "./problemDefinition";
 import qualification from "./qualification";
@@ -44,7 +45,9 @@ const generalInformation = db.define(
 
 generalInformation.hasOne(problemDefinition, { foreignKey: "generalInformationId" });
 generalInformation.hasOne(preliminaryDefinition, { foreignKey: "generalInformationId" });
+generalInformation.hasOne(preliminaryDefinition, { foreignKey: "generalInformationId" });
 generalInformation.hasOne(qualification, { foreignKey: "generalInformationId" });
+generalInformation.hasOne(ideaAlternative, { foreignKey: "sectionBIId", targetKey: "codigo" });
 
 
 generalInformation.belongsTo(stage, {

@@ -1,6 +1,7 @@
 import Sequelize from "sequelize-oracle";
 
 import db from "../../db/connection";
+import ideaAlternative from "./ideaAlternative";
 
 const preliminaryName = db.define(
     "preliminaryName",
@@ -25,5 +26,10 @@ const preliminaryName = db.define(
         paranoid: true,
     }
 );
+
+// preliminaryName.belongsTo(ideaAlternative, {
+//     foreignKey: "ideaAlternativeId",
+//     sourceKey: "codigo",
+// });
 
 export default preliminaryName;

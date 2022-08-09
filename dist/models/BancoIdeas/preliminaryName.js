@@ -24,5 +24,9 @@ const preliminaryName = connection_1.default.define("preliminaryName", {
     underscoded: true,
     paranoid: true,
 });
+// preliminaryName.belongsTo(ideaAlternative, {
+//     foreignKey: "ideaAlternativeId",
+//     sourceKey: "codigo",
+// });
 exports.default = preliminaryName;
 //# sourceMappingURL=preliminaryName.js.map
