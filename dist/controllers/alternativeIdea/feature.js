@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreateIdeaAlternativeComplete = void 0;
+exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreateIdeaAlternativeComplete = exports.FgetPreinversion = void 0;
 const preliminaryName_1 = __importDefault(require("../../models/BancoIdeas/preliminaryName"));
 const responsibleEntity_1 = __importDefault(require("../../models/BancoIdeas/responsibleEntity"));
 const populationDelimitation_1 = __importDefault(require("../../models/BancoIdeas/populationDelimitation"));
@@ -21,6 +21,103 @@ const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executi
 const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geographicArea"));
 const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
 const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinates"));
+function FgetPreinversion(idAlternativa) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const proDes = yield projectDescription_1.default.findOne({ where: { ideaAlternativeId: idAlternativa } });
+            const popDel = yield populationDelimitation_1.default.findOne({ where: { ideaAlternativeId: idAlternativa } });
+            let costo = proDes.estimatedCost;
+            let rangoInversion = 0;
+            let resRangoInversion = '';
+            //RANGO DE INVERSIÓN
+            if (costo < 900000) {
+                rangoInversion = 6;
+                resRangoInversion = '<=900,000';
+            }
+            else if (costo > 900001 && costo <= 10000000) {
+                rangoInversion = 8;
+                resRangoInversion = '>900,001<=10,000,000';
+            }
+            else if (costo > 10000001 && costo <= 50000000) {
+                rangoInversion = 10;
+                resRangoInversion = '>10,000,001<=50,000,000';
+            }
+            else if (costo >= 50000001) {
+                rangoInversion = 16;
+                resRangoInversion = '>=50,000,001';
+            }
+            //ESTIMACIÓN BENEFICIARIOS 
+            let benefits = popDel.estimateBeneficiaries;
+            let estBenefits = 0;
+            let resEstBenefits = '';
+            if (benefits <= 1000) {
+                estBenefits = 4.5;
+                resEstBenefits = '1 <= 1,000';
+            }
+            else if (benefits > 1001 && benefits <= 10000) {
+                estBenefits = 6;
+                resEstBenefits = '>1,001 <= 10,000';
+            }
+            else if (benefits > 10001 && benefits <= 20000) {
+                estBenefits = 7.5;
+                resEstBenefits = '>10,001 <= 20,000';
+            }
+            else if (benefits > 20001) {
+                estBenefits = 12;
+                resEstBenefits = '>20,001';
+            }
+            //COMPLEJIDAD
+            let complejidad = proDes.complexity;
+            let complejidadTotal = 0;
+            if (complejidad == 'Alta') {
+                complejidadTotal = 7.5;
+            }
+            else if (complejidad == 'Media') {
+                complejidadTotal = 10.5;
+            }
+            else if (complejidad == 'Baja') {
+                complejidadTotal = 12;
+            }
+            let total = (rangoInversion + estBenefits + complejidadTotal);
+            // let total = (((rangoInversion + estBenefits + complejidadTotal) * 100)/40)
+            let etapa = '';
+            if (total <= 19) {
+                etapa = 'Perfil';
+            }
+            else if (total >= 20 && total <= 35) {
+                etapa = 'Prefactibilidad';
+            }
+            else if (total >= 36 && total <= 100) {
+                etapa = 'Factibilidad';
+            }
+            //RESULTADO
+            let preInversion = {
+                rango: {
+                    valor: rangoInversion,
+                    resultado: resRangoInversion
+                },
+                estimacion: {
+                    valor: estBenefits,
+                    resultado: resEstBenefits
+                },
+                complejidad: {
+                    valor: complejidadTotal,
+                    resultado: complejidad
+                },
+                etapa: {
+                    valor: total,
+                    resultado: etapa
+                }
+            };
+            return { preInversion };
+        }
+        catch (error) {
+            //devuelve errores al cliente
+            throw `Error al ingresar Idea alternativa: ${error}`;
+        }
+    });
+}
+exports.FgetPreinversion = FgetPreinversion;
 function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {

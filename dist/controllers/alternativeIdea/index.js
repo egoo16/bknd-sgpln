@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createIdeaAlternativeComplete = void 0;
+exports.getPreinversion = exports.createIdeaAlternativeComplete = void 0;
 const connection_1 = __importDefault(require("../../db/connection"));
 const feature_1 = require("./feature");
 /**
@@ -34,4 +34,20 @@ function createIdeaAlternativeComplete(req, res) {
     });
 }
 exports.createIdeaAlternativeComplete = createIdeaAlternativeComplete;
+/**
+ * Funcion para  listar las configuraciones globales
+ * @param {*} req
+ */
+function getPreinversion(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let preInversion = yield (0, feature_1.FgetPreinversion)(req.params.id);
+            return res.status(200).send(preInversion);
+        }
+        catch (error) {
+            return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
+        }
+    });
+}
+exports.getPreinversion = getPreinversion;
 //# sourceMappingURL=index.js.map

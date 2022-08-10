@@ -9,6 +9,92 @@ import geographicArea from "../../models/BancoIdeas/geographicArea";
 import ideaAlternative from "../../models/BancoIdeas/ideaAlternative";
 import coordinates from "../../models/BancoIdeas/coordinates";
 
+export async function FgetPreinversion(idAlternativa: any) {
+    try {
+        const proDes = await projectDescription.findOne({ where: { ideaAlternativeId: idAlternativa } })
+        const popDel = await populationDelimitation.findOne({ where: { ideaAlternativeId: idAlternativa } })
+        let costo = proDes.estimatedCost
+        let rangoInversion = 0
+        let resRangoInversion = ''
+        //RANGO DE INVERSIÓN
+        if (costo < 900000) {
+            rangoInversion = 6
+            resRangoInversion = '<=900,000'
+        } else if (costo > 900001 && costo <= 10000000) {
+            rangoInversion = 8
+            resRangoInversion = '>900,001<=10,000,000'
+        } else if (costo > 10000001 && costo <= 50000000) {
+            rangoInversion = 10
+            resRangoInversion = '>10,000,001<=50,000,000'
+        } else if (costo >= 50000001) {
+            rangoInversion = 16
+            resRangoInversion = '>=50,000,001'
+        }
+        //ESTIMACIÓN BENEFICIARIOS 
+        let benefits = popDel.estimateBeneficiaries
+        let estBenefits = 0
+        let resEstBenefits = ''
+        if (benefits <= 1000) {
+            estBenefits = 4.5
+            resEstBenefits = '1 <= 1,000'
+        } else if (benefits > 1001 && benefits <= 10000) {
+            estBenefits = 6
+            resEstBenefits = '>1,001 <= 10,000'
+        } else if (benefits > 10001 && benefits <= 20000) {
+            estBenefits = 7.5
+            resEstBenefits = '>10,001 <= 20,000'
+        } else if (benefits > 20001) {
+            estBenefits = 12
+            resEstBenefits = '>20,001'
+        }
+        //COMPLEJIDAD
+        let complejidad = proDes.complexity
+        let complejidadTotal = 0
+        if (complejidad == 'Alta') {
+            complejidadTotal = 7.5
+        } else if (complejidad == 'Media') {
+            complejidadTotal = 10.5
+        } else if (complejidad == 'Baja') {
+            complejidadTotal = 12
+        }
+
+
+        let total = (rangoInversion + estBenefits + complejidadTotal)
+        // let total = (((rangoInversion + estBenefits + complejidadTotal) * 100)/40)
+        let etapa = ''
+        if (total <= 19) {
+            etapa = 'Perfil'
+        } else if (total >= 20 && total <= 35) {
+            etapa = 'Prefactibilidad'
+        } else if (total >= 36 && total <= 100) {
+            etapa = 'Factibilidad'
+        }
+        
+        //RESULTADO
+        let preInversion = {
+            rango: {
+                valor: rangoInversion,
+                resultado: resRangoInversion
+            },
+            estimacion: {
+                valor: estBenefits,
+                resultado: resEstBenefits
+            },
+            complejidad: {
+                valor: complejidadTotal,
+                resultado: complejidad
+            },
+            etapa: {
+                valor: total,
+                resultado: etapa
+            }
+        }
+        return { preInversion };
+    } catch (error) {
+        //devuelve errores al cliente
+        throw `Error al ingresar Idea alternativa: ${error}`;
+    }
+}
 export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: any) {
     try {
         let ideaAlternativeCreated = await ideaAlternative.create(ideaAlt, { transaction })
@@ -18,7 +104,7 @@ export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: 
         await FcreatePopulationDemilitation(ideaAlt.populationDelimitation, codigoAlternativa, transaction)
         await FcreateGeographicArea(ideaAlt.geographicArea, codigoAlternativa, transaction)
         await FcreateProjectDescription(ideaAlt.projectDescription, codigoAlternativa, transaction)
-       
+
         return { message: `Idea alternativa creada correctamente` };
     } catch (error) {
         //devuelve errores al cliente
