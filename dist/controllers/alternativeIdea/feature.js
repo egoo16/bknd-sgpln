@@ -21,6 +21,8 @@ const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executi
 const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geographicArea"));
 const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
 const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinates"));
+const referencePopulation_1 = __importDefault(require("../../models/BancoIdeas/referencePopulation"));
+const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomination"));
 function FgetPreinversion(idAlternativa) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -78,8 +80,8 @@ function FgetPreinversion(idAlternativa) {
             else if (complejidad == 'Baja') {
                 complejidadTotal = 12;
             }
-            let total = (rangoInversion + estBenefits + complejidadTotal);
-            // let total = (((rangoInversion + estBenefits + complejidadTotal) * 100)/40)
+            let totalSuma = (rangoInversion + estBenefits + complejidadTotal);
+            let total = (((rangoInversion + estBenefits + complejidadTotal) * 100) / 40);
             let etapa = '';
             if (total <= 19) {
                 etapa = 'Perfil';
@@ -105,7 +107,7 @@ function FgetPreinversion(idAlternativa) {
                     resultado: complejidad
                 },
                 etapa: {
-                    valor: total,
+                    valor: totalSuma,
                     resultado: etapa
                 }
             };
@@ -169,6 +171,24 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
     return __awaiter(this, void 0, void 0, function* () {
         try {
             popDemiliation.ideaAlternativeId = idAlternativa;
+            let refModel = yield referencePopulation_1.default.findOne();
+            if (refModel === null || refModel === void 0 ? void 0 : refModel.codigo) {
+                popDemiliation.referencePopulationId = refModel.codigo;
+            }
+            else {
+                let refCreate = { name: 'test' };
+                let refCreated = yield referencePopulation_1.default.create(refCreate);
+                popDemiliation.referencePopulationId = refCreated.codigo;
+            }
+            let DenModel = yield denomination_1.default.findOne();
+            if (DenModel === null || DenModel === void 0 ? void 0 : DenModel.codigo) {
+                popDemiliation.denominationId = DenModel.codigo;
+            }
+            else {
+                let DenCreate = { name: 'test' };
+                let DenCreated = yield denomination_1.default.create(DenCreate);
+                popDemiliation.denominationId = DenCreated.codigo;
+            }
             let populationDelimitationCreated = yield populationDelimitation_1.default.create(popDemiliation, { transaction });
             return { populationDelimitationCreated, message: `Delimitación preliminar ingresada correctamente` };
         }

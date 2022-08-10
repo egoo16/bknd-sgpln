@@ -7,7 +7,7 @@ import oracledb from 'oracledb';
 // oracledb.initOracleClient({ libDir: "C:Oracleinstantclient_21_6" });
 let db: any;
 
-db = new Sequelize('xepdb1', 'SYSTEM', '123456', {
+db = new Sequelize('xepdb1', 'SYSTEM', 'database', {
     host: 'localhost',
     dialect: 'oracle',
     // logging: false,

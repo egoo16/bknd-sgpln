@@ -8,6 +8,8 @@ import executionTime from "../../models/BancoIdeas/executionTime";
 import geographicArea from "../../models/BancoIdeas/geographicArea";
 import ideaAlternative from "../../models/BancoIdeas/ideaAlternative";
 import coordinates from "../../models/BancoIdeas/coordinates";
+import referencePopulation from "../../models/BancoIdeas/referencePopulation";
+import denomination from "../../models/BancoIdeas/denomination";
 
 export async function FgetPreinversion(idAlternativa: any) {
     try {
@@ -59,8 +61,8 @@ export async function FgetPreinversion(idAlternativa: any) {
         }
 
 
-        let total = (rangoInversion + estBenefits + complejidadTotal)
-        // let total = (((rangoInversion + estBenefits + complejidadTotal) * 100)/40)
+        let totalSuma = (rangoInversion + estBenefits + complejidadTotal)
+        let total = (((rangoInversion + estBenefits + complejidadTotal) * 100)/40)
         let etapa = ''
         if (total <= 19) {
             etapa = 'Perfil'
@@ -85,7 +87,7 @@ export async function FgetPreinversion(idAlternativa: any) {
                 resultado: complejidad
             },
             etapa: {
-                valor: total,
+                valor: totalSuma,
                 resultado: etapa
             }
         }
@@ -135,7 +137,25 @@ export async function FcresponsableEntity(resEntity: any, idAlternativa: number,
 
 export async function FcreatePopulationDemilitation(popDemiliation: any, idAlternativa: number, transaction: any) {
     try {
-        popDemiliation.ideaAlternativeId = idAlternativa
+        popDemiliation.ideaAlternativeId = idAlternativa;
+        let refModel = await referencePopulation.findOne();
+        if (refModel?.codigo) {
+            popDemiliation.referencePopulationId = refModel.codigo;
+        } else {
+            let refCreate = { name: 'test' };
+            let refCreated = await referencePopulation.create(refCreate);
+            popDemiliation.referencePopulationId = refCreated.codigo;
+        }
+        let DenModel = await denomination.findOne();
+        if (DenModel?.codigo) {
+            popDemiliation.denominationId = DenModel.codigo;
+        } else {
+            let DenCreate = { name: 'test' };
+            let DenCreated = await denomination.create(DenCreate);
+            popDemiliation.denominationId = DenCreated.codigo;
+        }
+
+
         let populationDelimitationCreated = await populationDelimitation.create(popDemiliation, { transaction })
         return { populationDelimitationCreated, message: `Delimitación preliminar ingresada correctamente` };
     } catch (error) {
