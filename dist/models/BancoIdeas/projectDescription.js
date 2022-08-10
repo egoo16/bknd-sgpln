@@ -27,7 +27,7 @@ const projectDescription = connection_1.default.define("projectDescription", {
     underscoded: true,
     paranoid: true,
 });
-projectDescription.hasMany(executionTime_1.default, {
+projectDescription.hasOne(executionTime_1.default, {
     foreignKey: "projectDescriptionId",
 });
 exports.default = projectDescription;

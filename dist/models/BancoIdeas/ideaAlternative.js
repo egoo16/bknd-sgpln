@@ -23,19 +23,19 @@ const ideaAlternative = connection_1.default.define("ideaAlternative", {
     underscoded: true,
     paranoid: true,
 });
-ideaAlternative.hasMany(preliminaryName_1.default, {
+ideaAlternative.hasOne(preliminaryName_1.default, {
     foreignKey: "ideaAlternativeId",
 });
-ideaAlternative.hasMany(responsibleEntity_1.default, {
+ideaAlternative.hasOne(responsibleEntity_1.default, {
     foreignKey: "ideaAlternativeId",
 });
-ideaAlternative.hasMany(populationDelimitation_1.default, {
+ideaAlternative.hasOne(populationDelimitation_1.default, {
     foreignKey: "ideaAlternativeId",
 });
-ideaAlternative.hasMany(geographicArea_1.default, {
+ideaAlternative.hasOne(geographicArea_1.default, {
     foreignKey: "ideaAlternativeId",
 });
-ideaAlternative.hasMany(projectDescription_1.default, {
+ideaAlternative.hasOne(projectDescription_1.default, {
     foreignKey: "ideaAlternativeId",
 });
 // ideaAlternative.belongsTo(generalInformation, {

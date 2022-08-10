@@ -57,7 +57,7 @@ generalInformation.hasMany(possibleAlternatives_1.default, {
     foreignKey: "generalInformationId",
 });
 generalInformation.hasOne(qualification_1.default, { foreignKey: "generalInformationId" });
-generalInformation.hasOne(ideaAlternative_1.default, { foreignKey: "sectionBIId", targetKey: "codigo" });
+generalInformation.hasMany(ideaAlternative_1.default, { foreignKey: "sectionBIId" });
 generalInformation.belongsTo(stage_1.default, {
     foreignKey: "idStage",
     sourceKey: "codigo",

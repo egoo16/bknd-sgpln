@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import generalInformation from "../../models/BancoIdeas/generalInformation";
-import sequelize from "sequelize-oracle";
 import models from "../../db/connection";
 import moment from "moment";
 import stage from "../../models/BancoIdeas/stage";
@@ -8,6 +7,16 @@ import possibleEffects from "../../models/BancoIdeas/possibleEffects";
 import possibleCauses from "../../models/BancoIdeas/possibleCauses";
 import possibleAlternatives from "../../models/BancoIdeas/possibleAlternatives";
 import qualification from "../../models/BancoIdeas/qualification";
+import ideaAlternative from "../../models/BancoIdeas/ideaAlternative";
+import preliminaryName from "../../models/BancoIdeas/preliminaryName";
+import responsibleEntity from "../../models/BancoIdeas/responsibleEntity";
+import populationDelimitation from "../../models/BancoIdeas/populationDelimitation";
+import geographicArea from "../../models/BancoIdeas/geographicArea";
+import projectDescription from "../../models/BancoIdeas/projectDescription";
+import referencePopulation from "../../models/BancoIdeas/referencePopulation";
+import denomination from "../../models/BancoIdeas/denomination";
+import coordinates from "../../models/BancoIdeas/coordinates";
+import executionTime from "../../models/BancoIdeas/executionTime";
 
 export const postGeneralInformation = async (req: Request, res: Response) => {
     let transaction = await models.transaction();
@@ -125,19 +134,81 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
         const generalInformations = await generalInformation.findAll({
             include: [
                 {
+                    required: false,
+
                     model: possibleEffects
                 },
                 {
+                    required: false,
+
                     model: possibleCauses
                 },
                 {
+                    required: false,
+
                     model: possibleAlternatives
                 },
                 {
+                    required: false,
+
                     model: stage
-                }, 
+                },
                 {
+                    required: false,
+
                     model: qualification
+                },
+                {
+                    required: false,
+                    model: ideaAlternative,
+                    include: [
+                        {
+                            required: false,
+                            model: preliminaryName
+                        },
+                        {
+                            required: false,
+                            model: responsibleEntity
+                        },
+                        {
+                            required: false,
+                            model: populationDelimitation,
+                            include: [
+                                {
+                                    required: false,
+                                    model: referencePopulation
+                                },
+                                {
+                                    required: false,
+                                    model: denomination
+                                },
+                            ]
+                        },
+                        {
+                            required: false,
+                            model: geographicArea,
+                            include: [
+                                {
+                                    required: false,
+                                    model: coordinates
+                                },
+
+                            ]
+                        },
+                        {
+                            required: false,
+
+                            model: projectDescription,
+                            include: [
+                                {
+                                    required: false,
+
+                                    model: executionTime
+                                },
+
+                            ]
+                        },
+                    ]
                 }
             ]
         });
@@ -145,6 +216,7 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
         res.status(201).json({
             msg: "Datos Obtenidos",
             generalInformations,
+            count: generalInformation.length
         });
     } catch (error) {
         res.status(500).json({

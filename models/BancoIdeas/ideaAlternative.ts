@@ -27,19 +27,19 @@ const ideaAlternative = db.define(
     }
 );
 
-ideaAlternative.hasMany(preliminaryName, {
+ideaAlternative.hasOne(preliminaryName, {
     foreignKey: "ideaAlternativeId",
 });
-ideaAlternative.hasMany(responsibleEntity, {
+ideaAlternative.hasOne(responsibleEntity, {
     foreignKey: "ideaAlternativeId",
 });
-ideaAlternative.hasMany(populationDelimitation, {
+ideaAlternative.hasOne(populationDelimitation, {
     foreignKey: "ideaAlternativeId",
 });
-ideaAlternative.hasMany(geographicArea, {
+ideaAlternative.hasOne(geographicArea, {
     foreignKey: "ideaAlternativeId",
 });
-ideaAlternative.hasMany(projectDescription, {
+ideaAlternative.hasOne(projectDescription, {
     foreignKey: "ideaAlternativeId",
 });
 

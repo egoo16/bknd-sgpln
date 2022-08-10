@@ -30,7 +30,7 @@ const projectDescription = db.define(
     }
 );
 
-projectDescription.hasMany(executionTime, {
+projectDescription.hasOne(executionTime, {
     foreignKey: "projectDescriptionId",
 });
 export default projectDescription;
