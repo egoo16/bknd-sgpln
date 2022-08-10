@@ -12,7 +12,7 @@ const possibleEffects = db.define(
       defaultValue: Sequelize.UUIDV4,
     },
     description: { type: Sequelize.STRING, required: true, allowNull: false },
-    problemDefinitionId: { type: Sequelize.UUID, required: true },
+    generalInformationId: { type: Sequelize.UUID, required: true },
   },
   {
     underscoded: true,

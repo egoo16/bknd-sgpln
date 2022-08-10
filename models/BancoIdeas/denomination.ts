@@ -20,4 +20,5 @@ const denomination = db.define(
     }
 );
 
+
 export default denomination;
