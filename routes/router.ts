@@ -3,13 +3,13 @@ import { Router } from "express";
 import appRouter from "./app";
 import loginRouter from "./auth/login";
 import generalRouter from "./bancoIdeas/generalInformationRoute";
-import preliminarNameRoute from "./preliminarName/preliminarNameRoute";
+import ideaAlternative from "./ideaAlternative/ideaAlternative";
 import usuarioRouter from "./usuarios";
 
 const router = Router();
 
 // Rutas
-router.use("/api/preliminar/", preliminarNameRoute);
+router.use("/api/idea/", ideaAlternative);
 router.use("/api/general/", generalRouter);
 router.use("/api/login/", loginRouter);
 router.use("/api/usuarios/", usuarioRouter);

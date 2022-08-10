@@ -1,6 +1,7 @@
 import Sequelize from "sequelize-oracle";
 
 import db from "../../db/connection";
+import executionTime from "./executionTime";
 
 const projectDescription = db.define(
     "projectDescription",
@@ -12,10 +13,11 @@ const projectDescription = db.define(
             defaultValue: Sequelize.UUIDV4,
         },
         ideaAlternativeId: { type: Sequelize.UUID, allowNull: false },
-        formulationProcess: { type: Sequelize.STRING },
-        projectType: { type: Sequelize.STRING },
-        complexity: { type: Sequelize.STRING },
+        projectType: { type: Sequelize.STRING, allowNull: false },
+        formulationProcess: { type: Sequelize.STRING, allowNull: false },
+        descriptionFormultarionProcess: { type: Sequelize.STRING },
         descriptionInterventions: { type: Sequelize.STRING },
+        complexity: { type: Sequelize.STRING, allowNull: false },
         estimatedCost: { type: Sequelize.INTEGER },
         investmentCost: { type: Sequelize.INTEGER },
         fundingSources: { type: Sequelize.INTEGER },
@@ -28,4 +30,7 @@ const projectDescription = db.define(
     }
 );
 
+projectDescription.hasMany(executionTime, {
+    foreignKey: "projectDescriptionId",
+});
 export default projectDescription;

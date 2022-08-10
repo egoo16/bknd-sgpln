@@ -2,8 +2,8 @@ import Sequelize from "sequelize-oracle";
 
 import db from "../../db/connection";
 
-const complexity = db.define(
-    "complexity",
+const coordinates = db.define(
+    "coordinates",
     {
         codigo: {
             type: Sequelize.UUID,
@@ -22,4 +22,4 @@ const complexity = db.define(
     }
 );
 
-export default complexity;
+export default coordinates;

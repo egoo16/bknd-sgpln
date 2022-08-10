@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
+const denomination_1 = __importDefault(require("./denomination"));
+const referencePopulation_1 = __importDefault(require("./referencePopulation"));
 const populationDelimitation = connection_1.default.define("populationDelimitation", {
     codigo: {
         type: sequelize_oracle_1.default.UUID,
@@ -22,6 +24,14 @@ const populationDelimitation = connection_1.default.define("populationDelimitati
 }, {
     underscoded: true,
     paranoid: true,
+});
+populationDelimitation.belongsTo(referencePopulation_1.default, {
+    foreignKey: "referencePopulationId",
+    sourceKey: "codigo",
+});
+populationDelimitation.belongsTo(denomination_1.default, {
+    foreignKey: "denominationId",
+    sourceKey: "codigo",
 });
 exports.default = populationDelimitation;
 //# sourceMappingURL=populationDelimitation.js.map

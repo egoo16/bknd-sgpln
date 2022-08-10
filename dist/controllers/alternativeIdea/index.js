@@ -12,20 +12,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createPreleminaryName = void 0;
+exports.createIdeaAlternativeComplete = void 0;
 const connection_1 = __importDefault(require("../../db/connection"));
 const feature_1 = require("./feature");
 /**
  * Funcion para  listar las configuraciones globales
  * @param {*} req
  */
-function createPreleminaryName(req, res) {
+function createIdeaAlternativeComplete(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let transaction = yield connection_1.default.transaction();
         try {
-            let prName = yield (0, feature_1.FcreatePreleminaryName)(req.body, transaction);
+            let ideaAlternative = yield (0, feature_1.FcreateIdeaAlternativeComplete)(req.body.ideaAlternative, transaction);
             transaction.commit();
-            return res.status(200).send(prName);
+            return res.status(200).send(ideaAlternative);
         }
         catch (error) {
             transaction.rollback();
@@ -33,5 +33,5 @@ function createPreleminaryName(req, res) {
         }
     });
 }
-exports.createPreleminaryName = createPreleminaryName;
+exports.createIdeaAlternativeComplete = createIdeaAlternativeComplete;
 //# sourceMappingURL=index.js.map

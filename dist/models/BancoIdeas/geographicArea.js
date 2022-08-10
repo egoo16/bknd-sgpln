@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
+const coordinates_1 = __importDefault(require("./coordinates"));
 const geographicArea = connection_1.default.define("geographicArea", {
     codigo: {
         type: sequelize_oracle_1.default.UUID,
@@ -34,6 +35,9 @@ const geographicArea = connection_1.default.define("geographicArea", {
 }, {
     underscoded: true,
     paranoid: true,
+});
+geographicArea.hasMany(coordinates_1.default, {
+    foreignKey: "geographicAreaId",
 });
 exports.default = geographicArea;
 //# sourceMappingURL=geographicArea.js.map

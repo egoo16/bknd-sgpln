@@ -1,6 +1,8 @@
 import Sequelize from "sequelize-oracle";
 
 import db from "../../db/connection";
+import denomination from "./denomination";
+import referencePopulation from "./referencePopulation";
 
 const populationDelimitation = db.define(
     "populationDelimitation",
@@ -25,5 +27,12 @@ const populationDelimitation = db.define(
         paranoid: true,
     }
 );
-
+populationDelimitation.belongsTo(referencePopulation, {
+    foreignKey: "referencePopulationId",
+    sourceKey: "codigo",
+});
+populationDelimitation.belongsTo(denomination, {
+    foreignKey: "denominationId",
+    sourceKey: "codigo",
+});
 export default populationDelimitation;

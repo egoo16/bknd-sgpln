@@ -12,18 +12,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = void 0;
+exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreateIdeaAlternativeComplete = void 0;
 const preliminaryName_1 = __importDefault(require("../../models/BancoIdeas/preliminaryName"));
 const responsibleEntity_1 = __importDefault(require("../../models/BancoIdeas/responsibleEntity"));
 const populationDelimitation_1 = __importDefault(require("../../models/BancoIdeas/populationDelimitation"));
 const projectDescription_1 = __importDefault(require("../../models/BancoIdeas/projectDescription"));
 const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executionTime"));
 const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geographicArea"));
-function FcreatePreleminaryName(prName, transaction) {
+const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
+const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinates"));
+function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield preliminaryName_1.default.create(prName, { transaction });
-            return { message: `Nombre preliminar ingresado correctamente` };
+            let ideaAlternativeCreated = yield ideaAlternative_1.default.create(ideaAlt, { transaction });
+            let codigoAlternativa = ideaAlternativeCreated.codigo;
+            yield FcreatePreleminaryName(ideaAlt.preliminaryName, codigoAlternativa, transaction);
+            yield FcresponsableEntity(ideaAlt.responsibleEntity, codigoAlternativa, transaction);
+            yield FcreatePopulationDemilitation(ideaAlt.populationDelimitation, codigoAlternativa, transaction);
+            yield FcreateGeographicArea(ideaAlt.geographicArea, codigoAlternativa, transaction);
+            yield FcreateProjectDescription(ideaAlt.projectDescription, codigoAlternativa, transaction);
+            return { message: `Idea alternativa creada correctamente` };
+        }
+        catch (error) {
+            //devuelve errores al cliente
+            throw `Error al ingresar Idea alternativa: ${error}`;
+        }
+    });
+}
+exports.FcreateIdeaAlternativeComplete = FcreateIdeaAlternativeComplete;
+function FcreatePreleminaryName(prName, idAlternativa, transaction) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            prName.ideaAlternativeId = idAlternativa;
+            let preliminaryNameCreated = yield preliminaryName_1.default.create(prName, { transaction });
+            return { preliminaryNameCreated, message: `Nombre preliminar ingresado correctamente` };
         }
         catch (error) {
             //devuelve errores al cliente
@@ -32,11 +54,12 @@ function FcreatePreleminaryName(prName, transaction) {
     });
 }
 exports.FcreatePreleminaryName = FcreatePreleminaryName;
-function FcresponsableEntity(resEntity, transaction) {
+function FcresponsableEntity(resEntity, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield responsibleEntity_1.default.create(resEntity, { transaction });
-            return { message: `Entidad responsable ingresada correctamente` };
+            resEntity.ideaAlternativeId = idAlternativa;
+            let responsableEntityCreated = yield responsibleEntity_1.default.create(resEntity, { transaction });
+            return { responsableEntityCreated, message: `Entidad responsable ingresada correctamente` };
         }
         catch (error) {
             //devuelve errores al cliente
@@ -45,11 +68,12 @@ function FcresponsableEntity(resEntity, transaction) {
     });
 }
 exports.FcresponsableEntity = FcresponsableEntity;
-function FcreatePopulationDemilitation(popDemiliation, transaction) {
+function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield populationDelimitation_1.default.create(popDemiliation, { transaction });
-            return { message: `Delimitación preliminar ingresada correctamente` };
+            popDemiliation.ideaAlternativeId = idAlternativa;
+            let populationDelimitationCreated = yield populationDelimitation_1.default.create(popDemiliation, { transaction });
+            return { populationDelimitationCreated, message: `Delimitación preliminar ingresada correctamente` };
         }
         catch (error) {
             //devuelve errores al cliente
@@ -58,16 +82,14 @@ function FcreatePopulationDemilitation(popDemiliation, transaction) {
     });
 }
 exports.FcreatePopulationDemilitation = FcreatePopulationDemilitation;
-function FcreateProjectDescription(proDescription, transaction) {
+function FcreateProjectDescription(proDescription, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let proDesctiptionNew = yield projectDescription_1.default.create(proDescription, { transaction });
-            for (const exTime of proDescription.executionTimes) {
-                exTime.projectDescriptionId = proDesctiptionNew.codigo;
-                yield executionTime_1.default.create(exTime, { transaction });
-            }
-            yield FcreateGeographicArea(proDescription.geographicArea, transaction);
-            return { message: `Descripción preliminar de la idea proyecto ingresada correctamente` };
+            proDescription.ideaAlternativeId = idAlternativa;
+            let proDesctiptionCreated = yield projectDescription_1.default.create(proDescription, { transaction });
+            proDescription.executionTime.projectDescriptionId = proDesctiptionCreated.codigo;
+            yield executionTime_1.default.create(proDescription.executionTime, { transaction });
+            return { proDesctiptionCreated, message: `Descripción preliminar de la idea proyecto ingresada correctamente` };
         }
         catch (error) {
             //devuelve errores al cliente
@@ -76,11 +98,16 @@ function FcreateProjectDescription(proDescription, transaction) {
     });
 }
 exports.FcreateProjectDescription = FcreateProjectDescription;
-function FcreateGeographicArea(geograpicArea, transaction) {
+function FcreateGeographicArea(geograpicArea, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield geographicArea_1.default.create(geograpicArea, { transaction });
-            return { message: `Area geografica del proyecto ingresada correctamente` };
+            geograpicArea.ideaAlternativeId = idAlternativa;
+            let geographicAreaCreated = yield geographicArea_1.default.create(geograpicArea, { transaction });
+            for (let coordinate of geograpicArea.coordinates) {
+                coordinate.geographicAreaId = geographicAreaCreated.codigo;
+                yield coordinates_1.default.create(coordinate, { transaction });
+            }
+            return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };
         }
         catch (error) {
             //devuelve errores al cliente

@@ -1,9 +1,15 @@
 import Sequelize from "sequelize-oracle";
 
 import db from "../../db/connection";
+<<<<<<< HEAD
 import possibleAlternatives from "./possibleAlternatives";
 import possibleCauses from "./possibleCauses";
 import possibleEffects from "./possibleEffects";
+=======
+import ideaAlternative from "./ideaAlternative";
+import preliminaryDefinition from "./preliminaryDefinition";
+import problemDefinition from "./problemDefinition";
+>>>>>>> upstream/main
 import qualification from "./qualification";
 import stage from "./stage";
 
@@ -51,6 +57,7 @@ const generalInformation = db.define(
   }
 );
 
+<<<<<<< HEAD
 generalInformation.hasMany(possibleEffects, {
   foreignKey: "generalInformationId",
 });
@@ -60,7 +67,13 @@ generalInformation.hasMany(possibleCauses, {
 generalInformation.hasMany(possibleAlternatives, {
   foreignKey: "generalInformationId",
 });
+=======
+generalInformation.hasOne(problemDefinition, { foreignKey: "generalInformationId" });
+generalInformation.hasOne(preliminaryDefinition, { foreignKey: "generalInformationId" });
+generalInformation.hasOne(preliminaryDefinition, { foreignKey: "generalInformationId" });
+>>>>>>> upstream/main
 generalInformation.hasOne(qualification, { foreignKey: "generalInformationId" });
+generalInformation.hasOne(ideaAlternative, { foreignKey: "sectionBIId", targetKey: "codigo" });
 
 generalInformation.belongsTo(stage, {
   foreignKey: "idStage",

@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
-const complexity = connection_1.default.define("complexity", {
+const coordinates = connection_1.default.define("coordinates", {
     codigo: {
         type: sequelize_oracle_1.default.UUID,
         primaryKey: true,
@@ -19,5 +19,5 @@ const complexity = connection_1.default.define("complexity", {
     underscoded: true,
     paranoid: true,
 });
-exports.default = complexity;
+exports.default = coordinates;
 //# sourceMappingURL=coordinates.js.map

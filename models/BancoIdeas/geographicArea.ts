@@ -1,6 +1,7 @@
 import Sequelize from "sequelize-oracle";
 
 import db from "../../db/connection";
+import coordinates from "./coordinates";
 
 const geographicArea = db.define(
     "geographicArea",
@@ -37,5 +38,7 @@ const geographicArea = db.define(
         paranoid: true,
     }
 );
-
+geographicArea.hasMany(coordinates, {
+    foreignKey: "geographicAreaId",
+});
 export default geographicArea;

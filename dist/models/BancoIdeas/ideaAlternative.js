@@ -5,6 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
+const geographicArea_1 = __importDefault(require("./geographicArea"));
+const populationDelimitation_1 = __importDefault(require("./populationDelimitation"));
+const preliminaryName_1 = __importDefault(require("./preliminaryName"));
+const projectDescription_1 = __importDefault(require("./projectDescription"));
+const responsibleEntity_1 = __importDefault(require("./responsibleEntity"));
 const ideaAlternative = connection_1.default.define("ideaAlternative", {
     codigo: {
         type: sequelize_oracle_1.default.UUID,
@@ -18,5 +23,24 @@ const ideaAlternative = connection_1.default.define("ideaAlternative", {
     underscoded: true,
     paranoid: true,
 });
+ideaAlternative.hasMany(preliminaryName_1.default, {
+    foreignKey: "ideaAlternativeId",
+});
+ideaAlternative.hasMany(responsibleEntity_1.default, {
+    foreignKey: "ideaAlternativeId",
+});
+ideaAlternative.hasMany(populationDelimitation_1.default, {
+    foreignKey: "ideaAlternativeId",
+});
+ideaAlternative.hasMany(geographicArea_1.default, {
+    foreignKey: "ideaAlternativeId",
+});
+ideaAlternative.hasMany(projectDescription_1.default, {
+    foreignKey: "ideaAlternativeId",
+});
+// ideaAlternative.belongsTo(generalInformation, {
+//     foreignKey: "sectionBIId",
+//     sourceKey: "codigo",
+// });
 exports.default = ideaAlternative;
 //# sourceMappingURL=ideaAlternative.js.map
