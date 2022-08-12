@@ -27,7 +27,7 @@ const generalInformation = db.define(
     description: { type: Sequelize.STRING },
     dateOut: { type: Sequelize.DATE },
     punctuation: { type: Sequelize.INTEGER },
-    state: { type: Sequelize.BOOLEAN, defaultValue: true },
+    state: { type: Sequelize.STRING },
     idEntity: { type: Sequelize.STRING, required: true, allowNull: false },
     nameEntity: { type: Sequelize.STRING, required: true, allowNull: false },
     responsibleName: {

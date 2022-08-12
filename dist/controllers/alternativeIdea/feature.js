@@ -72,13 +72,13 @@ function FgetPreinversion(idAlternativa) {
             let complejidad = proDes.complexity;
             let complejidadTotal = 0;
             if (complejidad == 'Alta') {
-                complejidadTotal = 7.5;
+                complejidadTotal = 12;
             }
             else if (complejidad == 'Media') {
-                complejidadTotal = 10.5;
+                complejidadTotal = 11;
             }
             else if (complejidad == 'Baja') {
-                complejidadTotal = 12;
+                complejidadTotal = 7;
             }
             let totalSuma = (rangoInversion + estBenefits + complejidadTotal);
             let total = (((rangoInversion + estBenefits + complejidadTotal) * 100) / 40);

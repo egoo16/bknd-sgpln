@@ -53,16 +53,16 @@ export async function FgetPreinversion(idAlternativa: any) {
         let complejidad = proDes.complexity
         let complejidadTotal = 0
         if (complejidad == 'Alta') {
-            complejidadTotal = 7.5
-        } else if (complejidad == 'Media') {
-            complejidadTotal = 10.5
-        } else if (complejidad == 'Baja') {
             complejidadTotal = 12
+        } else if (complejidad == 'Media') {
+            complejidadTotal = 11
+        } else if (complejidad == 'Baja') {
+            complejidadTotal = 7
         }
 
 
         let totalSuma = (rangoInversion + estBenefits + complejidadTotal)
-        let total = (((rangoInversion + estBenefits + complejidadTotal) * 100)/40)
+        let total = (((rangoInversion + estBenefits + complejidadTotal) * 100) / 40)
         let etapa = ''
         if (total <= 19) {
             etapa = 'Perfil'
@@ -71,7 +71,7 @@ export async function FgetPreinversion(idAlternativa: any) {
         } else if (total >= 36 && total <= 100) {
             etapa = 'Factibilidad'
         }
-        
+
         //RESULTADO
         let preInversion = {
             rango: {

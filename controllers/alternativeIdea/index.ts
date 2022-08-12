@@ -10,7 +10,7 @@ import { FcreateIdeaAlternativeComplete, FgetPreinversion } from './feature';
 export async function createIdeaAlternativeComplete(req: Request, res: Response) {
     let transaction = await models.transaction()
     try {
-        let ideaAlternative = await FcreateIdeaAlternativeComplete(req.body.ideaAlternative, transaction)
+        let ideaAlternative = await FcreateIdeaAlternativeComplete(req.body, transaction)
         transaction.commit()
         return res.status(200).send(ideaAlternative)
     } catch (error: any) {

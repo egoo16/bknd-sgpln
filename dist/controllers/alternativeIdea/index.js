@@ -23,7 +23,7 @@ function createIdeaAlternativeComplete(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let transaction = yield connection_1.default.transaction();
         try {
-            let ideaAlternative = yield (0, feature_1.FcreateIdeaAlternativeComplete)(req.body.ideaAlternative, transaction);
+            let ideaAlternative = yield (0, feature_1.FcreateIdeaAlternativeComplete)(req.body, transaction);
             transaction.commit();
             return res.status(200).send(ideaAlternative);
         }

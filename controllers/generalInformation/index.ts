@@ -17,6 +17,9 @@ import referencePopulation from "../../models/BancoIdeas/referencePopulation";
 import denomination from "../../models/BancoIdeas/denomination";
 import coordinates from "../../models/BancoIdeas/coordinates";
 import executionTime from "../../models/BancoIdeas/executionTime";
+import geografico from "../../models/integrations/geografico";
+const Sequelize = require('sequelize-oracle');
+
 
 export const postGeneralInformation = async (req: Request, res: Response) => {
     let transaction = await models.transaction();
@@ -39,6 +42,7 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
             informationModel.idStage = stageCreated.codigo;
         }
         //#endregion
+        informationModel.state = 'CREADA';
 
 
         //#region Correlative
@@ -131,7 +135,14 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
 export const getGeneralInformation = async (req: Request, res: Response) => {
     try {
 
+        let where: any = {}
+        
+        if (req.query) {
+            if (req.query.state) { where.state = req.query.state}
+        }
+
         const generalInformations = await generalInformation.findAll({
+            where,
             include: [
                 {
                     required: false,
@@ -158,65 +169,20 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
 
                     model: qualification
                 },
-                {
-                    required: false,
-                    model: ideaAlternative,
-                    include: [
-                        {
-                            required: false,
-                            model: preliminaryName
-                        },
-                        {
-                            required: false,
-                            model: responsibleEntity
-                        },
-                        {
-                            required: false,
-                            model: populationDelimitation,
-                            include: [
-                                {
-                                    required: false,
-                                    model: referencePopulation
-                                },
-                                {
-                                    required: false,
-                                    model: denomination
-                                },
-                            ]
-                        },
-                        {
-                            required: false,
-                            model: geographicArea,
-                            include: [
-                                {
-                                    required: false,
-                                    model: coordinates
-                                },
 
-                            ]
-                        },
-                        {
-                            required: false,
-
-                            model: projectDescription,
-                            include: [
-                                {
-                                    required: false,
-
-                                    model: executionTime
-                                },
-
-                            ]
-                        },
-                    ]
-                }
             ]
         });
 
+       
+
+        // let geograficos = await geografico.findAll()
+        // let geograficos: any[]= [] 
+        // await models.query('select * from SINIP.CG_GEOGRAFICO').spread((result: any) => { geograficos = result; console.log(result) })
+        // .catch((error: any) => console.log(error))
+        // ideaAlternatives
         res.status(201).json({
             msg: "Datos Obtenidos",
             generalInformations,
-            count: generalInformation.length
         });
     } catch (error) {
         res.status(500).json({

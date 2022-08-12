@@ -21,16 +21,7 @@ const possibleEffects_1 = __importDefault(require("../../models/BancoIdeas/possi
 const possibleCauses_1 = __importDefault(require("../../models/BancoIdeas/possibleCauses"));
 const possibleAlternatives_1 = __importDefault(require("../../models/BancoIdeas/possibleAlternatives"));
 const qualification_1 = __importDefault(require("../../models/BancoIdeas/qualification"));
-const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
-const preliminaryName_1 = __importDefault(require("../../models/BancoIdeas/preliminaryName"));
-const responsibleEntity_1 = __importDefault(require("../../models/BancoIdeas/responsibleEntity"));
-const populationDelimitation_1 = __importDefault(require("../../models/BancoIdeas/populationDelimitation"));
-const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geographicArea"));
-const projectDescription_1 = __importDefault(require("../../models/BancoIdeas/projectDescription"));
-const referencePopulation_1 = __importDefault(require("../../models/BancoIdeas/referencePopulation"));
-const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomination"));
-const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinates"));
-const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executionTime"));
+const Sequelize = require('sequelize-oracle');
 const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let transaction = yield connection_1.default.transaction();
     try {
@@ -51,6 +42,7 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
             informationModel.idStage = stageCreated.codigo;
         }
         //#endregion
+        informationModel.state = 'CREADA';
         //#region Correlative
         const correlative = yield generalInformation_1.default.max("correlation");
         if (correlative) {
@@ -131,7 +123,14 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
 exports.postGeneralInformation = postGeneralInformation;
 const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        let where = {};
+        if (req.query) {
+            if (req.query.state) {
+                where.state = req.query.state;
+            }
+        }
         const generalInformations = yield generalInformation_1.default.findAll({
+            where,
             include: [
                 {
                     required: false,
@@ -153,60 +152,16 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
                     required: false,
                     model: qualification_1.default
                 },
-                {
-                    required: false,
-                    model: ideaAlternative_1.default,
-                    include: [
-                        {
-                            required: false,
-                            model: preliminaryName_1.default
-                        },
-                        {
-                            required: false,
-                            model: responsibleEntity_1.default
-                        },
-                        {
-                            required: false,
-                            model: populationDelimitation_1.default,
-                            include: [
-                                {
-                                    required: false,
-                                    model: referencePopulation_1.default
-                                },
-                                {
-                                    required: false,
-                                    model: denomination_1.default
-                                },
-                            ]
-                        },
-                        {
-                            required: false,
-                            model: geographicArea_1.default,
-                            include: [
-                                {
-                                    required: false,
-                                    model: coordinates_1.default
-                                },
-                            ]
-                        },
-                        {
-                            required: false,
-                            model: projectDescription_1.default,
-                            include: [
-                                {
-                                    required: false,
-                                    model: executionTime_1.default
-                                },
-                            ]
-                        },
-                    ]
-                }
             ]
         });
+        // let geograficos = await geografico.findAll()
+        // let geograficos: any[]= [] 
+        // await models.query('select * from SINIP.CG_GEOGRAFICO').spread((result: any) => { geograficos = result; console.log(result) })
+        // .catch((error: any) => console.log(error))
+        // ideaAlternatives
         res.status(201).json({
             msg: "Datos Obtenidos",
             generalInformations,
-            count: generalInformation_1.default.length
         });
     }
     catch (error) {
