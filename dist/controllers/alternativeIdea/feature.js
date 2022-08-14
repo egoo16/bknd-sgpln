@@ -171,24 +171,10 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
     return __awaiter(this, void 0, void 0, function* () {
         try {
             popDemiliation.ideaAlternativeId = idAlternativa;
-            let refModel = yield referencePopulation_1.default.findOne();
-            if (refModel === null || refModel === void 0 ? void 0 : refModel.codigo) {
-                popDemiliation.referencePopulationId = refModel.codigo;
-            }
-            else {
-                let refCreate = { name: 'test' };
-                let refCreated = yield referencePopulation_1.default.create(refCreate);
-                popDemiliation.referencePopulationId = refCreated.codigo;
-            }
-            let DenModel = yield denomination_1.default.findOne();
-            if (DenModel === null || DenModel === void 0 ? void 0 : DenModel.codigo) {
-                popDemiliation.denominationId = DenModel.codigo;
-            }
-            else {
-                let DenCreate = { name: 'test' };
-                let DenCreated = yield denomination_1.default.create(DenCreate);
-                popDemiliation.denominationId = DenCreated.codigo;
-            }
+            let refModel = yield referencePopulation_1.default.findAll();
+            popDemiliation.referencePopulationId = refModel[0].codigo;
+            let DenModel = yield denomination_1.default.findAll();
+            popDemiliation.denominationId = DenModel[0].codigo;
             let populationDelimitationCreated = yield populationDelimitation_1.default.create(popDemiliation, { transaction });
             return { populationDelimitationCreated, message: `Delimitación preliminar ingresada correctamente` };
         }

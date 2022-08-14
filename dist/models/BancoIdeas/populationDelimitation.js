@@ -18,6 +18,7 @@ const populationDelimitation = connection_1.default.define("populationDelimitati
     referencePopulationId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     denominationId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     totalPopulation: { type: sequelize_oracle_1.default.INTEGER },
+    gender: { type: sequelize_oracle_1.default.STRING },
     estimateBeneficiaries: { type: sequelize_oracle_1.default.INTEGER },
     preliminaryCharacterization: { type: sequelize_oracle_1.default.STRING },
     coverage: { type: sequelize_oracle_1.default.INTEGER },

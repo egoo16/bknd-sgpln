@@ -18,16 +18,24 @@ const Sequelize = require('sequelize-oracle');
 const getGeograficos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let geograficos = [];
-        yield connection_1.default.query('select * from SINIP.CG_GEOGRAFICO').spread((result) => { geograficos = result; console.log(result); })
+        let data = [];
+        yield connection_1.default.query('select * from SINIP.CG_GEOGRAFICO').spread((result) => { geograficos = result; })
             .catch((error) => {
             res.status(500).json({
                 msg: "Error",
                 error,
             });
         });
+        geograficos.map((localidad) => {
+            if (localidad.SIGLA) {
+                let mncpio = geograficos.filter((geo) => geo.DEPTO == localidad.GEOGRAFICO);
+                localidad.municipios = mncpio;
+                data.push(localidad);
+            }
+        });
         res.status(200).json({
             msg: "Datos Obtenidos",
-            data: geograficos,
+            data,
         });
     }
     catch (error) {

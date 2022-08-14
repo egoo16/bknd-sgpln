@@ -17,6 +17,7 @@ const populationDelimitation = db.define(
         referencePopulationId: { type: Sequelize.UUID, allowNull: false },
         denominationId: { type: Sequelize.UUID, allowNull: false },
         totalPopulation: { type: Sequelize.INTEGER },
+        gender: { type: Sequelize.STRING },
         estimateBeneficiaries: { type: Sequelize.INTEGER },
         preliminaryCharacterization: { type: Sequelize.STRING },
         coverage: { type: Sequelize.INTEGER },

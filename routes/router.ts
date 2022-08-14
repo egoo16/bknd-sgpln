@@ -11,7 +11,7 @@ const router = Router();
 
 // Rutas
 router.use("/api/integrations/", integrations);
-router.use("/api/idea/", ideaAlternative);
+router.use("/api/alternative/", ideaAlternative);
 router.use("/api/general/", generalRouter);
 router.use("/api/login/", loginRouter);
 router.use("/api/usuarios/", usuarioRouter);

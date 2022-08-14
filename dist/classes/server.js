@@ -24,11 +24,15 @@ class Server {
     dbConnection() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                // await db.authenticate().then(() => {
                 yield connection_1.default.authenticate().then(() => {
                     // await db.sync({ force: true }).then(() => {
                     // await db.sync().then(() => {
                     console.log("Database online");
                 });
+                // await denomination.sync({force:true});
+                // await referencePopulation.sync({force:true});
+                // await populationDelimitation.sync({force:true});
             }
             catch (error) {
                 throw new Error("Error de conexion: " + error);

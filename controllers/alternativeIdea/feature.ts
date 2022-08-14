@@ -138,22 +138,12 @@ export async function FcresponsableEntity(resEntity: any, idAlternativa: number,
 export async function FcreatePopulationDemilitation(popDemiliation: any, idAlternativa: number, transaction: any) {
     try {
         popDemiliation.ideaAlternativeId = idAlternativa;
-        let refModel = await referencePopulation.findOne();
-        if (refModel?.codigo) {
-            popDemiliation.referencePopulationId = refModel.codigo;
-        } else {
-            let refCreate = { name: 'test' };
-            let refCreated = await referencePopulation.create(refCreate);
-            popDemiliation.referencePopulationId = refCreated.codigo;
-        }
-        let DenModel = await denomination.findOne();
-        if (DenModel?.codigo) {
-            popDemiliation.denominationId = DenModel.codigo;
-        } else {
-            let DenCreate = { name: 'test' };
-            let DenCreated = await denomination.create(DenCreate);
-            popDemiliation.denominationId = DenCreated.codigo;
-        }
+        let refModel = await referencePopulation.findAll();
+        popDemiliation.referencePopulationId = refModel[0].codigo;
+
+
+        let DenModel = await denomination.findAll();
+        popDemiliation.denominationId = DenModel[0].codigo;
 
 
         let populationDelimitationCreated = await populationDelimitation.create(popDemiliation, { transaction })

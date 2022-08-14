@@ -14,7 +14,7 @@ const usuarios_1 = __importDefault(require("./usuarios"));
 const router = (0, express_1.Router)();
 // Rutas
 router.use("/api/integrations/", integrations_1.default);
-router.use("/api/idea/", ideaAlternative_1.default);
+router.use("/api/alternative/", ideaAlternative_1.default);
 router.use("/api/general/", generalInformationRoute_1.default);
 router.use("/api/login/", login_1.default);
 router.use("/api/usuarios/", usuarios_1.default);

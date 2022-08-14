@@ -136,9 +136,15 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
     try {
 
         let where: any = {}
-        
+
         if (req.query) {
-            if (req.query.state) { where.state = req.query.state}
+            if (req.query.state) { where.state = req.query.state }
+            if (req.query.institucionId) { where.idEntity = req.query.institucionId }
+            if (req.query.fechaDesde && req.query.fechaHasta) {
+                where.createdAt = {
+                    [models.Op.between]: [req.query.fechaDesde, req.query.fechaHasta],
+                }
+            }
         }
 
         const generalInformations = await generalInformation.findAll({
@@ -173,13 +179,7 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
             ]
         });
 
-       
 
-        // let geograficos = await geografico.findAll()
-        // let geograficos: any[]= [] 
-        // await models.query('select * from SINIP.CG_GEOGRAFICO').spread((result: any) => { geograficos = result; console.log(result) })
-        // .catch((error: any) => console.log(error))
-        // ideaAlternatives
         res.status(201).json({
             msg: "Datos Obtenidos",
             generalInformations,

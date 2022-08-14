@@ -7,7 +7,8 @@ export const getGeograficos = async (req: Request, res: Response) => {
     try {
 
         let geograficos: any[] = []
-        await models.query('select * from SINIP.CG_GEOGRAFICO').spread((result: any) => { geograficos = result; console.log(result) })
+        let data: any[] = []
+        await models.query('select * from SINIP.CG_GEOGRAFICO').spread((result: any) => { geograficos = result; })
             .catch((error: any) => {
                 res.status(500).json({
                     msg: "Error",
@@ -15,9 +16,17 @@ export const getGeograficos = async (req: Request, res: Response) => {
                 });
             });
 
+        geograficos.map((localidad: any) => {
+            if (localidad.SIGLA) {
+                let mncpio: any[] = geograficos.filter((geo: any) => geo.DEPTO == localidad.GEOGRAFICO);
+                localidad.municipios = mncpio;
+                data.push(localidad);
+            }
+        })
+
         res.status(200).json({
             msg: "Datos Obtenidos",
-            data: geograficos,
+            data,
         });
     } catch (error) {
         res.status(500).json({
