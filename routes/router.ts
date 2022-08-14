@@ -4,11 +4,13 @@ import appRouter from "./app";
 import loginRouter from "./auth/login";
 import generalRouter from "./bancoIdeas/generalInformationRoute";
 import ideaAlternative from "./ideaAlternative/ideaAlternative";
+import integrations from "./integrations/integrations";
 import usuarioRouter from "./usuarios";
 
 const router = Router();
 
 // Rutas
+router.use("/api/integrations/", integrations);
 router.use("/api/idea/", ideaAlternative);
 router.use("/api/general/", generalRouter);
 router.use("/api/login/", loginRouter);

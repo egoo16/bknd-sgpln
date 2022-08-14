@@ -13,15 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getGeneralInformation = exports.postGeneralInformation = void 0;
-const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
 const connection_1 = __importDefault(require("../../db/connection"));
 const moment_1 = __importDefault(require("moment"));
+const Sequelize = require('sequelize-oracle');
+const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
 const stage_1 = __importDefault(require("../../models/BancoIdeas/stage"));
 const possibleEffects_1 = __importDefault(require("../../models/BancoIdeas/possibleEffects"));
 const possibleCauses_1 = __importDefault(require("../../models/BancoIdeas/possibleCauses"));
 const possibleAlternatives_1 = __importDefault(require("../../models/BancoIdeas/possibleAlternatives"));
 const qualification_1 = __importDefault(require("../../models/BancoIdeas/qualification"));
-const Sequelize = require('sequelize-oracle');
 const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let transaction = yield connection_1.default.transaction();
     try {

@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import generalInformation from "../../models/BancoIdeas/generalInformation";
 import models from "../../db/connection";
 import moment from "moment";
+const Sequelize = require('sequelize-oracle');
+import generalInformation from "../../models/BancoIdeas/generalInformation";
 import stage from "../../models/BancoIdeas/stage";
 import possibleEffects from "../../models/BancoIdeas/possibleEffects";
 import possibleCauses from "../../models/BancoIdeas/possibleCauses";
@@ -18,7 +19,6 @@ import denomination from "../../models/BancoIdeas/denomination";
 import coordinates from "../../models/BancoIdeas/coordinates";
 import executionTime from "../../models/BancoIdeas/executionTime";
 import geografico from "../../models/integrations/geografico";
-const Sequelize = require('sequelize-oracle');
 
 
 export const postGeneralInformation = async (req: Request, res: Response) => {
