@@ -9,7 +9,6 @@ const ideaAlternative_1 = __importDefault(require("./ideaAlternative"));
 const possibleAlternatives_1 = __importDefault(require("./possibleAlternatives"));
 const possibleCauses_1 = __importDefault(require("./possibleCauses"));
 const possibleEffects_1 = __importDefault(require("./possibleEffects"));
-const qualification_1 = __importDefault(require("./qualification"));
 const stage_1 = __importDefault(require("./stage"));
 const generalInformation = connection_1.default.define("generalInformation", {
     codigo: {
@@ -56,7 +55,6 @@ generalInformation.hasMany(possibleCauses_1.default, {
 generalInformation.hasMany(possibleAlternatives_1.default, {
     foreignKey: "generalInformationId",
 });
-generalInformation.hasOne(qualification_1.default, { foreignKey: "generalInformationId" });
 generalInformation.hasMany(ideaAlternative_1.default, { foreignKey: "sectionBIId" });
 generalInformation.belongsTo(stage_1.default, {
     foreignKey: "idStage",

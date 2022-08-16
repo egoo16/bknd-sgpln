@@ -21,7 +21,6 @@ const stage_1 = __importDefault(require("../../models/BancoIdeas/stage"));
 const possibleEffects_1 = __importDefault(require("../../models/BancoIdeas/possibleEffects"));
 const possibleCauses_1 = __importDefault(require("../../models/BancoIdeas/possibleCauses"));
 const possibleAlternatives_1 = __importDefault(require("../../models/BancoIdeas/possibleAlternatives"));
-const qualification_1 = __importDefault(require("../../models/BancoIdeas/qualification"));
 const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let transaction = yield connection_1.default.transaction();
     try {
@@ -155,10 +154,6 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 {
                     required: false,
                     model: stage_1.default
-                },
-                {
-                    required: false,
-                    model: qualification_1.default
                 },
             ]
         });

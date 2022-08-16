@@ -61,7 +61,6 @@ generalInformation.hasMany(possibleCauses, {
 generalInformation.hasMany(possibleAlternatives, {
   foreignKey: "generalInformationId",
 });
-generalInformation.hasOne(qualification, { foreignKey: "generalInformationId" });
 generalInformation.hasMany(ideaAlternative, { foreignKey: "sectionBIId" });
 
 generalInformation.belongsTo(stage, {

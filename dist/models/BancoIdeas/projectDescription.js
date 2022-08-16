@@ -16,7 +16,7 @@ const projectDescription = connection_1.default.define("projectDescription", {
     ideaAlternativeId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     projectType: { type: sequelize_oracle_1.default.STRING, allowNull: false },
     formulationProcess: { type: sequelize_oracle_1.default.STRING, allowNull: false },
-    descriptionFormultarionProcess: { type: sequelize_oracle_1.default.STRING },
+    formulationProcessDescription: { type: sequelize_oracle_1.default.STRING },
     descriptionInterventions: { type: sequelize_oracle_1.default.STRING },
     complexity: { type: sequelize_oracle_1.default.STRING, allowNull: false },
     estimatedCost: { type: sequelize_oracle_1.default.INTEGER },

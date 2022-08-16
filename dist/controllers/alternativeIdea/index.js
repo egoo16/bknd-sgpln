@@ -26,6 +26,7 @@ const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomina
 const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinates"));
 const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executionTime"));
 const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
+const qualification_1 = __importDefault(require("../../models/BancoIdeas/qualification"));
 /**
  * Funcion para  listar las configuraciones globales
  * @param {*} req
@@ -165,6 +166,10 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                             model: executionTime_1.default
                         },
                     ]
+                },
+                {
+                    required: false,
+                    model: qualification_1.default
                 },
             ]
         });

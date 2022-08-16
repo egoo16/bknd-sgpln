@@ -170,12 +170,6 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
 
                     model: stage
                 },
-                {
-                    required: false,
-
-                    model: qualification
-                },
-
             ]
         });
 

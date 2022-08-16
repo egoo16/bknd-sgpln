@@ -6,6 +6,7 @@ import geographicArea from "./geographicArea";
 import populationDelimitation from "./populationDelimitation";
 import preliminaryName from "./preliminaryName";
 import projectDescription from "./projectDescription";
+import qualification from "./qualification";
 import responsibleEntity from "./responsibleEntity";
 
 const ideaAlternative = db.define(
@@ -42,6 +43,7 @@ ideaAlternative.hasOne(geographicArea, {
 ideaAlternative.hasOne(projectDescription, {
     foreignKey: "ideaAlternativeId",
 });
+ideaAlternative.hasOne(qualification, { foreignKey: "ideaAlternativeId" });
 
 // ideaAlternative.belongsTo(generalInformation, {
 //     foreignKey: "sectionBIId",

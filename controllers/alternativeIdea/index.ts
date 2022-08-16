@@ -16,6 +16,7 @@ import denomination from "../../models/BancoIdeas/denomination";
 import coordinates from "../../models/BancoIdeas/coordinates";
 import executionTime from "../../models/BancoIdeas/executionTime";
 import generalInformation from "../../models/BancoIdeas/generalInformation";
+import qualification from "../../models/BancoIdeas/qualification";
 
 
 /**
@@ -155,6 +156,10 @@ export const getAlternative = async (req: Request, res: Response) => {
                             model: executionTime
                         },
                     ]
+                },
+                {
+                    required: false,
+                    model: qualification
                 },
 
             ]

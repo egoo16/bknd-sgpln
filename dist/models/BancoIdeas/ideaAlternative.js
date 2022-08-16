@@ -9,6 +9,7 @@ const geographicArea_1 = __importDefault(require("./geographicArea"));
 const populationDelimitation_1 = __importDefault(require("./populationDelimitation"));
 const preliminaryName_1 = __importDefault(require("./preliminaryName"));
 const projectDescription_1 = __importDefault(require("./projectDescription"));
+const qualification_1 = __importDefault(require("./qualification"));
 const responsibleEntity_1 = __importDefault(require("./responsibleEntity"));
 const ideaAlternative = connection_1.default.define("ideaAlternative", {
     codigo: {
@@ -38,6 +39,7 @@ ideaAlternative.hasOne(geographicArea_1.default, {
 ideaAlternative.hasOne(projectDescription_1.default, {
     foreignKey: "ideaAlternativeId",
 });
+ideaAlternative.hasOne(qualification_1.default, { foreignKey: "ideaAlternativeId" });
 // ideaAlternative.belongsTo(generalInformation, {
 //     foreignKey: "sectionBIId",
 //     sourceKey: "codigo",
