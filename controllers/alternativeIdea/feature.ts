@@ -13,8 +13,8 @@ import denomination from "../../models/BancoIdeas/denomination";
 
 export async function FgetPreinversion(idAlternativa: any) {
     try {
-        const proDes = await projectDescription.findOne({ where: { ideaAlternativeId: idAlternativa } })
-        const popDel = await populationDelimitation.findOne({ where: { ideaAlternativeId: idAlternativa } })
+        const proDes = await projectDescription.findOne({ where: { AlternativeId: idAlternativa } })
+        const popDel = await populationDelimitation.findOne({ where: { AlternativeId: idAlternativa } })
         let costo = proDes.estimatedCost
         let rangoInversion = 0
         let resRangoInversion = ''
@@ -115,7 +115,7 @@ export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: 
 }
 export async function FcreatePreleminaryName(prName: any, idAlternativa: number, transaction: any) {
     try {
-        prName.ideaAlternativeId = idAlternativa
+        prName.AlternativeId = idAlternativa
         let preliminaryNameCreated = await preliminaryName.create(prName, { transaction })
         return { preliminaryNameCreated, message: `Nombre preliminar ingresado correctamente` };
     } catch (error) {
@@ -126,7 +126,7 @@ export async function FcreatePreleminaryName(prName: any, idAlternativa: number,
 
 export async function FcresponsableEntity(resEntity: any, idAlternativa: number, transaction: any) {
     try {
-        resEntity.ideaAlternativeId = idAlternativa
+        resEntity.AlternativeId = idAlternativa
         let responsableEntityCreated = await responsableEntity.create(resEntity, { transaction })
         return { responsableEntityCreated, message: `Entidad responsable ingresada correctamente` };
     } catch (error) {
@@ -137,7 +137,7 @@ export async function FcresponsableEntity(resEntity: any, idAlternativa: number,
 
 export async function FcreatePopulationDemilitation(popDemiliation: any, idAlternativa: number, transaction: any) {
     try {
-        popDemiliation.ideaAlternativeId = idAlternativa;
+        popDemiliation.AlternativeId = idAlternativa;
         let refModel = await referencePopulation.findAll();
         popDemiliation.referencePopulationId = refModel[0].codigo;
 
@@ -156,7 +156,7 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
 
 export async function FcreateProjectDescription(proDescription: any, idAlternativa: number, transaction: any) {
     try {
-        proDescription.ideaAlternativeId = idAlternativa
+        proDescription.AlternativeId = idAlternativa
         let proDesctiptionCreated = await projectDescription.create(proDescription, { transaction })
         proDescription.executionTime.projectDescriptionId = proDesctiptionCreated.codigo
         await executionTime.create(proDescription.executionTime, { transaction })
@@ -170,7 +170,7 @@ export async function FcreateProjectDescription(proDescription: any, idAlternati
 
 export async function FcreateGeographicArea(geograpicArea: any, idAlternativa: number, transaction: any) {
     try {
-        geograpicArea.ideaAlternativeId = idAlternativa
+        geograpicArea.AlternativeId = idAlternativa
         let geographicAreaCreated = await geographicArea.create(geograpicArea, { transaction })
         for (let coordinate of geograpicArea.coordinates) {
             coordinate.geographicAreaId = geographicAreaCreated.codigo
