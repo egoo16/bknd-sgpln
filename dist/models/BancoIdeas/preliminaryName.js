@@ -12,7 +12,7 @@ const preliminaryName = connection_1.default.define("preName", {
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    AlternativeId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
+    AlterId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     typeProject: { type: sequelize_oracle_1.default.STRING },
     proccess: { type: sequelize_oracle_1.default.STRING },
     object: { type: sequelize_oracle_1.default.STRING },

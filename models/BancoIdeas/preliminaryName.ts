@@ -12,7 +12,7 @@ const preliminaryName = db.define(
             allowNull: false,
             defaultValue: Sequelize.UUIDV4,
         },
-        AlternativeId: { type: Sequelize.UUID, allowNull: false },
+        AlterId: { type: Sequelize.UUID, allowNull: false },
         typeProject: { type: Sequelize.STRING },
         proccess: { type: Sequelize.STRING },
         object: { type: Sequelize.STRING },

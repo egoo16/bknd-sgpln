@@ -26,21 +26,21 @@ const ideaAlternative = connection_1.default.define("Alternative", {
     freezeTableName: true,
 });
 ideaAlternative.hasOne(preliminaryName_1.default, {
-    foreignKey: "AlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(responsibleEntity_1.default, {
-    foreignKey: "AlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(populationDelimitation_1.default, {
-    foreignKey: "AlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(geographicArea_1.default, {
-    foreignKey: "AlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(projectDescription_1.default, {
-    foreignKey: "AlternativeId",
+    foreignKey: "AlterId",
 });
-ideaAlternative.hasOne(qualification_1.default, { foreignKey: "AlternativeId" });
+ideaAlternative.hasOne(qualification_1.default, { foreignKey: "AlterId" });
 // ideaAlternative.belongsTo(generalInformation, {
 //     foreignKey: "sectionBIId",
 //     sourceKey: "codigo",

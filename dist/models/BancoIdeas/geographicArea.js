@@ -13,7 +13,7 @@ const geographicArea = connection_1.default.define("geoArea", {
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    AlternativeId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
+    AlterId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     availableTerrain: { type: sequelize_oracle_1.default.BOOLEAN },
     oneAvailableTerrain: { type: sequelize_oracle_1.default.BOOLEAN },
     investPurchase: { type: sequelize_oracle_1.default.BOOLEAN },

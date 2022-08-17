@@ -26,8 +26,8 @@ const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomina
 function FgetPreinversion(idAlternativa) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const proDes = yield projectDescription_1.default.findOne({ where: { AlternativeId: idAlternativa } });
-            const popDel = yield populationDelimitation_1.default.findOne({ where: { AlternativeId: idAlternativa } });
+            const proDes = yield projectDescription_1.default.findOne({ where: { AlterId: idAlternativa } });
+            const popDel = yield populationDelimitation_1.default.findOne({ where: { AlterId: idAlternativa } });
             let costo = proDes.estimatedCost;
             let rangoInversion = 0;
             let resRangoInversion = '';
@@ -142,7 +142,7 @@ exports.FcreateIdeaAlternativeComplete = FcreateIdeaAlternativeComplete;
 function FcreatePreleminaryName(prName, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            prName.AlternativeId = idAlternativa;
+            prName.AlterId = idAlternativa;
             let preliminaryNameCreated = yield preliminaryName_1.default.create(prName, { transaction });
             return { preliminaryNameCreated, message: `Nombre preliminar ingresado correctamente` };
         }
@@ -156,7 +156,7 @@ exports.FcreatePreleminaryName = FcreatePreleminaryName;
 function FcresponsableEntity(resEntity, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            resEntity.AlternativeId = idAlternativa;
+            resEntity.AlterId = idAlternativa;
             let responsableEntityCreated = yield responsibleEntity_1.default.create(resEntity, { transaction });
             return { responsableEntityCreated, message: `Entidad responsable ingresada correctamente` };
         }
@@ -170,7 +170,7 @@ exports.FcresponsableEntity = FcresponsableEntity;
 function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            popDemiliation.AlternativeId = idAlternativa;
+            popDemiliation.AlterId = idAlternativa;
             let refModel = yield referencePopulation_1.default.findAll();
             popDemiliation.refPopId = refModel[0].codigo;
             let DenModel = yield denomination_1.default.findAll();
@@ -188,7 +188,7 @@ exports.FcreatePopulationDemilitation = FcreatePopulationDemilitation;
 function FcreateProjectDescription(proDescription, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            proDescription.AlternativeId = idAlternativa;
+            proDescription.AlterId = idAlternativa;
             let proDesctiptionCreated = yield projectDescription_1.default.create(proDescription, { transaction });
             proDescription.executionTime.projDescId = proDesctiptionCreated.codigo;
             yield executionTime_1.default.create(proDescription.executionTime, { transaction });
@@ -204,7 +204,7 @@ exports.FcreateProjectDescription = FcreateProjectDescription;
 function FcreateGeographicArea(geograpicArea, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            geograpicArea.AlternativeId = idAlternativa;
+            geograpicArea.AlterId = idAlternativa;
             let geographicAreaCreated = yield geographicArea_1.default.create(geograpicArea, { transaction });
             for (let coordinate of geograpicArea.coordinates) {
                 coordinate.geoAreaId = geographicAreaCreated.codigo;

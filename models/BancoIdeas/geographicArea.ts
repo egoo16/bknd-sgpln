@@ -12,7 +12,7 @@ const geographicArea = db.define(
       allowNull: false,
       defaultValue: Sequelize.UUIDV4,
     },
-        AlternativeId: { type: Sequelize.UUID, allowNull: false },
+    AlterId: { type: Sequelize.UUID, allowNull: false },
         availableTerrain: { type: Sequelize.BOOLEAN },
         oneAvailableTerrain: { type: Sequelize.BOOLEAN },
         investPurchase: { type: Sequelize.BOOLEAN },

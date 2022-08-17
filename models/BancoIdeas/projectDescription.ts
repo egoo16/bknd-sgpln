@@ -12,7 +12,7 @@ const projectDescription = db.define(
       allowNull: false,
       defaultValue: Sequelize.UUIDV4,
     },
-        AlternativeId: { type: Sequelize.UUID, allowNull: false },
+    AlterId: { type: Sequelize.UUID, allowNull: false },
         projectType: { type: Sequelize.STRING, allowNull: false },
         formulationProcess: { type: Sequelize.STRING, allowNull: false },
         formulationProcessDescription: { type: Sequelize.STRING },

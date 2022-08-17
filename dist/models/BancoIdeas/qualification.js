@@ -12,7 +12,7 @@ const qualification = connection_1.default.define("qualification", {
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    AlternativeId: { type: sequelize_oracle_1.default.UUID, required: true },
+    AlterId: { type: sequelize_oracle_1.default.UUID, required: true },
     descriptionProblem: { type: sequelize_oracle_1.default.INTEGER },
     generalObjective: { type: sequelize_oracle_1.default.INTEGER },
     analysisDelimitation: { type: sequelize_oracle_1.default.INTEGER },

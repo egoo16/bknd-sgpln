@@ -13,7 +13,7 @@ const projectDescription = connection_1.default.define("projDesc", {
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    AlternativeId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
+    AlterId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     projectType: { type: sequelize_oracle_1.default.STRING, allowNull: false },
     formulationProcess: { type: sequelize_oracle_1.default.STRING, allowNull: false },
     formulationProcessDescription: { type: sequelize_oracle_1.default.STRING },

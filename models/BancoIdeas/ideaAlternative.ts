@@ -30,21 +30,21 @@ const ideaAlternative = db.define(
 );
 
 ideaAlternative.hasOne(preliminaryName, {
-    foreignKey: "AlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(responsibleEntity, {
-    foreignKey: "AlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(populationDelimitation, {
-    foreignKey: "AlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(geographicArea, {
-    foreignKey: "AlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(projectDescription, {
-    foreignKey: "AlternativeId",
+    foreignKey: "AlterId",
 });
-ideaAlternative.hasOne(qualification, { foreignKey: "AlternativeId" });
+ideaAlternative.hasOne(qualification, { foreignKey: "AlterId" });
 
 // ideaAlternative.belongsTo(generalInformation, {
 //     foreignKey: "sectionBIId",

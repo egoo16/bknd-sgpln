@@ -14,7 +14,7 @@ const populationDelimitation = connection_1.default.define("popDelimit", {
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    AlternativeId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
+    AlterId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     refPopId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     denominationId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     totalPopulation: { type: sequelize_oracle_1.default.INTEGER },
