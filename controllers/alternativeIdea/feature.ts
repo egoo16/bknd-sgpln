@@ -101,7 +101,7 @@ export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: 
     try {
         let ideaAlternativeCreated = await ideaAlternative.create(ideaAlt, { transaction })
         let codigoAlternativa = ideaAlternativeCreated.codigo
-        await FcreatePreleminaryName(ideaAlt.preliminaryName, codigoAlternativa, transaction)
+        await FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction)
         await FcresponsableEntity(ideaAlt.responsibleEntity, codigoAlternativa, transaction)
         await FcreatePopulationDemilitation(ideaAlt.populationDelimitation, codigoAlternativa, transaction)
         await FcreateGeographicArea(ideaAlt.geographicArea, codigoAlternativa, transaction)

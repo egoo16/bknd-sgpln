@@ -125,7 +125,7 @@ function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
         try {
             let ideaAlternativeCreated = yield ideaAlternative_1.default.create(ideaAlt, { transaction });
             let codigoAlternativa = ideaAlternativeCreated.codigo;
-            yield FcreatePreleminaryName(ideaAlt.preliminaryName, codigoAlternativa, transaction);
+            yield FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction);
             yield FcresponsableEntity(ideaAlt.responsibleEntity, codigoAlternativa, transaction);
             yield FcreatePopulationDemilitation(ideaAlt.populationDelimitation, codigoAlternativa, transaction);
             yield FcreateGeographicArea(ideaAlt.geographicArea, codigoAlternativa, transaction);
