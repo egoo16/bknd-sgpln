@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
-const responsibleEntity = connection_1.default.define("responsibleEntity", {
+const responsibleEntity = connection_1.default.define("resEntity", {
     codigo: {
         type: sequelize_oracle_1.default.UUID,
         primaryKey: true,
