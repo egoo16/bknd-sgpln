@@ -6,11 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
 const ideaAlternative_1 = __importDefault(require("./ideaAlternative"));
-const possibleAlternatives_1 = __importDefault(require("./possibleAlternatives"));
 const possibleCauses_1 = __importDefault(require("./possibleCauses"));
 const possibleEffects_1 = __importDefault(require("./possibleEffects"));
 const stage_1 = __importDefault(require("./stage"));
-const generalInformation = connection_1.default.define("generalInformation", {
+const possibleAlternatives_1 = __importDefault(require("./possibleAlternatives"));
+const generalInformation = connection_1.default.define("Information", {
     codigo: {
         type: sequelize_oracle_1.default.INTEGER,
         autoIncrement: true,

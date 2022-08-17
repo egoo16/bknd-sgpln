@@ -6,7 +6,7 @@ import generalInformation from "../../models/BancoIdeas/generalInformation";
 import stage from "../../models/BancoIdeas/stage";
 import possibleEffects from "../../models/BancoIdeas/possibleEffects";
 import possibleCauses from "../../models/BancoIdeas/possibleCauses";
-import possibleAlter from "../../models/BancoIdeas/possibleAlternatives";
+import possibleAlternatives from "../../models/BancoIdeas/possibleAlternatives";
 
 
 
@@ -96,7 +96,7 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
         if (alternatives?.length > 0) {
             let resAlternatives = await Promise.all(alternatives.map(async (alternative: any) => {
                 alternative.generalInformationId = informationIsert.codigo;
-                let res = await possibleAlter.create(alternative, {
+                let res = await possibleAlternatives.create(alternative, {
                     transaction,
                 });
                 return res;
@@ -152,7 +152,7 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
                 {
                     required: false,
 
-                    model: possibleAlter
+                    model: possibleAlternatives
                 },
                 {
                     required: false,

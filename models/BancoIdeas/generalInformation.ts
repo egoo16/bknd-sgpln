@@ -2,14 +2,14 @@ import Sequelize from "sequelize-oracle";
 
 import db from "../../db/connection";
 import ideaAlternative from "./ideaAlternative";
-import possibleAlter from "./possibleAlternatives";
 import possibleCauses from "./possibleCauses";
 import possibleEffects from "./possibleEffects";
 import qualification from "./qualification";
 import stage from "./stage";
+import possibleAlternatives from "./possibleAlternatives";
 
 const generalInformation = db.define(
-    "generalInformation",
+    "Information",
     {
         codigo: {
             type: Sequelize.INTEGER,
@@ -57,7 +57,7 @@ generalInformation.hasMany(possibleEffects, {
 generalInformation.hasMany(possibleCauses, {
     foreignKey: "InformationId",
 });
-generalInformation.hasMany(possibleAlter, {
+generalInformation.hasMany(possibleAlternatives, {
     foreignKey: "InformationId",
 });
 generalInformation.hasMany(ideaAlternative, { foreignKey: "sectionBIId" });
