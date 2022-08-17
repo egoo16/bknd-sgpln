@@ -11,7 +11,7 @@ const possibleCauses = db.define(
             primaryKey: true
         },
     description: { type: Sequelize.STRING, required: true, allowNull: false },
-    generalInformationId: { type: Sequelize.INTEGER, required: true },
+    InformationId: { type: Sequelize.INTEGER, required: true },
   },
   {
     underscoded: true,

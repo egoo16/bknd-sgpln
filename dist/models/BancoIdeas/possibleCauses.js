@@ -12,7 +12,7 @@ const possibleCauses = connection_1.default.define("possibleCauses", {
         primaryKey: true
     },
     description: { type: sequelize_oracle_1.default.STRING, required: true, allowNull: false },
-    generalInformationId: { type: sequelize_oracle_1.default.INTEGER, required: true },
+    InformationId: { type: sequelize_oracle_1.default.INTEGER, required: true },
 }, {
     underscoded: true,
     paranoid: true,
