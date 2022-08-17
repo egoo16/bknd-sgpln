@@ -143,20 +143,20 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
                     required: false,
 
                     model: possibleEffects,
-                    as: 'possibleEffects'
+                    // as: 'possibleEffects'
                 },
                 {
                     required: false,
 
                     model: possibleCauses,
-                    as: 'possibleCauses'
+                    // as: 'possibleCauses'
 
                 },
                 {
                     required: false,
 
                     model: possibleAlternatives,
-                    as: 'possibleAlternatives'
+                    // as: 'possibleAlternatives'
 
                 },
                 {

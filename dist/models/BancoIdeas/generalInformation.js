@@ -49,15 +49,15 @@ const generalInformation = connection_1.default.define("Information", {
 });
 generalInformation.hasMany(possibleEffects_1.default, {
     foreignKey: "InformationId",
-    as: 'possibleEffects'
+    // as: 'possibleEffects'
 });
 generalInformation.hasMany(possibleCauses_1.default, {
     foreignKey: "InformationId",
-    as: 'possibleCauses'
+    // as: 'possibleCauses'
 });
 generalInformation.hasMany(possibleAlternatives_1.default, {
     foreignKey: "InformationId",
-    as: 'possibleAlternatives'
+    // as: 'possibleAlternatives'
 });
 generalInformation.hasMany(ideaAlternative_1.default, { foreignKey: "sectionBIId" });
 generalInformation.belongsTo(stage_1.default, {

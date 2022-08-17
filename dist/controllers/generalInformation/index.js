@@ -142,17 +142,17 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 {
                     required: false,
                     model: possibleEffects_1.default,
-                    as: 'possibleEffects'
+                    // as: 'possibleEffects'
                 },
                 {
                     required: false,
                     model: possibleCauses_1.default,
-                    as: 'possibleCauses'
+                    // as: 'possibleCauses'
                 },
                 {
                     required: false,
                     model: possibleAlternatives_1.default,
-                    as: 'possibleAlternatives'
+                    // as: 'possibleAlternatives'
                 },
                 {
                     required: false,

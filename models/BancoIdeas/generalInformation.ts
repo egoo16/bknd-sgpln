@@ -55,15 +55,15 @@ const generalInformation = db.define(
 
 generalInformation.hasMany(possibleEffects, {
     foreignKey: "InformationId",
-    as: 'possibleEffects'
+    // as: 'possibleEffects'
 });
 generalInformation.hasMany(possibleCauses, {
     foreignKey: "InformationId",
-    as: 'possibleCauses'
+    // as: 'possibleCauses'
 });
 generalInformation.hasMany(possibleAlternatives, {
     foreignKey: "InformationId",
-    as: 'possibleAlternatives'
+    // as: 'possibleAlternatives'
 });
 generalInformation.hasMany(ideaAlternative, { foreignKey: "sectionBIId" });
 
