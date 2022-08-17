@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
 const executionTime_1 = __importDefault(require("./executionTime"));
-const projectDescription = connection_1.default.define("projectDescription", {
+const projectDescription = connection_1.default.define("projDesc", {
     codigo: {
         type: sequelize_oracle_1.default.UUID,
         primaryKey: true,
@@ -29,7 +29,7 @@ const projectDescription = connection_1.default.define("projectDescription", {
     freezeTableName: true,
 });
 projectDescription.hasOne(executionTime_1.default, {
-    foreignKey: "projectDescriptionId",
+    foreignKey: "projDescId",
 });
 exports.default = projectDescription;
 //# sourceMappingURL=projectDescription.js.map

@@ -4,7 +4,7 @@ import db from "../../db/connection";
 import executionTime from "./executionTime";
 
 const projectDescription = db.define(
-    "projectDescription",
+    "projDesc",
     {
     codigo: {
       type: Sequelize.UUID,
@@ -31,6 +31,6 @@ const projectDescription = db.define(
 );
 
 projectDescription.hasOne(executionTime, {
-    foreignKey: "projectDescriptionId",
+    foreignKey: "projDescId",
 });
 export default projectDescription;

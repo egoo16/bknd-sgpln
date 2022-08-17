@@ -12,7 +12,7 @@ const executionTime = connection_1.default.define("executionTime", {
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    projectDescriptionId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
+    projDescId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     tentativeTermMonth: { type: sequelize_oracle_1.default.STRING },
     tentativeTermYear: { type: sequelize_oracle_1.default.STRING },
     executionDateMonth: { type: sequelize_oracle_1.default.STRING },

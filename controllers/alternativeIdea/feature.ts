@@ -105,7 +105,7 @@ export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: 
         await FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction)
         await FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction)
         await FcreateGeographicArea(ideaAlt.geoArea, codigoAlternativa, transaction)
-        await FcreateProjectDescription(ideaAlt.projectDescription, codigoAlternativa, transaction)
+        await FcreateProjectDescription(ideaAlt.projDesc, codigoAlternativa, transaction)
 
         return { message: `Idea alternativa creada correctamente` };
     } catch (error) {
@@ -158,7 +158,7 @@ export async function FcreateProjectDescription(proDescription: any, idAlternati
     try {
         proDescription.AlternativeId = idAlternativa
         let proDesctiptionCreated = await projectDescription.create(proDescription, { transaction })
-        proDescription.executionTime.projectDescriptionId = proDesctiptionCreated.codigo
+        proDescription.executionTime.projDescId = proDesctiptionCreated.codigo
         await executionTime.create(proDescription.executionTime, { transaction })
 
         return { proDesctiptionCreated, message: `Descripción preliminar de la idea proyecto ingresada correctamente` };

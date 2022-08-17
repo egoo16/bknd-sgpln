@@ -129,7 +129,7 @@ function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
             yield FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction);
             yield FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction);
             yield FcreateGeographicArea(ideaAlt.geoArea, codigoAlternativa, transaction);
-            yield FcreateProjectDescription(ideaAlt.projectDescription, codigoAlternativa, transaction);
+            yield FcreateProjectDescription(ideaAlt.projDesc, codigoAlternativa, transaction);
             return { message: `Idea alternativa creada correctamente` };
         }
         catch (error) {
@@ -190,7 +190,7 @@ function FcreateProjectDescription(proDescription, idAlternativa, transaction) {
         try {
             proDescription.AlternativeId = idAlternativa;
             let proDesctiptionCreated = yield projectDescription_1.default.create(proDescription, { transaction });
-            proDescription.executionTime.projectDescriptionId = proDesctiptionCreated.codigo;
+            proDescription.executionTime.projDescId = proDesctiptionCreated.codigo;
             yield executionTime_1.default.create(proDescription.executionTime, { transaction });
             return { proDesctiptionCreated, message: `Descripción preliminar de la idea proyecto ingresada correctamente` };
         }

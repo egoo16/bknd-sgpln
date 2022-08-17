@@ -256,10 +256,10 @@ export const getPertinencia = async (req: Request, res: Response) => {
         };
 
         let criterio6 = {
-            projectType: alternative.projectDescription.projectType,
-            formulationProcess: alternative.projectDescription.formulationProcess,
-            descriptionInterventions: alternative.projectDescription.descriptionInterventions,
-            complexity: alternative.projectDescription.complexity,
+            projectType: alternative.projDesc.projectType,
+            formulationProcess: alternative.projDesc.formulationProcess,
+            descriptionInterventions: alternative.projDesc.descriptionInterventions,
+            complexity: alternative.projDesc.complexity,
 
         };
 

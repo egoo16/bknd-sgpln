@@ -11,7 +11,7 @@ const executionTime = db.define(
       allowNull: false,
       defaultValue: Sequelize.UUIDV4,
     },
-        projectDescriptionId: { type: Sequelize.UUID, allowNull: false },   
+        projDescId: { type: Sequelize.UUID, allowNull: false },   
         tentativeTermMonth: { type: Sequelize.STRING },
         tentativeTermYear: { type: Sequelize.STRING },
         executionDateMonth: { type: Sequelize.STRING },
