@@ -7,11 +7,12 @@ const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
 const responsibleEntity = connection_1.default.define("responsibleEntity", {
     codigo: {
-        type: sequelize_oracle_1.default.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+        type: sequelize_oracle_1.default.UUID,
+        primaryKey: true,
+        allowNull: false,
+        defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    ideaAlternativeId: { type: sequelize_oracle_1.default.INTEGER, allowNull: false },
+    ideaAlternativeId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     nameEPI: { type: sequelize_oracle_1.default.STRING },
     leaderName: { type: sequelize_oracle_1.default.STRING },
     email: { type: sequelize_oracle_1.default.STRING },

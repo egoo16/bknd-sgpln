@@ -13,11 +13,12 @@ const qualification_1 = __importDefault(require("./qualification"));
 const responsibleEntity_1 = __importDefault(require("./responsibleEntity"));
 const ideaAlternative = connection_1.default.define("ideaAlternative", {
     codigo: {
-        type: sequelize_oracle_1.default.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+        type: sequelize_oracle_1.default.UUID,
+        primaryKey: true,
+        allowNull: false,
+        defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    sectionBIId: { type: sequelize_oracle_1.default.INTEGER, allowNull: false },
+    sectionBIId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     state: { type: sequelize_oracle_1.default.BOOLEAN },
 }, {
     underscoded: true,

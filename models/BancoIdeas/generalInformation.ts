@@ -11,12 +11,13 @@ import possibleAlternatives from "./possibleAlternatives";
 const generalInformation = db.define(
     "Information",
     {
-        codigo: {
-            type: Sequelize.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
-        },
-        idStage: { type: Sequelize.INTEGER, required: true },
+    codigo: {
+      type: Sequelize.UUID,
+      primaryKey: true,
+      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
+    },
+        idStage: { type: Sequelize.UUID, required: true },
         productId: { type: Sequelize.STRING },
         productName: { type: Sequelize.STRING },
         date: { type: Sequelize.DATE },
@@ -54,12 +55,15 @@ const generalInformation = db.define(
 
 generalInformation.hasMany(possibleEffects, {
     foreignKey: "InformationId",
+    as: 'possibleEffects'
 });
 generalInformation.hasMany(possibleCauses, {
     foreignKey: "InformationId",
+    as: 'possibleCauses'
 });
 generalInformation.hasMany(possibleAlternatives, {
     foreignKey: "InformationId",
+    as: 'possibleAlternatives'
 });
 generalInformation.hasMany(ideaAlternative, { foreignKey: "sectionBIId" });
 

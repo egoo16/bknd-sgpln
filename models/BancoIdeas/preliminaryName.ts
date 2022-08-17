@@ -6,12 +6,13 @@ import ideaAlternative from "./ideaAlternative";
 const preliminaryName = db.define(
     "preliminaryName",
     {
-        codigo: {
-            type: Sequelize.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
-        },
-        ideaAlternativeId: { type: Sequelize.INTEGER, allowNull: false },
+    codigo: {
+      type: Sequelize.UUID,
+      primaryKey: true,
+      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
+    },
+        ideaAlternativeId: { type: Sequelize.UUID, allowNull: false },
         typeProject: { type: Sequelize.STRING },
         proccess: { type: Sequelize.STRING },
         object: { type: Sequelize.STRING },

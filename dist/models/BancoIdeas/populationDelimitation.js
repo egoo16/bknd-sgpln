@@ -9,13 +9,14 @@ const denomination_1 = __importDefault(require("./denomination"));
 const referencePopulation_1 = __importDefault(require("./referencePopulation"));
 const populationDelimitation = connection_1.default.define("populationDelimitation", {
     codigo: {
-        type: sequelize_oracle_1.default.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+        type: sequelize_oracle_1.default.UUID,
+        primaryKey: true,
+        allowNull: false,
+        defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    ideaAlternativeId: { type: sequelize_oracle_1.default.INTEGER, allowNull: false },
-    referencePopulationId: { type: sequelize_oracle_1.default.INTEGER, allowNull: false },
-    denominationId: { type: sequelize_oracle_1.default.INTEGER, allowNull: false },
+    ideaAlternativeId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
+    referencePopulationId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
+    denominationId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     totalPopulation: { type: sequelize_oracle_1.default.INTEGER },
     gender: { type: sequelize_oracle_1.default.STRING },
     estimateBeneficiaries: { type: sequelize_oracle_1.default.INTEGER },

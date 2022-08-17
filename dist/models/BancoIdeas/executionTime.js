@@ -7,11 +7,12 @@ const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
 const executionTime = connection_1.default.define("executionTime", {
     codigo: {
-        type: sequelize_oracle_1.default.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+        type: sequelize_oracle_1.default.UUID,
+        primaryKey: true,
+        allowNull: false,
+        defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    projectDescriptionId: { type: sequelize_oracle_1.default.INTEGER, allowNull: false },
+    projectDescriptionId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     tentativeTermMonth: { type: sequelize_oracle_1.default.STRING },
     tentativeTermYear: { type: sequelize_oracle_1.default.STRING },
     executionDateMonth: { type: sequelize_oracle_1.default.STRING },

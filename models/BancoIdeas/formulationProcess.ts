@@ -5,11 +5,12 @@ import db from "../../db/connection";
 const formulationProcess = db.define(
     "formulationProcess",
     {
-        codigo: {
-            type: Sequelize.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
-        },
+    codigo: {
+      type: Sequelize.UUID,
+      primaryKey: true,
+      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
+    },
         name: { type: Sequelize.STRING },
 
     },

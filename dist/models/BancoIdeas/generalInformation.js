@@ -12,11 +12,12 @@ const stage_1 = __importDefault(require("./stage"));
 const possibleAlternatives_1 = __importDefault(require("./possibleAlternatives"));
 const generalInformation = connection_1.default.define("Information", {
     codigo: {
-        type: sequelize_oracle_1.default.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+        type: sequelize_oracle_1.default.UUID,
+        primaryKey: true,
+        allowNull: false,
+        defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    idStage: { type: sequelize_oracle_1.default.INTEGER, required: true },
+    idStage: { type: sequelize_oracle_1.default.UUID, required: true },
     productId: { type: sequelize_oracle_1.default.STRING },
     productName: { type: sequelize_oracle_1.default.STRING },
     date: { type: sequelize_oracle_1.default.DATE },
@@ -48,12 +49,15 @@ const generalInformation = connection_1.default.define("Information", {
 });
 generalInformation.hasMany(possibleEffects_1.default, {
     foreignKey: "InformationId",
+    as: 'possibleEffects'
 });
 generalInformation.hasMany(possibleCauses_1.default, {
     foreignKey: "InformationId",
+    as: 'possibleCauses'
 });
 generalInformation.hasMany(possibleAlternatives_1.default, {
     foreignKey: "InformationId",
+    as: 'possibleAlternatives'
 });
 generalInformation.hasMany(ideaAlternative_1.default, { foreignKey: "sectionBIId" });
 generalInformation.belongsTo(stage_1.default, {
