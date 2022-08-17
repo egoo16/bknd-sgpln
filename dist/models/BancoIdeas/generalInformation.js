@@ -46,13 +46,13 @@ const generalInformation = connection_1.default.define("generalInformation", {
     paranoid: true,
 });
 generalInformation.hasMany(possibleEffects_1.default, {
-    foreignKey: "generalInformationId",
+    foreignKey: "InformationId",
 });
 generalInformation.hasMany(possibleCauses_1.default, {
-    foreignKey: "generalInformationId",
+    foreignKey: "InformationId",
 });
 generalInformation.hasMany(possibleAlternatives_1.default, {
-    foreignKey: "generalInformationId",
+    foreignKey: "InformationId",
 });
 generalInformation.hasMany(ideaAlternative_1.default, { foreignKey: "sectionBIId" });
 generalInformation.belongsTo(stage_1.default, {
