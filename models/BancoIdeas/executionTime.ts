@@ -3,7 +3,7 @@ import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
 
 const executionTime = db.define(
-    "executionTime",
+    "execTime",
     {
     codigo: {
       type: Sequelize.UUID,

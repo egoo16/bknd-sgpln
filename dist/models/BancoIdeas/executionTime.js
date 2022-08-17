@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
-const executionTime = connection_1.default.define("executionTime", {
+const executionTime = connection_1.default.define("execTime", {
     codigo: {
         type: sequelize_oracle_1.default.UUID,
         primaryKey: true,

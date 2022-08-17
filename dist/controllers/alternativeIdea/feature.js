@@ -191,7 +191,7 @@ function FcreateProjectDescription(proDescription, idAlternativa, transaction) {
             proDescription.AlterId = idAlternativa;
             let proDesctiptionCreated = yield projectDescription_1.default.create(proDescription, { transaction });
             proDescription.executionTime.projDescId = proDesctiptionCreated.codigo;
-            yield executionTime_1.default.create(proDescription.executionTime, { transaction });
+            yield executionTime_1.default.create(proDescription.execTime, { transaction });
             return { proDesctiptionCreated, message: `Descripción preliminar de la idea proyecto ingresada correctamente` };
         }
         catch (error) {

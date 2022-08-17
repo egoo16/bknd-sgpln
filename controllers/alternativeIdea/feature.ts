@@ -159,7 +159,7 @@ export async function FcreateProjectDescription(proDescription: any, idAlternati
         proDescription.AlterId = idAlternativa
         let proDesctiptionCreated = await projectDescription.create(proDescription, { transaction })
         proDescription.executionTime.projDescId = proDesctiptionCreated.codigo
-        await executionTime.create(proDescription.executionTime, { transaction })
+        await executionTime.create(proDescription.execTime, { transaction })
 
         return { proDesctiptionCreated, message: `Descripción preliminar de la idea proyecto ingresada correctamente` };
     } catch (error) {
