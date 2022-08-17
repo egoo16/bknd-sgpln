@@ -172,7 +172,7 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
         try {
             popDemiliation.AlternativeId = idAlternativa;
             let refModel = yield referencePopulation_1.default.findAll();
-            popDemiliation.referencePopulationId = refModel[0].codigo;
+            popDemiliation.refPopId = refModel[0].codigo;
             let DenModel = yield denomination_1.default.findAll();
             popDemiliation.denominationId = DenModel[0].codigo;
             let populationDelimitationCreated = yield populationDelimitation_1.default.create(popDemiliation, { transaction });

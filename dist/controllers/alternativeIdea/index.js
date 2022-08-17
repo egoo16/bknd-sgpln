@@ -243,7 +243,7 @@ const getPertinencia = (req, res) => __awaiter(void 0, void 0, void 0, function*
             estimateBeneficiaries: alternative.popDelimit.estimateBeneficiaries,
             preliminaryCharacterization: alternative.popDelimit.preliminaryCharacterization,
             coverage: alternative.popDelimit.coverage,
-            referencePopulation: alternative.popDelimit.referencePopulation.name,
+            referencePopulation: alternative.popDelimit.refPop.name,
             denomination: alternative.popDelimit.denomination.name,
         };
         let criterio4 = {

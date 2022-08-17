@@ -139,7 +139,7 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
     try {
         popDemiliation.AlternativeId = idAlternativa;
         let refModel = await referencePopulation.findAll();
-        popDemiliation.referencePopulationId = refModel[0].codigo;
+        popDemiliation.refPopId = refModel[0].codigo;
 
 
         let DenModel = await denomination.findAll();

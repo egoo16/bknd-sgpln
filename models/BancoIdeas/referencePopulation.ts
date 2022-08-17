@@ -3,7 +3,7 @@ import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
 
 const referencePopulation = db.define(
-    "referencePopulation",
+    "refPop",
     {
     codigo: {
       type: Sequelize.UUID,

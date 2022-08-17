@@ -15,7 +15,7 @@ const populationDelimitation = connection_1.default.define("popDelimit", {
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
     AlternativeId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
-    referencePopulationId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
+    refPopId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     denominationId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     totalPopulation: { type: sequelize_oracle_1.default.INTEGER },
     gender: { type: sequelize_oracle_1.default.STRING },
@@ -28,7 +28,7 @@ const populationDelimitation = connection_1.default.define("popDelimit", {
     freezeTableName: true,
 });
 populationDelimitation.belongsTo(referencePopulation_1.default, {
-    foreignKey: "referencePopulationId",
+    foreignKey: "refPopId",
     sourceKey: "codigo",
 });
 populationDelimitation.belongsTo(denomination_1.default, {

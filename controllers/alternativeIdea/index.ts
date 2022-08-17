@@ -239,7 +239,7 @@ export const getPertinencia = async (req: Request, res: Response) => {
             estimateBeneficiaries: alternative.popDelimit.estimateBeneficiaries,
             preliminaryCharacterization: alternative.popDelimit.preliminaryCharacterization,
             coverage: alternative.popDelimit.coverage,
-            referencePopulation: alternative.popDelimit.referencePopulation.name,
+            referencePopulation: alternative.popDelimit.refPop.name,
             denomination: alternative.popDelimit.denomination.name,
 
         };
