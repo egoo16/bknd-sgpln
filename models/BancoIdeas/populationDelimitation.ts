@@ -15,7 +15,7 @@ const populationDelimitation = db.define(
     },
     AlterId: { type: Sequelize.UUID, allowNull: false },
         refPopId: { type: Sequelize.UUID, allowNull: false },
-        denominationId: { type: Sequelize.UUID, allowNull: false },
+        denId: { type: Sequelize.UUID, allowNull: false },
         totalPopulation: { type: Sequelize.INTEGER },
         gender: { type: Sequelize.STRING },
         estimateBeneficiaries: { type: Sequelize.INTEGER },
@@ -34,7 +34,7 @@ populationDelimitation.belongsTo(referencePopulation, {
     sourceKey: "codigo",
 });
 populationDelimitation.belongsTo(denomination, {
-    foreignKey: "denominationId",
+    foreignKey: "denId",
     sourceKey: "codigo",
 });
 export default populationDelimitation;
