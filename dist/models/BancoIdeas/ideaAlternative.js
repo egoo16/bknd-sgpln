@@ -11,7 +11,7 @@ const preliminaryName_1 = __importDefault(require("./preliminaryName"));
 const projectDescription_1 = __importDefault(require("./projectDescription"));
 const qualification_1 = __importDefault(require("./qualification"));
 const responsibleEntity_1 = __importDefault(require("./responsibleEntity"));
-const ideaAlternative = connection_1.default.define("Alternative", {
+const ideaAlternative = connection_1.default.define("Choise", {
     codigo: {
         type: sequelize_oracle_1.default.UUID,
         primaryKey: true,
