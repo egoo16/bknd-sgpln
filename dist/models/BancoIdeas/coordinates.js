@@ -12,7 +12,7 @@ const coordinates = connection_1.default.define("coordinates", {
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    geographicAreaId: { type: sequelize_oracle_1.default.UUID, required: true },
+    geoAreaId: { type: sequelize_oracle_1.default.UUID, required: true },
     latitude: { type: sequelize_oracle_1.default.STRING },
     length: { type: sequelize_oracle_1.default.STRING },
 }, {

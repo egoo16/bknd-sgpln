@@ -104,7 +104,7 @@ export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: 
         await FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction)
         await FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction)
         await FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction)
-        await FcreateGeographicArea(ideaAlt.geographicArea, codigoAlternativa, transaction)
+        await FcreateGeographicArea(ideaAlt.geoArea, codigoAlternativa, transaction)
         await FcreateProjectDescription(ideaAlt.projectDescription, codigoAlternativa, transaction)
 
         return { message: `Idea alternativa creada correctamente` };
@@ -173,7 +173,7 @@ export async function FcreateGeographicArea(geograpicArea: any, idAlternativa: n
         geograpicArea.AlternativeId = idAlternativa
         let geographicAreaCreated = await geographicArea.create(geograpicArea, { transaction })
         for (let coordinate of geograpicArea.coordinates) {
-            coordinate.geographicAreaId = geographicAreaCreated.codigo
+            coordinate.geoAreaId = geographicAreaCreated.codigo
             await coordinates.create(coordinate, { transaction })
         }
         return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };

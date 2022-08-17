@@ -247,13 +247,13 @@ const getPertinencia = (req, res) => __awaiter(void 0, void 0, void 0, function*
             denomination: alternative.popDelimit.denomination.name,
         };
         let criterio4 = {
-            availableTerrain: alternative.geographicArea.availableTerrain,
-            oneAvailableTerrain: alternative.geographicArea.oneAvailableTerrain,
-            investPurchase: alternative.geographicArea.investPurchase,
+            availableTerrain: alternative.geoArea.availableTerrain,
+            oneAvailableTerrain: alternative.geoArea.oneAvailableTerrain,
+            investPurchase: alternative.geoArea.investPurchase,
         };
         let criterio5 = {
-            registerGovernmentTerrain: alternative.geographicArea.registerGovernmentTerrain,
-            statusDescribe: alternative.geographicArea.statusDescribe,
+            registerGovernmentTerrain: alternative.geoArea.registerGovernmentTerrain,
+            statusDescribe: alternative.geoArea.statusDescribe,
         };
         let criterio6 = {
             projectType: alternative.projectDescription.projectType,

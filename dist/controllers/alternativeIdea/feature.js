@@ -128,7 +128,7 @@ function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
             yield FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction);
             yield FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction);
             yield FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction);
-            yield FcreateGeographicArea(ideaAlt.geographicArea, codigoAlternativa, transaction);
+            yield FcreateGeographicArea(ideaAlt.geoArea, codigoAlternativa, transaction);
             yield FcreateProjectDescription(ideaAlt.projectDescription, codigoAlternativa, transaction);
             return { message: `Idea alternativa creada correctamente` };
         }
@@ -207,7 +207,7 @@ function FcreateGeographicArea(geograpicArea, idAlternativa, transaction) {
             geograpicArea.AlternativeId = idAlternativa;
             let geographicAreaCreated = yield geographicArea_1.default.create(geograpicArea, { transaction });
             for (let coordinate of geograpicArea.coordinates) {
-                coordinate.geographicAreaId = geographicAreaCreated.codigo;
+                coordinate.geoAreaId = geographicAreaCreated.codigo;
                 yield coordinates_1.default.create(coordinate, { transaction });
             }
             return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };

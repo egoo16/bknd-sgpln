@@ -11,7 +11,7 @@ const coordinates = db.define(
       allowNull: false,
       defaultValue: Sequelize.UUIDV4,
     },
-        geographicAreaId: { type: Sequelize.UUID, required: true },
+        geoAreaId: { type: Sequelize.UUID, required: true },
         latitude: { type: Sequelize.STRING },
         length: { type: Sequelize.STRING },
 

@@ -4,7 +4,7 @@ import db from "../../db/connection";
 import coordinates from "./coordinates";
 
 const geographicArea = db.define(
-    "geographicArea",
+    "geoArea",
     {
     codigo: {
       type: Sequelize.UUID,
@@ -40,6 +40,6 @@ const geographicArea = db.define(
     }
 );
 geographicArea.hasMany(coordinates, {
-    foreignKey: "geographicAreaId",
+    foreignKey: "geoAreaId",
 });
 export default geographicArea;
