@@ -10,7 +10,7 @@ import qualification from "./qualification";
 import responsibleEntity from "./responsibleEntity";
 
 const ideaAlternative = db.define(
-    "ideaAlternative",
+    "Alternative",
     {
     codigo: {
       type: Sequelize.UUID,
@@ -30,21 +30,21 @@ const ideaAlternative = db.define(
 );
 
 ideaAlternative.hasOne(preliminaryName, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlternativeId",
 });
 ideaAlternative.hasOne(responsibleEntity, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlternativeId",
 });
 ideaAlternative.hasOne(populationDelimitation, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlternativeId",
 });
 ideaAlternative.hasOne(geographicArea, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlternativeId",
 });
 ideaAlternative.hasOne(projectDescription, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlternativeId",
 });
-ideaAlternative.hasOne(qualification, { foreignKey: "ideaAlternativeId" });
+ideaAlternative.hasOne(qualification, { foreignKey: "AlternativeId" });
 
 // ideaAlternative.belongsTo(generalInformation, {
 //     foreignKey: "sectionBIId",

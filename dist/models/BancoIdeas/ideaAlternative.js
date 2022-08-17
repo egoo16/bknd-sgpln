@@ -11,7 +11,7 @@ const preliminaryName_1 = __importDefault(require("./preliminaryName"));
 const projectDescription_1 = __importDefault(require("./projectDescription"));
 const qualification_1 = __importDefault(require("./qualification"));
 const responsibleEntity_1 = __importDefault(require("./responsibleEntity"));
-const ideaAlternative = connection_1.default.define("ideaAlternative", {
+const ideaAlternative = connection_1.default.define("Alternative", {
     codigo: {
         type: sequelize_oracle_1.default.UUID,
         primaryKey: true,
@@ -26,21 +26,21 @@ const ideaAlternative = connection_1.default.define("ideaAlternative", {
     freezeTableName: true,
 });
 ideaAlternative.hasOne(preliminaryName_1.default, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlternativeId",
 });
 ideaAlternative.hasOne(responsibleEntity_1.default, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlternativeId",
 });
 ideaAlternative.hasOne(populationDelimitation_1.default, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlternativeId",
 });
 ideaAlternative.hasOne(geographicArea_1.default, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlternativeId",
 });
 ideaAlternative.hasOne(projectDescription_1.default, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlternativeId",
 });
-ideaAlternative.hasOne(qualification_1.default, { foreignKey: "ideaAlternativeId" });
+ideaAlternative.hasOne(qualification_1.default, { foreignKey: "AlternativeId" });
 // ideaAlternative.belongsTo(generalInformation, {
 //     foreignKey: "sectionBIId",
 //     sourceKey: "codigo",

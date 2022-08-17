@@ -13,7 +13,7 @@ const populationDelimitation = db.define(
       allowNull: false,
       defaultValue: Sequelize.UUIDV4,
     },
-        ideaAlternativeId: { type: Sequelize.UUID, allowNull: false },
+        AlternativeId: { type: Sequelize.UUID, allowNull: false },
         referencePopulationId: { type: Sequelize.UUID, allowNull: false },
         denominationId: { type: Sequelize.UUID, allowNull: false },
         totalPopulation: { type: Sequelize.INTEGER },

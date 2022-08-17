@@ -11,7 +11,7 @@ const responsibleEntity = db.define(
       allowNull: false,
       defaultValue: Sequelize.UUIDV4,
     },
-        ideaAlternativeId: { type: Sequelize.UUID, allowNull: false },
+    AlternativeId: { type: Sequelize.UUID, allowNull: false },
         nameEPI: { type: Sequelize.STRING },
         leaderName: { type: Sequelize.STRING },
         email: { type: Sequelize.STRING },
