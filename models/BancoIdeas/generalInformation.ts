@@ -2,7 +2,7 @@ import Sequelize from "sequelize-oracle";
 
 import db from "../../db/connection";
 import ideaAlternative from "./ideaAlternative";
-import possibleAlternatives from "./possibleAlternatives";
+import possibleAlter from "./possibleAlternatives";
 import possibleCauses from "./possibleCauses";
 import possibleEffects from "./possibleEffects";
 import qualification from "./qualification";
@@ -57,7 +57,7 @@ generalInformation.hasMany(possibleEffects, {
 generalInformation.hasMany(possibleCauses, {
     foreignKey: "InformationId",
 });
-generalInformation.hasMany(possibleAlternatives, {
+generalInformation.hasMany(possibleAlter, {
     foreignKey: "InformationId",
 });
 generalInformation.hasMany(ideaAlternative, { foreignKey: "sectionBIId" });

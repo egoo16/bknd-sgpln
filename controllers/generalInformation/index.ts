@@ -6,19 +6,8 @@ import generalInformation from "../../models/BancoIdeas/generalInformation";
 import stage from "../../models/BancoIdeas/stage";
 import possibleEffects from "../../models/BancoIdeas/possibleEffects";
 import possibleCauses from "../../models/BancoIdeas/possibleCauses";
-import possibleAlternatives from "../../models/BancoIdeas/possibleAlternatives";
-import qualification from "../../models/BancoIdeas/qualification";
-import ideaAlternative from "../../models/BancoIdeas/ideaAlternative";
-import preliminaryName from "../../models/BancoIdeas/preliminaryName";
-import responsibleEntity from "../../models/BancoIdeas/responsibleEntity";
-import populationDelimitation from "../../models/BancoIdeas/populationDelimitation";
-import geographicArea from "../../models/BancoIdeas/geographicArea";
-import projectDescription from "../../models/BancoIdeas/projectDescription";
-import referencePopulation from "../../models/BancoIdeas/referencePopulation";
-import denomination from "../../models/BancoIdeas/denomination";
-import coordinates from "../../models/BancoIdeas/coordinates";
-import executionTime from "../../models/BancoIdeas/executionTime";
-import geografico from "../../models/integrations/geografico";
+import possibleAlter from "../../models/BancoIdeas/possibleAlternatives";
+
 
 
 export const postGeneralInformation = async (req: Request, res: Response) => {
@@ -103,11 +92,11 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
 
         //#region Insertando Alternativas
 
-        const alternatives = body.possibleAlternatives;
+        const alternatives = body.possibleAlter;
         if (alternatives?.length > 0) {
             let resAlternatives = await Promise.all(alternatives.map(async (alternative: any) => {
                 alternative.generalInformationId = informationIsert.codigo;
-                let res = await possibleAlternatives.create(alternative, {
+                let res = await possibleAlter.create(alternative, {
                     transaction,
                 });
                 return res;
@@ -163,7 +152,7 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
                 {
                     required: false,
 
-                    model: possibleAlternatives
+                    model: possibleAlter
                 },
                 {
                     required: false,

@@ -2,8 +2,8 @@ import Sequelize from "sequelize-oracle";
 
 import db from "../../db/connection";
 
-const possibleAlternatives = db.define(
-  "possibleAlternatives",
+const possibleAlter = db.define(
+  "possibleAlter",
   {
         codigo: {
             type: Sequelize.INTEGER,
@@ -19,4 +19,4 @@ const possibleAlternatives = db.define(
   }
 );
 
-export default possibleAlternatives;
+export default possibleAlter;

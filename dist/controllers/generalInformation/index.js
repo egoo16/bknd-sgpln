@@ -93,7 +93,7 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
         }
         //#endregion Finalizó la insercion de Causas
         //#region Insertando Alternativas
-        const alternatives = body.possibleAlternatives;
+        const alternatives = body.possibleAlter;
         if ((alternatives === null || alternatives === void 0 ? void 0 : alternatives.length) > 0) {
             let resAlternatives = yield Promise.all(alternatives.map((alternative) => __awaiter(void 0, void 0, void 0, function* () {
                 alternative.generalInformationId = informationIsert.codigo;
