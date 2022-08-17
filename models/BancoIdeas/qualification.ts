@@ -3,7 +3,7 @@ import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
 
 const qualification = db.define(
-  "qualification",
+  "score",
   {
     codigo: {
       type: Sequelize.UUID,
