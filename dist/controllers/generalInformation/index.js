@@ -69,7 +69,7 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
             transaction,
         });
         //#region Insertando Efectos
-        const effects = body.possibleEffects;
+        const effects = body.Effects;
         if ((effects === null || effects === void 0 ? void 0 : effects.length) > 0) {
             let resEffects = yield Promise.all(effects.map((effect) => __awaiter(void 0, void 0, void 0, function* () {
                 effect.InformationId = informationIsert.codigo;
@@ -81,7 +81,7 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
         }
         //#endregion Finalizó la insercion de efectos
         //#region Insertando Causas
-        const causes = body.possibleCauses;
+        const causes = body.Causes;
         if ((causes === null || causes === void 0 ? void 0 : causes.length) > 0) {
             let resCauses = yield Promise.all(causes.map((cause) => __awaiter(void 0, void 0, void 0, function* () {
                 cause.InformationId = informationIsert.codigo;
@@ -93,7 +93,7 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
         }
         //#endregion Finalizó la insercion de Causas
         //#region Insertando Alternativas
-        const alternatives = body.possibleAlter;
+        const alternatives = body.Alternatives;
         if ((alternatives === null || alternatives === void 0 ? void 0 : alternatives.length) > 0) {
             let resAlternatives = yield Promise.all(alternatives.map((alternative) => __awaiter(void 0, void 0, void 0, function* () {
                 alternative.InformationId = informationIsert.codigo;
