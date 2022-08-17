@@ -20,5 +20,4 @@ const possibleEffects = db.define(
     freezeTableName: true,
   }
 );
-
 export default possibleEffects;
