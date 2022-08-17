@@ -20,6 +20,7 @@ const qualification = connection_1.default.define("qualification", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 exports.default = qualification;
 //# sourceMappingURL=qualification.js.map

@@ -19,6 +19,7 @@ const responsibleEntity = connection_1.default.define("responsibleEntity", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 exports.default = responsibleEntity;
 //# sourceMappingURL=responsibleEntity.js.map

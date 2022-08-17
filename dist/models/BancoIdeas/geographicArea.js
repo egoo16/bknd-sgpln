@@ -34,6 +34,7 @@ const geographicArea = connection_1.default.define("geographicArea", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 geographicArea.hasMany(coordinates_1.default, {
     foreignKey: "geographicAreaId",

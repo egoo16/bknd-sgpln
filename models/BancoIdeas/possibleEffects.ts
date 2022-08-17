@@ -3,7 +3,7 @@ import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
 
 const possibleEffects = db.define(
-  "possibleEffects",
+  "effects",
   {
         codigo: {
             type: Sequelize.INTEGER,
@@ -16,6 +16,7 @@ const possibleEffects = db.define(
   {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
   }
 );
 

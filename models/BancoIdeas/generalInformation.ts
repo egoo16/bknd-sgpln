@@ -48,6 +48,7 @@ const generalInformation = db.define(
     {
         underscoded: true,
         paranoid: true,
+        freezeTableName: true,
     }
 );
 

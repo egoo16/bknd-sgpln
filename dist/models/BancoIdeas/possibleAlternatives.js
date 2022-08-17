@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
-const possibleAlternatives = connection_1.default.define("possibleAlter", {
+const possibleAlternatives = connection_1.default.define("alternatives", {
     codigo: {
         type: sequelize_oracle_1.default.INTEGER,
         autoIncrement: true,
@@ -16,6 +16,7 @@ const possibleAlternatives = connection_1.default.define("possibleAlter", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 exports.default = possibleAlternatives;
 //# sourceMappingURL=possibleAlternatives.js.map

@@ -20,6 +20,7 @@ const responsibleEntity = db.define(
     {
         underscoded: true,
         paranoid: true,
+        freezeTableName: true,
     }
 );
 

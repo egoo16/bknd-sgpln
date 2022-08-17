@@ -18,6 +18,7 @@ const linkSNP = connection_1.default.define("linkSNP", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 exports.default = linkSNP;
 //# sourceMappingURL=linkSNP.js.map

@@ -15,6 +15,7 @@ const typePlanning = connection_1.default.define("typePlanning", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 exports.default = typePlanning;
 //# sourceMappingURL=typePlanning.js.map

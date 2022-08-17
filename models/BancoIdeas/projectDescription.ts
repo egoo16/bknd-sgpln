@@ -25,6 +25,7 @@ const projectDescription = db.define(
     {
         underscoded: true,
         paranoid: true,
+        freezeTableName: true,
     }
 );
 

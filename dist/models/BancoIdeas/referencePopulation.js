@@ -15,6 +15,7 @@ const referencePopulation = connection_1.default.define("referencePopulation", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 exports.default = referencePopulation;
 //# sourceMappingURL=referencePopulation.js.map

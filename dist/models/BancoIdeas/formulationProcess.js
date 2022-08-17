@@ -15,6 +15,7 @@ const formulationProcess = connection_1.default.define("formulationProcess", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 exports.default = formulationProcess;
 //# sourceMappingURL=formulationProcess.js.map

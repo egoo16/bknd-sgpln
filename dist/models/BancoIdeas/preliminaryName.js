@@ -22,6 +22,7 @@ const preliminaryName = connection_1.default.define("preliminaryName", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 // preliminaryName.belongsTo(ideaAlternative, {
 //     foreignKey: "ideaAlternativeId",

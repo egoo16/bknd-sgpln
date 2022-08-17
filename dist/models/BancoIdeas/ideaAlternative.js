@@ -22,6 +22,7 @@ const ideaAlternative = connection_1.default.define("ideaAlternative", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 ideaAlternative.hasOne(preliminaryName_1.default, {
     foreignKey: "ideaAlternativeId",

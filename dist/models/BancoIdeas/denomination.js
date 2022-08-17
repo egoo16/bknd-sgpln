@@ -15,6 +15,7 @@ const denomination = connection_1.default.define("denomination", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 exports.default = denomination;
 //# sourceMappingURL=denomination.js.map

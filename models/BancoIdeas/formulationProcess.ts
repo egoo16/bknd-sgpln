@@ -16,6 +16,7 @@ const formulationProcess = db.define(
     {
         underscoded: true,
         paranoid: true,
+        freezeTableName: true,
     }
 );
 

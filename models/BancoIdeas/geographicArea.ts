@@ -35,6 +35,7 @@ const geographicArea = db.define(
     {
         underscoded: true,
         paranoid: true,
+        freezeTableName: true,
     }
 );
 geographicArea.hasMany(coordinates, {

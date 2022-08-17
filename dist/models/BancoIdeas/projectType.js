@@ -16,6 +16,7 @@ const projectType = connection_1.default.define("projectType", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 exports.default = projectType;
 //# sourceMappingURL=projectType.js.map

@@ -15,6 +15,7 @@ const complexity = connection_1.default.define("complexity", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 exports.default = complexity;
 //# sourceMappingURL=complexity.js.map

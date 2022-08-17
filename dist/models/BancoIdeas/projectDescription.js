@@ -25,6 +25,7 @@ const projectDescription = connection_1.default.define("projectDescription", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 projectDescription.hasOne(executionTime_1.default, {
     foreignKey: "projectDescriptionId",

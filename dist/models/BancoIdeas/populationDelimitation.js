@@ -24,6 +24,7 @@ const populationDelimitation = connection_1.default.define("populationDelimitati
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 populationDelimitation.belongsTo(referencePopulation_1.default, {
     foreignKey: "referencePopulationId",

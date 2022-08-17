@@ -3,7 +3,7 @@ import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
 
 const possibleCauses = db.define(
-  "possibleCauses",
+  "Causes",
   {
         codigo: {
             type: Sequelize.INTEGER,
@@ -16,6 +16,7 @@ const possibleCauses = db.define(
   {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
   }
 );
 

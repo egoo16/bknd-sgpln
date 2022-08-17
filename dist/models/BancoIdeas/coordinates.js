@@ -17,6 +17,7 @@ const coordinates = connection_1.default.define("coordinates", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 exports.default = coordinates;
 //# sourceMappingURL=coordinates.js.map

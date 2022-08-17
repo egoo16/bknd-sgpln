@@ -18,6 +18,7 @@ const coordinates = db.define(
     {
         underscoded: true,
         paranoid: true,
+        freezeTableName: true,
     }
 );
 

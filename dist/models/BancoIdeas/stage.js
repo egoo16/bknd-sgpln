@@ -15,6 +15,7 @@ const stage = connection_1.default.define("stage", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 exports.default = stage;
 //# sourceMappingURL=stage.js.map

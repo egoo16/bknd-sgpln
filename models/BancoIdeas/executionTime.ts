@@ -23,6 +23,7 @@ const executionTime = db.define(
     {
         underscoded: true,
         paranoid: true,
+        freezeTableName: true,
     }
 );
 

@@ -3,7 +3,7 @@ import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
 
 const possibleAlternatives = db.define(
-  "possibleAlter",
+  "alternatives",
   {
         codigo: {
             type: Sequelize.INTEGER,
@@ -16,6 +16,7 @@ const possibleAlternatives = db.define(
   {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
   }
 );
 

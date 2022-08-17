@@ -22,6 +22,7 @@ const executionTime = connection_1.default.define("executionTime", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 exports.default = executionTime;
 //# sourceMappingURL=executionTime.js.map

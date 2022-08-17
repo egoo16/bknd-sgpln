@@ -44,6 +44,7 @@ const generalInformation = connection_1.default.define("Information", {
 }, {
     underscoded: true,
     paranoid: true,
+    freezeTableName: true,
 });
 generalInformation.hasMany(possibleEffects_1.default, {
     foreignKey: "InformationId",

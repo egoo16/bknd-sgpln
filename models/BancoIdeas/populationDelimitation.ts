@@ -25,6 +25,7 @@ const populationDelimitation = db.define(
     {
         underscoded: true,
         paranoid: true,
+        freezeTableName: true,
     }
 );
 populationDelimitation.belongsTo(referencePopulation, {
