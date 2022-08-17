@@ -103,7 +103,7 @@ export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: 
         let codigoAlternativa = ideaAlternativeCreated.codigo
         await FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction)
         await FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction)
-        await FcreatePopulationDemilitation(ideaAlt.populationDelimitation, codigoAlternativa, transaction)
+        await FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction)
         await FcreateGeographicArea(ideaAlt.geographicArea, codigoAlternativa, transaction)
         await FcreateProjectDescription(ideaAlt.projectDescription, codigoAlternativa, transaction)
 

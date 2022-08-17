@@ -127,7 +127,7 @@ function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
             let codigoAlternativa = ideaAlternativeCreated.codigo;
             yield FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction);
             yield FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction);
-            yield FcreatePopulationDemilitation(ideaAlt.populationDelimitation, codigoAlternativa, transaction);
+            yield FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction);
             yield FcreateGeographicArea(ideaAlt.geographicArea, codigoAlternativa, transaction);
             yield FcreateProjectDescription(ideaAlt.projectDescription, codigoAlternativa, transaction);
             return { message: `Idea alternativa creada correctamente` };

@@ -238,13 +238,13 @@ const getPertinencia = (req, res) => __awaiter(void 0, void 0, void 0, function*
             expectedChange: generalInformations.expectedChange
         };
         let criterio3 = {
-            totalPopulation: alternative.populationDelimitation.totalPopulation,
-            gender: alternative.populationDelimitation.gender,
-            estimateBeneficiaries: alternative.populationDelimitation.estimateBeneficiaries,
-            preliminaryCharacterization: alternative.populationDelimitation.preliminaryCharacterization,
-            coverage: alternative.populationDelimitation.coverage,
-            referencePopulation: alternative.populationDelimitation.referencePopulation.name,
-            denomination: alternative.populationDelimitation.denomination.name,
+            totalPopulation: alternative.popDelimit.totalPopulation,
+            gender: alternative.popDelimit.gender,
+            estimateBeneficiaries: alternative.popDelimit.estimateBeneficiaries,
+            preliminaryCharacterization: alternative.popDelimit.preliminaryCharacterization,
+            coverage: alternative.popDelimit.coverage,
+            referencePopulation: alternative.popDelimit.referencePopulation.name,
+            denomination: alternative.popDelimit.denomination.name,
         };
         let criterio4 = {
             availableTerrain: alternative.geographicArea.availableTerrain,
