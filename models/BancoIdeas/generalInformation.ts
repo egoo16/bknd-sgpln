@@ -12,10 +12,9 @@ const generalInformation = db.define(
     "generalInformation",
     {
         codigo: {
-            type: Sequelize.UUID,
-            primaryKey: true,
-            allowNull: false,
-            defaultValue: Sequelize.UUIDV4,
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
         },
         idStage: { type: Sequelize.UUID, required: true },
         productId: { type: Sequelize.STRING },

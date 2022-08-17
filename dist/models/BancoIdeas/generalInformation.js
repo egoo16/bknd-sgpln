@@ -12,10 +12,9 @@ const possibleEffects_1 = __importDefault(require("./possibleEffects"));
 const stage_1 = __importDefault(require("./stage"));
 const generalInformation = connection_1.default.define("generalInformation", {
     codigo: {
-        type: sequelize_oracle_1.default.UUID,
-        primaryKey: true,
-        allowNull: false,
-        defaultValue: sequelize_oracle_1.default.UUIDV4,
+        type: sequelize_oracle_1.default.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
     idStage: { type: sequelize_oracle_1.default.UUID, required: true },
     productId: { type: sequelize_oracle_1.default.STRING },

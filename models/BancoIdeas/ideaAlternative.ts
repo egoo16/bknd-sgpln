@@ -18,7 +18,7 @@ const ideaAlternative = db.define(
             allowNull: false,
             defaultValue: Sequelize.UUIDV4,
         },
-        sectionBIId: { type: Sequelize.UUID, allowNull: false },
+        sectionBIId: { type: Sequelize.INTEGER, allowNull: false },
         state: { type: Sequelize.BOOLEAN },
 
     },

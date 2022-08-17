@@ -12,7 +12,7 @@ const possibleAlternatives = db.define(
       defaultValue: Sequelize.UUIDV4,
     },
     description: { type: Sequelize.STRING, required: true, allowNull: false },
-    generalInformationId: { type: Sequelize.UUID, required: true },
+    generalInformationId: { type: Sequelize.INTEGER, required: true },
   },
   {
     underscoded: true,
