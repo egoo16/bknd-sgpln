@@ -6,12 +6,11 @@ const executionTime = db.define(
     "executionTime",
     {
         codigo: {
-            type: Sequelize.UUID,
-            primaryKey: true,
-            allowNull: false,
-            defaultValue: Sequelize.UUIDV4,
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
         },
-        projectDescriptionId: { type: Sequelize.UUID, allowNull: false },   
+        projectDescriptionId: { type: Sequelize.INTEGER, allowNull: false },   
         tentativeTermMonth: { type: Sequelize.STRING },
         tentativeTermYear: { type: Sequelize.STRING },
         executionDateMonth: { type: Sequelize.STRING },

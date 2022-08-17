@@ -7,12 +7,11 @@ const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
 const qualification = connection_1.default.define("qualification", {
     codigo: {
-        type: sequelize_oracle_1.default.UUID,
-        primaryKey: true,
-        allowNull: false,
-        defaultValue: sequelize_oracle_1.default.UUIDV4,
+        type: sequelize_oracle_1.default.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
-    generalInformationId: { type: sequelize_oracle_1.default.UUID, required: true },
+    generalInformationId: { type: sequelize_oracle_1.default.INTEGER, required: true },
     descriptionProblem: { type: sequelize_oracle_1.default.INTEGER },
     generalObjective: { type: sequelize_oracle_1.default.INTEGER },
     analysisDelimitation: { type: sequelize_oracle_1.default.INTEGER },

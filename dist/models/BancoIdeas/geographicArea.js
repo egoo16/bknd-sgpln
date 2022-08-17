@@ -8,12 +8,11 @@ const connection_1 = __importDefault(require("../../db/connection"));
 const coordinates_1 = __importDefault(require("./coordinates"));
 const geographicArea = connection_1.default.define("geographicArea", {
     codigo: {
-        type: sequelize_oracle_1.default.UUID,
-        primaryKey: true,
-        allowNull: false,
-        defaultValue: sequelize_oracle_1.default.UUIDV4,
+        type: sequelize_oracle_1.default.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
-    ideaAlternativeId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
+    ideaAlternativeId: { type: sequelize_oracle_1.default.INTEGER, allowNull: false },
     availableTerrain: { type: sequelize_oracle_1.default.BOOLEAN },
     oneAvailableTerrain: { type: sequelize_oracle_1.default.BOOLEAN },
     investPurchase: { type: sequelize_oracle_1.default.BOOLEAN },

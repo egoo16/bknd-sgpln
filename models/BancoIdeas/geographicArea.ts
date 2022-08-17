@@ -7,12 +7,11 @@ const geographicArea = db.define(
     "geographicArea",
     {
         codigo: {
-            type: Sequelize.UUID,
-            primaryKey: true,
-            allowNull: false,
-            defaultValue: Sequelize.UUIDV4,
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
         },
-        ideaAlternativeId: { type: Sequelize.UUID, allowNull: false },
+        ideaAlternativeId: { type: Sequelize.INTEGER, allowNull: false },
         availableTerrain: { type: Sequelize.BOOLEAN },
         oneAvailableTerrain: { type: Sequelize.BOOLEAN },
         investPurchase: { type: Sequelize.BOOLEAN },

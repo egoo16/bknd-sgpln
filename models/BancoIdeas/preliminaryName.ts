@@ -7,12 +7,11 @@ const preliminaryName = db.define(
     "preliminaryName",
     {
         codigo: {
-            type: Sequelize.UUID,
-            primaryKey: true,
-            allowNull: false,
-            defaultValue: Sequelize.UUIDV4,
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
         },
-        ideaAlternativeId: { type: Sequelize.UUID, allowNull: false },
+        ideaAlternativeId: { type: Sequelize.INTEGER, allowNull: false },
         typeProject: { type: Sequelize.STRING },
         proccess: { type: Sequelize.STRING },
         object: { type: Sequelize.STRING },

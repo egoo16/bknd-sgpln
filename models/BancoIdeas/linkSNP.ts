@@ -6,13 +6,12 @@ const linkSNP = db.define(
     "linkSNP",
     {
         codigo: {
-            type: Sequelize.UUID,
-            primaryKey: true,
-            allowNull: false,
-            defaultValue: Sequelize.UUIDV4,
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
         },
-        ideaAlternativeId: { type: Sequelize.UUID, allowNull: false },
-        typePlanningId: { type: Sequelize.UUID, allowNull: false },
+        ideaAlternativeId: { type: Sequelize.INTEGER, allowNull: false },
+        typePlanningId: { type: Sequelize.INTEGER, allowNull: false },
         observation: { type: Sequelize.STRING },
         approachJustification: { type: Sequelize.STRING },
 

@@ -16,7 +16,7 @@ const generalInformation = connection_1.default.define("generalInformation", {
         autoIncrement: true,
         primaryKey: true
     },
-    idStage: { type: sequelize_oracle_1.default.UUID, required: true },
+    idStage: { type: sequelize_oracle_1.default.INTEGER, required: true },
     productId: { type: sequelize_oracle_1.default.STRING },
     productName: { type: sequelize_oracle_1.default.STRING },
     date: { type: sequelize_oracle_1.default.DATE },

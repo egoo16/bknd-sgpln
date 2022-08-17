@@ -6,10 +6,9 @@ const projectType = db.define(
     "projectType",
     {
         codigo: {
-            type: Sequelize.UUID,
-            primaryKey: true,
-            allowNull: false,
-            defaultValue: Sequelize.UUIDV4,
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
         },
         name: { type: Sequelize.STRING },
         relation: { type: Sequelize.STRING },

@@ -7,13 +7,12 @@ const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
 const linkSNP = connection_1.default.define("linkSNP", {
     codigo: {
-        type: sequelize_oracle_1.default.UUID,
-        primaryKey: true,
-        allowNull: false,
-        defaultValue: sequelize_oracle_1.default.UUIDV4,
+        type: sequelize_oracle_1.default.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
-    ideaAlternativeId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
-    typePlanningId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
+    ideaAlternativeId: { type: sequelize_oracle_1.default.INTEGER, allowNull: false },
+    typePlanningId: { type: sequelize_oracle_1.default.INTEGER, allowNull: false },
     observation: { type: sequelize_oracle_1.default.STRING },
     approachJustification: { type: sequelize_oracle_1.default.STRING },
 }, {

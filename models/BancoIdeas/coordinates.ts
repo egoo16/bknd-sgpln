@@ -6,12 +6,11 @@ const coordinates = db.define(
     "coordinates",
     {
         codigo: {
-            type: Sequelize.UUID,
-            primaryKey: true,
-            allowNull: false,
-            defaultValue: Sequelize.UUIDV4,
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
         },
-        geographicAreaId: { type: Sequelize.UUID, required: true },
+        geographicAreaId: { type: Sequelize.INTEGER, required: true },
         latitude: { type: Sequelize.STRING },
         length: { type: Sequelize.STRING },
 

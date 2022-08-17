@@ -16,7 +16,7 @@ const generalInformation = db.define(
             autoIncrement: true,
             primaryKey: true
         },
-        idStage: { type: Sequelize.UUID, required: true },
+        idStage: { type: Sequelize.INTEGER, required: true },
         productId: { type: Sequelize.STRING },
         productName: { type: Sequelize.STRING },
         date: { type: Sequelize.DATE },

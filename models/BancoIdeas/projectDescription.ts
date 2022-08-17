@@ -7,12 +7,11 @@ const projectDescription = db.define(
     "projectDescription",
     {
         codigo: {
-            type: Sequelize.UUID,
-            primaryKey: true,
-            allowNull: false,
-            defaultValue: Sequelize.UUIDV4,
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
         },
-        ideaAlternativeId: { type: Sequelize.UUID, allowNull: false },
+        ideaAlternativeId: { type: Sequelize.INTEGER, allowNull: false },
         projectType: { type: Sequelize.STRING, allowNull: false },
         formulationProcess: { type: Sequelize.STRING, allowNull: false },
         formulationProcessDescription: { type: Sequelize.STRING },
