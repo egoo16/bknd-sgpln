@@ -240,7 +240,7 @@ export const getPertinencia = async (req: Request, res: Response) => {
             preliminaryCharacterization: alternative.popDelimit.preliminaryCharacterization,
             coverage: alternative.popDelimit.coverage,
             referencePopulation: alternative.popDelimit.refPop.name,
-            denomination: alternative.popDelimit.denomination.name,
+            denomination: alternative.popDelimit.denmtion.name,
 
         };
 

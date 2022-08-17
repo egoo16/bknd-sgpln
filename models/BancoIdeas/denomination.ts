@@ -3,7 +3,7 @@ import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
 
 const denomination = db.define(
-    "denomination",
+    "denmtion",
     {
     codigo: {
       type: Sequelize.UUID,
