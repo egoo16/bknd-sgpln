@@ -111,9 +111,9 @@ export const getAlternative = async (req: Request, res: Response) => {
         let idAlternative = req.params.id;
 
         let data = await ideaAlternative.findAll({
-            // where: {
-            //     sectionBIId: idAlternative
-            // },
+            where: {
+                sectionBIId: idAlternative
+            },
             // include: [
             //     {
             //         required: false,
