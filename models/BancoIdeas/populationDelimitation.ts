@@ -5,7 +5,7 @@ import denomination from "./denomination";
 import referencePopulation from "./referencePopulation";
 
 const populationDelimitation = db.define(
-    "popDelimit",
+    "popDel",
     {
     codigo: {
       type: Sequelize.UUID,
