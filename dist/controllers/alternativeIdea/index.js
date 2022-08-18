@@ -131,20 +131,20 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                     required: false,
                     model: responsibleEntity_1.default
                 },
-                //     {
-                //         required: false,
-                //         model: populationDelimitation,
-                //         include: [
-                //             {
-                //                 required: false,
-                //                 model: referencePopulation
-                //             },
-                //             {
-                //                 required: false,
-                //                 model: denomination
-                //             },
-                //         ]
-                //     },
+                {
+                    required: false,
+                    model: populationDelimitation_1.default,
+                    //         include: [
+                    //             {
+                    //                 required: false,
+                    //                 model: referencePopulation
+                    //             },
+                    //             {
+                    //                 required: false,
+                    //                 model: denomination
+                    //             },
+                    //         ]
+                },
                 //     {
                 //         required: false,
                 //         model: geographicArea,

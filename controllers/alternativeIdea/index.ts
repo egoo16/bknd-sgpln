@@ -123,9 +123,9 @@ export const getAlternative = async (req: Request, res: Response) => {
                     required: false,
                     model: responsibleEntity
                 },
-            //     {
-            //         required: false,
-            //         model: populationDelimitation,
+                {
+                    required: false,
+                    model: populationDelimitation,
             //         include: [
             //             {
             //                 required: false,
@@ -136,7 +136,7 @@ export const getAlternative = async (req: Request, res: Response) => {
             //                 model: denomination
             //             },
             //         ]
-            //     },
+                },
             //     {
             //         required: false,
             //         model: geographicArea,
