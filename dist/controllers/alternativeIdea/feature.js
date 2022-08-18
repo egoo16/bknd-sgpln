@@ -174,7 +174,7 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
             let refModel = yield referencePopulation_1.default.findAll();
             popDemiliation.refPopId = refModel[0].codigo;
             let DenModel = yield denomination_1.default.findAll();
-            popDemiliation.denominationId = DenModel[0].codigo;
+            popDemiliation.denId = DenModel[0].codigo;
             let populationDelimitationCreated = yield populationDelimitation_1.default.create(popDemiliation, { transaction });
             return { populationDelimitationCreated, message: `Delimitación preliminar ingresada correctamente` };
         }
@@ -190,7 +190,7 @@ function FcreateProjectDescription(proDescription, idAlternativa, transaction) {
         try {
             proDescription.AlterId = idAlternativa;
             let proDesctiptionCreated = yield projectDescription_1.default.create(proDescription, { transaction });
-            proDescription.executionTime.projDescId = proDesctiptionCreated.codigo;
+            proDescription.execTime.projDescId = proDesctiptionCreated.codigo;
             yield executionTime_1.default.create(proDescription.execTime, { transaction });
             return { proDesctiptionCreated, message: `Descripción preliminar de la idea proyecto ingresada correctamente` };
         }

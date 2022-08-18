@@ -143,7 +143,7 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
 
 
         let DenModel = await denomination.findAll();
-        popDemiliation.denominationId = DenModel[0].codigo;
+        popDemiliation.denId = DenModel[0].codigo;
 
 
         let populationDelimitationCreated = await populationDelimitation.create(popDemiliation, { transaction })
@@ -158,7 +158,7 @@ export async function FcreateProjectDescription(proDescription: any, idAlternati
     try {
         proDescription.AlterId = idAlternativa
         let proDesctiptionCreated = await projectDescription.create(proDescription, { transaction })
-        proDescription.executionTime.projDescId = proDesctiptionCreated.codigo
+        proDescription.execTime.projDescId = proDesctiptionCreated.codigo
         await executionTime.create(proDescription.execTime, { transaction })
 
         return { proDesctiptionCreated, message: `Descripción preliminar de la idea proyecto ingresada correctamente` };
