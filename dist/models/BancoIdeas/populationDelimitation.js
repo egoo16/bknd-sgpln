@@ -7,8 +7,8 @@ const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
 const denomination_1 = __importDefault(require("./denomination"));
 const referencePopulation_1 = __importDefault(require("./referencePopulation"));
-const populationDelimitation = connection_1.default.define("popDel", {
-    codigo: {
+const populationDelimitation = connection_1.default.define("popDelimit", {
+    id: {
         type: sequelize_oracle_1.default.UUID,
         primaryKey: true,
         allowNull: false,
