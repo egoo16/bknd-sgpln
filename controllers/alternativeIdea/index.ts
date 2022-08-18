@@ -110,22 +110,22 @@ export const getAlternative = async (req: Request, res: Response) => {
     try {
         let idAlternative = req.params.id;
 
-        let data = await ideaAlternative.findAll({
-            where: {
-                sectionBIId: idAlternative
-            },
-            include: [
-                {
-                    required: false,
-                    model: preliminaryName
-                },
-                {
-                    required: false,
-                    model: responsibleEntity
-                },
-                {
-                    required: false,
-                    model: populationDelimitation,
+        // let data = await ideaAlternative.findAll({
+        //     where: {
+        //         sectionBIId: idAlternative
+        //     },
+        //     include: [
+        //         {
+        //             required: false,
+        //             model: preliminaryName
+        //         },
+        //         {
+        //             required: false,
+        //             model: responsibleEntity
+        //         },
+        //         {
+        //             required: false,
+        //             model: populationDelimitation,
             //         include: [
             //             {
             //                 required: false,
@@ -136,7 +136,7 @@ export const getAlternative = async (req: Request, res: Response) => {
             //                 model: denomination
             //             },
             //         ]
-                },
+                // },
             //     {
             //         required: false,
             //         model: geographicArea,
@@ -161,8 +161,30 @@ export const getAlternative = async (req: Request, res: Response) => {
             //         required: false,
             //         model: qualification
             //     },
-            ]
+            // ]
+        // });
+
+
+        let data = await populationDelimitation.findAll({
+            // where: {
+            //     sectionBIId: idAlternative
+            // },
+            // include: [
+            //     {
+            //         required: false,
+            //         model: preliminaryName
+            //     },
+            //     {
+            //         required: false,
+            //         model: responsibleEntity
+            //     },
+            //     {
+            //         required: false,
+            //         model: ,
+            //     }
+            // ]
         });
+
         res.status(200).json({
             msg: "Datos Obtenidos",
             data,
