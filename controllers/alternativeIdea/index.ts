@@ -114,11 +114,11 @@ export const getAlternative = async (req: Request, res: Response) => {
             where: {
                 sectionBIId: idAlternative
             },
-            // include: [
-            //     {
-            //         required: false,
-            //         model: preliminaryName
-            //     },
+            include: [
+                {
+                    required: false,
+                    model: preliminaryName
+                },
             //     {
             //         required: false,
             //         model: responsibleEntity
@@ -161,7 +161,7 @@ export const getAlternative = async (req: Request, res: Response) => {
             //         required: false,
             //         model: qualification
             //     },
-            // ]
+            ]
         });
         res.status(200).json({
             msg: "Datos Obtenidos",
