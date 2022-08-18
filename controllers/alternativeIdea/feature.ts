@@ -157,6 +157,8 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
 export async function FcreateProjectDescription(proDescription: any, idAlternativa: number, transaction: any) {
     try {
         proDescription.AlterId = idAlternativa
+        if (proDescription.annual || proDescription.annual == true) { proDescription.annual = 1}
+        else if (!proDescription.annual || proDescription.annual == false) {proDescription.annual = 0}
         let proDesctiptionCreated = await projectDescription.create(proDescription, { transaction })
         proDescription.execTime.projDescId = proDesctiptionCreated.codigo
         await executionTime.create(proDescription.execTime, { transaction })
