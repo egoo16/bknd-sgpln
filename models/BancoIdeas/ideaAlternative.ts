@@ -10,7 +10,7 @@ import qualification from "./qualification";
 import responsibleEntity from "./responsibleEntity";
 
 const ideaAlternative = db.define(
-    "Alternative",
+    "alter",
     {
     codigo: {
       type: Sequelize.UUID,
