@@ -23,7 +23,6 @@ const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geogra
 const projectDescription_1 = __importDefault(require("../../models/BancoIdeas/projectDescription"));
 const referencePopulation_1 = __importDefault(require("../../models/BancoIdeas/referencePopulation"));
 const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomination"));
-const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinates"));
 const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executionTime"));
 const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
 const qualification_1 = __importDefault(require("../../models/BancoIdeas/qualification"));
@@ -135,28 +134,14 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 },
                 // {
                 //     required: false,
-                //     model: populationDelimitation,
+                //     model: geographicArea,
                 //     include: [
                 //         {
                 //             required: false,
-                //             model: referencePopulation
-                //         },
-                //         {
-                //             required: false,
-                //             model: denomination
+                //             model: coordinates
                 //         },
                 //     ]
                 // },
-                {
-                    required: false,
-                    model: geographicArea_1.default,
-                    include: [
-                        {
-                            required: false,
-                            model: coordinates_1.default
-                        },
-                    ]
-                },
                 // {
                 //     required: false,
                 //     model: projectDescription,
@@ -173,28 +158,22 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 },
             ]
         });
-        // let data = await populationDelimitation.findAll({
-        //     where: {
-        //         sectionBIId: idAlternative
-        //     },
-        //     include: [
-        //         {
-        //             required: false,
-        //             model: preliminaryName
-        //         },
-        //         {
-        //             required: false,
-        //             model: responsibleEntity
-        //         },
-        //         {
-        //             required: false,
-        //             model: ,
-        //         }
-        //     ]
-        // });
+        let popDelimitation = yield populationDelimitation_1.default.findAll({
+            include: [
+                {
+                    required: false,
+                    model: referencePopulation_1.default
+                },
+                {
+                    required: false,
+                    model: denomination_1.default
+                },
+            ]
+        });
         res.status(200).json({
             msg: "Datos Obtenidos",
             data,
+            popDelimitation,
         });
     }
     catch (error) {

@@ -123,30 +123,17 @@ export const getAlternative = async (req: Request, res: Response) => {
                     required: false,
                     model: responsibleEntity
                 },
+
                 // {
                 //     required: false,
-                //     model: populationDelimitation,
+                //     model: geographicArea,
                 //     include: [
                 //         {
                 //             required: false,
-                //             model: referencePopulation
-                //         },
-                //         {
-                //             required: false,
-                //             model: denomination
+                //             model: coordinates
                 //         },
                 //     ]
                 // },
-                {
-                    required: false,
-                    model: geographicArea,
-                    include: [
-                        {
-                            required: false,
-                            model: coordinates
-                        },
-                    ]
-                },
                 // {
                 //     required: false,
                 //     model: projectDescription,
@@ -164,30 +151,25 @@ export const getAlternative = async (req: Request, res: Response) => {
             ]
         });
 
+        let popDelimitation = await populationDelimitation.findAll({
+            include: [
+                {
+                    required: false,
+                    model: referencePopulation
+                },
+                {
+                    required: false,
+                    model: denomination
+                },
+            ]
+        })
 
-        // let data = await populationDelimitation.findAll({
-        //     where: {
-        //         sectionBIId: idAlternative
-        //     },
-        //     include: [
-        //         {
-        //             required: false,
-        //             model: preliminaryName
-        //         },
-        //         {
-        //             required: false,
-        //             model: responsibleEntity
-        //         },
-        //         {
-        //             required: false,
-        //             model: ,
-        //         }
-        //     ]
-        // });
+
 
         res.status(200).json({
             msg: "Datos Obtenidos",
             data,
+            popDelimitation,
         });
     } catch (error) {
         res.status(500).json({
