@@ -17,6 +17,7 @@ const connection_1 = __importDefault(require("../../db/connection"));
 const feature_1 = require("./feature");
 const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
 const preliminaryName_1 = __importDefault(require("../../models/BancoIdeas/preliminaryName"));
+const responsibleEntity_1 = __importDefault(require("../../models/BancoIdeas/responsibleEntity"));
 const populationDelimitation_1 = __importDefault(require("../../models/BancoIdeas/populationDelimitation"));
 const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geographicArea"));
 const projectDescription_1 = __importDefault(require("../../models/BancoIdeas/projectDescription"));
@@ -126,10 +127,10 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                     required: false,
                     model: preliminaryName_1.default
                 },
-                //     {
-                //         required: false,
-                //         model: responsibleEntity
-                //     },
+                {
+                    required: false,
+                    model: responsibleEntity_1.default
+                },
                 //     {
                 //         required: false,
                 //         model: populationDelimitation,
