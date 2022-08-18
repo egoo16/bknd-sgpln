@@ -137,16 +137,16 @@ export const getAlternative = async (req: Request, res: Response) => {
                 //         },
                 //     ]
                 // },
-                // {
-                //     required: false,
-                //     model: geographicArea,
-                //     include: [
-                //         {
-                //             required: false,
-                //             model: coordinates
-                //         },
-                //     ]
-                // },
+                {
+                    required: false,
+                    model: geographicArea,
+                    include: [
+                        {
+                            required: false,
+                            model: coordinates
+                        },
+                    ]
+                },
                 // {
                 //     required: false,
                 //     model: projectDescription,
