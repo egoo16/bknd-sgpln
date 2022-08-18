@@ -291,7 +291,6 @@ export const getAlternative = async (req: Request, res: Response) => {
                 }
 
                 if (pDescription) {
-
                     alternativa.projDesc = {
                         codigo: pDescription.codigo,
                         AlterId: pDescription.AlterId,
@@ -307,15 +306,25 @@ export const getAlternative = async (req: Request, res: Response) => {
                         createdAt: pDescription.createdAt,
                         updatedAt: pDescription.updatedAt,
                         deletedAt: pDescription.deletedAt,
+                        execTime: null,
                     };
+                    if (pDescription.execTime)
+                    alternativa.projDesc.execTime = {
+                        codigo: pDescription.execTime.codigo,
+                        projDescId: pDescription.execTime.projDescId,
+                        tentativeTermMonth: pDescription.execTime.tentativeTermMonth,
+                        tentativeTermYear: pDescription.execTime.tentativeTermYear,
+                        executionDateMonth: pDescription.execTime.executionDateMonth,
+                        executionDateYear: pDescription.execTime.executionDateYear,
+                        finishDateMonth: pDescription.execTime.finishDateMonth,
+                        finishDateYear: pDescription.execTime.finishDateYear,
+                        annual: pDescription.execTime.annual,
+                        createdAt: pDescription.execTime.createdAt,
+                        updatedAt: pDescription.execTime.updatedAt,
+                        deletedAt: pDescription.execTime.deletedAt,
+                    }
                 }
-
-
-                // alternativa.geoArea = gArea;
-                // alternativa.projDesc = pDescription;
-                console.log('Alterantiivaaaaa', alternativa);
                 datosResult.push(alternativa);
-
                 return res;
             }));
         }
