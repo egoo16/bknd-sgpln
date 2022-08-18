@@ -127,12 +127,7 @@ export const getAlternative = async (req: Request, res: Response) => {
                 // {
                 //     required: false,
                 //     model: geographicArea,
-                //     include: [
-                //         {
-                //             required: false,
-                //             model: coordinates
-                //         },
-                //     ]
+
                 // },
                 // {
                 //     required: false,
@@ -164,12 +159,22 @@ export const getAlternative = async (req: Request, res: Response) => {
             ]
         })
 
+        let gArea =  await geographicArea.findAll({
+            include: [
+                {
+                    required: false,
+                    model: coordinates
+                },
+            ]
+        })
+
 
 
         res.status(200).json({
             msg: "Datos Obtenidos",
             data,
             popDelimitation,
+            gArea,
         });
     } catch (error) {
         res.status(500).json({
