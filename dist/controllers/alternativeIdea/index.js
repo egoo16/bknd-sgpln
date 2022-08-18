@@ -156,16 +156,16 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 //         },
                 //     ]
                 // },
-                {
-                    required: false,
-                    model: projectDescription_1.default,
-                    include: [
-                        {
-                            required: false,
-                            model: executionTime_1.default
-                        },
-                    ]
-                },
+                // {
+                //     required: false,
+                //     model: projectDescription,
+                //     include: [
+                //         {
+                //             required: false,
+                //             model: executionTime
+                //         },
+                //     ]
+                // },
                 {
                     required: false,
                     model: qualification_1.default

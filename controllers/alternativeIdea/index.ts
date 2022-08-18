@@ -147,16 +147,16 @@ export const getAlternative = async (req: Request, res: Response) => {
                 //         },
                 //     ]
                 // },
-                {
-                    required: false,
-                    model: projectDescription,
-                    include: [
-                        {
-                            required: false,
-                            model: executionTime
-                        },
-                    ]
-                },
+                // {
+                //     required: false,
+                //     model: projectDescription,
+                //     include: [
+                //         {
+                //             required: false,
+                //             model: executionTime
+                //         },
+                //     ]
+                // },
                 {
                     required: false,
                     model: qualification
