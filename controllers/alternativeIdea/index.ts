@@ -110,7 +110,62 @@ export const getAlternative = async (req: Request, res: Response) => {
     try {
         let idAlternative = req.params.id;
 
-        // let data = await ideaAlternative.findAll({
+        let data = await ideaAlternative.findAll({
+            where: {
+                sectionBIId: idAlternative
+            },
+            include: [
+                {
+                    required: false,
+                    model: preliminaryName
+                },
+                {
+                    required: false,
+                    model: responsibleEntity
+                },
+                // {
+                //     required: false,
+                //     model: populationDelimitation,
+                //     include: [
+                //         {
+                //             required: false,
+                //             model: referencePopulation
+                //         },
+                //         {
+                //             required: false,
+                //             model: denomination
+                //         },
+                //     ]
+                // },
+                {
+                    required: false,
+                    model: geographicArea,
+                    include: [
+                        {
+                            required: false,
+                            model: coordinates
+                        },
+                    ]
+                },
+                {
+                    required: false,
+                    model: projectDescription,
+                    include: [
+                        {
+                            required: false,
+                            model: executionTime
+                        },
+                    ]
+                },
+                {
+                    required: false,
+                    model: qualification
+                },
+            ]
+        });
+
+
+        // let data = await populationDelimitation.findAll({
         //     where: {
         //         sectionBIId: idAlternative
         //     },
@@ -125,65 +180,10 @@ export const getAlternative = async (req: Request, res: Response) => {
         //         },
         //         {
         //             required: false,
-        //             model: populationDelimitation,
-            //         include: [
-            //             {
-            //                 required: false,
-            //                 model: referencePopulation
-            //             },
-            //             {
-            //                 required: false,
-            //                 model: denomination
-            //             },
-            //         ]
-                // },
-            //     {
-            //         required: false,
-            //         model: geographicArea,
-            //         include: [
-            //             {
-            //                 required: false,
-            //                 model: coordinates
-            //             },
-            //         ]
-            //     },
-            //     {
-            //         required: false,
-            //         model: projectDescription,
-            //         include: [
-            //             {
-            //                 required: false,
-            //                 model: executionTime
-            //             },
-            //         ]
-            //     },
-            //     {
-            //         required: false,
-            //         model: qualification
-            //     },
-            // ]
+        //             model: ,
+        //         }
+        //     ]
         // });
-
-
-        let data = await populationDelimitation.findAll({
-            // where: {
-            //     sectionBIId: idAlternative
-            // },
-            // include: [
-            //     {
-            //         required: false,
-            //         model: preliminaryName
-            //     },
-            //     {
-            //         required: false,
-            //         model: responsibleEntity
-            //     },
-            //     {
-            //         required: false,
-            //         model: ,
-            //     }
-            // ]
-        });
 
         res.status(200).json({
             msg: "Datos Obtenidos",

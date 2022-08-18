@@ -7,14 +7,14 @@ const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
 const denomination_1 = __importDefault(require("./denomination"));
 const referencePopulation_1 = __importDefault(require("./referencePopulation"));
-const populationDelimitation = connection_1.default.define("popDel", {
-    id: {
+const populationDelimitation = connection_1.default.define("popDelimit", {
+    codigo: {
         type: sequelize_oracle_1.default.UUID,
         primaryKey: true,
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    // AlterId: { type: Sequelize.UUID, allowNull: false },
+    AlterId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     refPopId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     denId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     totalPopulation: { type: sequelize_oracle_1.default.INTEGER },

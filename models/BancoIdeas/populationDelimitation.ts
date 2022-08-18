@@ -5,15 +5,15 @@ import denomination from "./denomination";
 import referencePopulation from "./referencePopulation";
 
 const populationDelimitation = db.define(
-    "popDel",
+    "popDelimit",
     {
-    id: {
+    codigo: {
       type: Sequelize.UUID,
       primaryKey: true,
       allowNull: false,
       defaultValue: Sequelize.UUIDV4,
     },
-    // AlterId: { type: Sequelize.UUID, allowNull: false },
+    AlterId: { type: Sequelize.UUID, allowNull: false },
         refPopId: { type: Sequelize.UUID, allowNull: false },
         denId: { type: Sequelize.UUID, allowNull: false },
         totalPopulation: { type: Sequelize.INTEGER },
