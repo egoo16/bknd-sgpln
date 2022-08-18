@@ -23,7 +23,6 @@ const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geogra
 const projectDescription_1 = __importDefault(require("../../models/BancoIdeas/projectDescription"));
 const referencePopulation_1 = __importDefault(require("../../models/BancoIdeas/referencePopulation"));
 const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomination"));
-const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinates"));
 const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executionTime"));
 const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
 const qualification_1 = __importDefault(require("../../models/BancoIdeas/qualification"));
@@ -147,16 +146,16 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 //         },
                 //     ]
                 // },
-                {
-                    required: false,
-                    model: geographicArea_1.default,
-                    include: [
-                        {
-                            required: false,
-                            model: coordinates_1.default
-                        },
-                    ]
-                },
+                // {
+                //     required: false,
+                //     model: geographicArea,
+                //     include: [
+                //         {
+                //             required: false,
+                //             model: coordinates
+                //         },
+                //     ]
+                // },
                 {
                     required: false,
                     model: projectDescription_1.default,
