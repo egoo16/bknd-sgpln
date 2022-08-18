@@ -120,6 +120,7 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
     let transaction = yield connection_1.default.transaction();
     try {
         let idAlternative = req.params.id;
+        let datosResult = [];
         let data = yield ideaAlternative_1.default.findAll({
             where: {
                 sectionBIId: idAlternative
@@ -139,40 +140,56 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 },
             ]
         });
-        let popDelimitation = yield populationDelimitation_1.default.findAll({
-            include: [
-                {
-                    required: false,
-                    model: referencePopulation_1.default
-                },
-                {
-                    required: false,
-                    model: denomination_1.default
-                },
-            ]
-        });
-        let gArea = yield geographicArea_1.default.findAll({
-            include: [
-                {
-                    required: false,
-                    model: coordinates_1.default
-                },
-            ]
-        });
-        let pDescription = yield projectDescription_1.default.findAll({
-            include: [
-                {
-                    required: false,
-                    model: executionTime_1.default
-                },
-            ]
-        });
+        if (data || data.length > 0) {
+            let resPopDel = yield Promise.all(data.map((alter) => __awaiter(void 0, void 0, void 0, function* () {
+                let idAlt = alter.codigo;
+                let popDelimitation = yield populationDelimitation_1.default.findAll({
+                    where: {
+                        AlterId: idAlt
+                    },
+                    include: [
+                        {
+                            required: false,
+                            model: referencePopulation_1.default
+                        },
+                        {
+                            required: false,
+                            model: denomination_1.default
+                        },
+                    ]
+                });
+                let gArea = yield geographicArea_1.default.findAll({
+                    where: {
+                        AlterId: idAlt
+                    },
+                    include: [
+                        {
+                            required: false,
+                            model: coordinates_1.default
+                        },
+                    ]
+                });
+                let pDescription = yield projectDescription_1.default.findAll({
+                    where: {
+                        AlterId: idAlt
+                    },
+                    include: [
+                        {
+                            required: false,
+                            model: executionTime_1.default
+                        },
+                    ]
+                });
+                alter.popDelimit = popDelimitation;
+                alter.geoArea = gArea;
+                alter.projDesc = pDescription;
+                datosResult.push(alter);
+                return res;
+            })));
+        }
         res.status(200).json({
             msg: "Datos Obtenidos",
-            data,
-            popDelimitation,
-            gArea,
-            pDescription
+            data: datosResult,
         });
     }
     catch (error) {

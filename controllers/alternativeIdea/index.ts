@@ -110,6 +110,8 @@ export const getAlternative = async (req: Request, res: Response) => {
     try {
         let idAlternative = req.params.id;
 
+        let datosResult: any[] = [];
+
         let data = await ideaAlternative.findAll({
             where: {
                 sectionBIId: idAlternative
@@ -131,45 +133,61 @@ export const getAlternative = async (req: Request, res: Response) => {
             ]
         });
 
-        let popDelimitation = await populationDelimitation.findAll({
-            include: [
-                {
-                    required: false,
-                    model: referencePopulation
-                },
-                {
-                    required: false,
-                    model: denomination
-                },
-            ]
-        })
+        if (data || data.length > 0) {
+            let resPopDel = await Promise.all(data.map(async (alter: any) => {
+                let idAlt = alter.codigo;
+                let popDelimitation = await populationDelimitation.findAll({
+                    where: {
+                        AlterId: idAlt
+                    },
+                    include: [
+                        {
+                            required: false,
+                            model: referencePopulation
+                        },
+                        {
+                            required: false,
+                            model: denomination
+                        },
+                    ]
+                });
 
-        let gArea = await geographicArea.findAll({
-            include: [
-                {
-                    required: false,
-                    model: coordinates
-                },
-            ]
-        })
+                let gArea = await geographicArea.findAll({
+                    where: {
+                        AlterId: idAlt
+                    },
+                    include: [
+                        {
+                            required: false,
+                            model: coordinates
+                        },
+                    ]
+                });
+                let pDescription = await projectDescription.findAll({
+                    where: {
+                        AlterId: idAlt
+                    },
+                    include: [
+                        {
+                            required: false,
+                            model: executionTime
+                        },
+                    ]
+                });
 
-        let pDescription = await projectDescription.findAll({
-            include: [
-                {
-                    required: false,
-                    model: executionTime
-                },
-            ]
-        })
+                alter.popDelimit = popDelimitation;
+                alter.geoArea = gArea;
+                alter.projDesc = pDescription;
 
+                datosResult.push(alter);
 
+                return res;
+            }));
+        }
 
         res.status(200).json({
             msg: "Datos Obtenidos",
-            data,
-            popDelimitation,
-            gArea,
-            pDescription
+            data: datosResult,
         });
     } catch (error) {
         res.status(500).json({
