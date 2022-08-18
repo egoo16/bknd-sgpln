@@ -111,58 +111,57 @@ export const getAlternative = async (req: Request, res: Response) => {
         let idAlternative = req.params.id;
 
         let data = await ideaAlternative.findAll({
-            where: {
-                sectionBIId: idAlternative
-            },
-            include: [
-                {
-                    required: false,
-                    model: preliminaryName
-                },
-                {
-                    required: false,
-                    model: responsibleEntity
-                },
-                {
-                    required: false,
-                    model: populationDelimitation,
-                    include: [
-                        {
-                            required: false,
-                            model: referencePopulation
-                        },
-                        {
-                            required: false,
-                            model: denomination
-                        },
-                    ]
-                },
-                {
-                    required: false,
-                    model: geographicArea,
-                    include: [
-                        {
-                            required: false,
-                            model: coordinates
-                        },
-                    ]
-                },
-                {
-                    required: false,
-                    model: projectDescription,
-                    include: [
-                        {
-                            required: false,
-                            model: executionTime
-                        },
-                    ]
-                },
-                {
-                    required: false,
-                    model: qualification
-                },
-
-            ]
+            // where: {
+            //     sectionBIId: idAlternative
+            // },
+            // include: [
+            //     {
+            //         required: false,
+            //         model: preliminaryName
+            //     },
+            //     {
+            //         required: false,
+            //         model: responsibleEntity
+            //     },
+            //     {
+            //         required: false,
+            //         model: populationDelimitation,
+            //         include: [
+            //             {
+            //                 required: false,
+            //                 model: referencePopulation
+            //             },
+            //             {
+            //                 required: false,
+            //                 model: denomination
+            //             },
+            //         ]
+            //     },
+            //     {
+            //         required: false,
+            //         model: geographicArea,
+            //         include: [
+            //             {
+            //                 required: false,
+            //                 model: coordinates
+            //             },
+            //         ]
+            //     },
+            //     {
+            //         required: false,
+            //         model: projectDescription,
+            //         include: [
+            //             {
+            //                 required: false,
+            //                 model: executionTime
+            //             },
+            //         ]
+            //     },
+            //     {
+            //         required: false,
+            //         model: qualification
+            //     },
+            // ]
         });
         res.status(200).json({
             msg: "Datos Obtenidos",

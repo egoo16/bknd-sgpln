@@ -16,17 +16,13 @@ exports.getPertinencia = exports.getAlternative = exports.getReferencePopulation
 const connection_1 = __importDefault(require("../../db/connection"));
 const feature_1 = require("./feature");
 const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
-const preliminaryName_1 = __importDefault(require("../../models/BancoIdeas/preliminaryName"));
-const responsibleEntity_1 = __importDefault(require("../../models/BancoIdeas/responsibleEntity"));
 const populationDelimitation_1 = __importDefault(require("../../models/BancoIdeas/populationDelimitation"));
 const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geographicArea"));
 const projectDescription_1 = __importDefault(require("../../models/BancoIdeas/projectDescription"));
 const referencePopulation_1 = __importDefault(require("../../models/BancoIdeas/referencePopulation"));
 const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomination"));
-const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinates"));
 const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executionTime"));
 const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
-const qualification_1 = __importDefault(require("../../models/BancoIdeas/qualification"));
 /**
  * Funcion para  listar las configuraciones globales
  * @param {*} req
@@ -121,57 +117,57 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         let idAlternative = req.params.id;
         let data = yield ideaAlternative_1.default.findAll({
-            where: {
-                sectionBIId: idAlternative
-            },
-            include: [
-                {
-                    required: false,
-                    model: preliminaryName_1.default
-                },
-                {
-                    required: false,
-                    model: responsibleEntity_1.default
-                },
-                {
-                    required: false,
-                    model: populationDelimitation_1.default,
-                    include: [
-                        {
-                            required: false,
-                            model: referencePopulation_1.default
-                        },
-                        {
-                            required: false,
-                            model: denomination_1.default
-                        },
-                    ]
-                },
-                {
-                    required: false,
-                    model: geographicArea_1.default,
-                    include: [
-                        {
-                            required: false,
-                            model: coordinates_1.default
-                        },
-                    ]
-                },
-                {
-                    required: false,
-                    model: projectDescription_1.default,
-                    include: [
-                        {
-                            required: false,
-                            model: executionTime_1.default
-                        },
-                    ]
-                },
-                {
-                    required: false,
-                    model: qualification_1.default
-                },
-            ]
+        // where: {
+        //     sectionBIId: idAlternative
+        // },
+        // include: [
+        //     {
+        //         required: false,
+        //         model: preliminaryName
+        //     },
+        //     {
+        //         required: false,
+        //         model: responsibleEntity
+        //     },
+        //     {
+        //         required: false,
+        //         model: populationDelimitation,
+        //         include: [
+        //             {
+        //                 required: false,
+        //                 model: referencePopulation
+        //             },
+        //             {
+        //                 required: false,
+        //                 model: denomination
+        //             },
+        //         ]
+        //     },
+        //     {
+        //         required: false,
+        //         model: geographicArea,
+        //         include: [
+        //             {
+        //                 required: false,
+        //                 model: coordinates
+        //             },
+        //         ]
+        //     },
+        //     {
+        //         required: false,
+        //         model: projectDescription,
+        //         include: [
+        //             {
+        //                 required: false,
+        //                 model: executionTime
+        //             },
+        //         ]
+        //     },
+        //     {
+        //         required: false,
+        //         model: qualification
+        //     },
+        // ]
         });
         res.status(200).json({
             msg: "Datos Obtenidos",
