@@ -124,21 +124,6 @@ export const getAlternative = async (req: Request, res: Response) => {
                     model: responsibleEntity
                 },
 
-                // {
-                //     required: false,
-                //     model: geographicArea,
-
-                // },
-                // {
-                //     required: false,
-                //     model: projectDescription,
-                //     include: [
-                //         {
-                //             required: false,
-                //             model: executionTime
-                //         },
-                //     ]
-                // },
                 {
                     required: false,
                     model: qualification
@@ -159,11 +144,20 @@ export const getAlternative = async (req: Request, res: Response) => {
             ]
         })
 
-        let gArea =  await geographicArea.findAll({
+        let gArea = await geographicArea.findAll({
             include: [
                 {
                     required: false,
                     model: coordinates
+                },
+            ]
+        })
+
+        let pDescription = await projectDescription.findAll({
+            include: [
+                {
+                    required: false,
+                    model: executionTime
                 },
             ]
         })
@@ -175,6 +169,7 @@ export const getAlternative = async (req: Request, res: Response) => {
             data,
             popDelimitation,
             gArea,
+            pDescription
         });
     } catch (error) {
         res.status(500).json({

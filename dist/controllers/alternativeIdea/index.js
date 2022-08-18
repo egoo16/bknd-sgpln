@@ -133,20 +133,6 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                     required: false,
                     model: responsibleEntity_1.default
                 },
-                // {
-                //     required: false,
-                //     model: geographicArea,
-                // },
-                // {
-                //     required: false,
-                //     model: projectDescription,
-                //     include: [
-                //         {
-                //             required: false,
-                //             model: executionTime
-                //         },
-                //     ]
-                // },
                 {
                     required: false,
                     model: qualification_1.default
@@ -173,11 +159,20 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 },
             ]
         });
+        let pDescription = yield projectDescription_1.default.findAll({
+            include: [
+                {
+                    required: false,
+                    model: executionTime_1.default
+                },
+            ]
+        });
         res.status(200).json({
             msg: "Datos Obtenidos",
             data,
             popDelimitation,
             gArea,
+            pDescription
         });
     }
     catch (error) {
