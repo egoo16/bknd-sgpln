@@ -209,66 +209,76 @@ export const getAlternative = async (req: Request, res: Response) => {
                     deletedAt: alter.resEntity.deletedAt,
 
                 }
-                alternativa.popDelimit = {
-                    codigo: popDelimitation.codigo,
-                    AlterId: popDelimitation.AlterId,
-                    refPopId: popDelimitation.refPopId,
-                    denId: popDelimitation.denId,
-                    totalPopulation: popDelimitation.totalPopulation,
-                    gender: popDelimitation.gender,
-                    estimateBeneficiaries: popDelimitation.estimateBeneficiaries,
-                    preliminaryCharacterization: popDelimitation.preliminaryCharacterization,
-                    coverage: popDelimitation.coverage,
-                    createdAt: popDelimitation.createdAt,
-                    updatedAt: popDelimitation.updatedAt,
-                    deletedAt: popDelimitation.deletedAt,
-                };
 
-
-                alternativa.popDelimit.refPop = {
-                    codigo: popDelimitation.refPop.codigo,
-                    name: popDelimitation.refPop.name,
-                    createdAt: popDelimitation.refPop.createdAt,
-                    updatedAt: popDelimitation.refPop.updatedAt,
-                    deletedAt: popDelimitation.refPop.deletedAt,
-                };
-                alternativa.popDelimitdenmtion = {
-                    codigo: popDelimitation.denmtion.codigo,
-                    name: popDelimitation.denmtion.name,
-                    createdAt: popDelimitation.denmtion.createdAt,
-                    updatedAt: popDelimitation.denmtion.updatedAt,
-                    deletedAt: popDelimitation.denmtion.deletedAt,
+                if (popDelimitation) {
+                    alternativa.popDelimit = {
+                        codigo: popDelimitation.codigo,
+                        AlterId: popDelimitation.AlterId,
+                        refPopId: popDelimitation.refPopId,
+                        denId: popDelimitation.denId,
+                        totalPopulation: popDelimitation.totalPopulation,
+                        gender: popDelimitation.gender,
+                        estimateBeneficiaries: popDelimitation.estimateBeneficiaries,
+                        preliminaryCharacterization: popDelimitation.preliminaryCharacterization,
+                        coverage: popDelimitation.coverage,
+                        createdAt: popDelimitation.createdAt,
+                        updatedAt: popDelimitation.updatedAt,
+                        deletedAt: popDelimitation.deletedAt,
+                    };
                 }
-                alternativa.geoArea = {
-                    codigo: gArea.codigo,
-                    AlterId: gArea.AlterId,
-                    availableTerrain: gArea.availableTerrain,
-                    oneAvailableTerrain: gArea.oneAvailableTerrain,
-                    investPurchase: gArea.investPurchase,
-                    governmentTerrain: gArea.governmentTerrain,
-                    registerGovernmentTerrain: gArea.registerGovernmentTerrain,
-                    statusDescribe: gArea.statusDescribe,
-                    finca: gArea.finca,
-                    folio: gArea.folio,
-                    libro: gArea.libro,
-                    plano: gArea.plano,
-                    slightIncline: gArea.slightIncline,
-                    broken: gArea.broken,
-                    image: gArea.image,
-                    imageUrl: gArea.imageUrl,
-                    description: gArea.description,
-                    basicServices: gArea.basicServices,
-                    descriptionBasicServices: gArea.descriptionBasicServices,
-                    descriptionLocation: gArea.descriptionLocation,
-                    createdAt: gArea.createdAt,
-                    updatedAt: gArea.updatedAt,
-                    deletedAt: gArea.deletedAt,
-                }
-                alternativa.geoArea.coordinates = []
 
-                if (gArea.coordinates || gArea.coordinates.length > 0) {
+                if (popDelimitation?.refPop) {
+                    alternativa.popDelimit.refPop = {
+                        codigo: popDelimitation.refPop.codigo,
+                        name: popDelimitation.refPop.name,
+                        createdAt: popDelimitation.refPop.createdAt,
+                        updatedAt: popDelimitation.refPop.updatedAt,
+                        deletedAt: popDelimitation.refPop.deletedAt,
+                    };
+                }
+
+                if (popDelimitation?.denmtion) {
+                    alternativa.popDelimitdenmtion = {
+                        codigo: popDelimitation.denmtion.codigo,
+                        name: popDelimitation.denmtion.name,
+                        createdAt: popDelimitation.denmtion.createdAt,
+                        updatedAt: popDelimitation.denmtion.updatedAt,
+                        deletedAt: popDelimitation.denmtion.deletedAt,
+                    };
+                }
+
+                if (gArea) {
+                    alternativa.geoArea = {
+                        codigo: gArea.codigo,
+                        AlterId: gArea.AlterId,
+                        availableTerrain: gArea.availableTerrain,
+                        oneAvailableTerrain: gArea.oneAvailableTerrain,
+                        investPurchase: gArea.investPurchase,
+                        governmentTerrain: gArea.governmentTerrain,
+                        registerGovernmentTerrain: gArea.registerGovernmentTerrain,
+                        statusDescribe: gArea.statusDescribe,
+                        finca: gArea.finca,
+                        folio: gArea.folio,
+                        libro: gArea.libro,
+                        plano: gArea.plano,
+                        slightIncline: gArea.slightIncline,
+                        broken: gArea.broken,
+                        image: gArea.image,
+                        imageUrl: gArea.imageUrl,
+                        description: gArea.description,
+                        basicServices: gArea.basicServices,
+                        descriptionBasicServices: gArea.descriptionBasicServices,
+                        descriptionLocation: gArea.descriptionLocation,
+                        createdAt: gArea.createdAt,
+                        updatedAt: gArea.updatedAt,
+                        deletedAt: gArea.deletedAt,
+                    };
+                    alternativa.geoArea.coordinates = []
+                }
+
+                if (gArea?.coordinates || gArea?.coordinates.length > 0) {
                     gArea.coordinates.map((coordinate: any) => {
-                        let coord = { 
+                        let coord = {
                             codigo: coordinate.codigo,
                             geoAreaId: coordinate.geoAreaId,
                             latitude: coordinate.latitude,
@@ -280,22 +290,26 @@ export const getAlternative = async (req: Request, res: Response) => {
                     });
                 }
 
-                alternativa.projDesc = {
-                    codigo: pDescription.codigo,
-                    AlterId: pDescription.AlterId,
-                    projectType: pDescription.projectType,
-                    formulationProcess: pDescription.formulationProcess,
-                    formulationProcessDescription: pDescription.formulationProcessDescription,
-                    descriptionInterventions: pDescription.descriptionInterventions,
-                    complexity: pDescription.complexity,
-                    estimatedCost: pDescription.estimatedCost,
-                    investmentCost: pDescription.investmentCost,
-                    fundingSources: pDescription.fundingSources,
-                    foundingSourcesName: pDescription.foundingSourcesName,
-                    createdAt: pDescription.createdAt,
-                    updatedAt: pDescription.updatedAt,
-                    deletedAt: pDescription.deletedAt,
+                if (pDescription) {
+
+                    alternativa.projDesc = {
+                        codigo: pDescription.codigo,
+                        AlterId: pDescription.AlterId,
+                        projectType: pDescription.projectType,
+                        formulationProcess: pDescription.formulationProcess,
+                        formulationProcessDescription: pDescription.formulationProcessDescription,
+                        descriptionInterventions: pDescription.descriptionInterventions,
+                        complexity: pDescription.complexity,
+                        estimatedCost: pDescription.estimatedCost,
+                        investmentCost: pDescription.investmentCost,
+                        fundingSources: pDescription.fundingSources,
+                        foundingSourcesName: pDescription.foundingSourcesName,
+                        createdAt: pDescription.createdAt,
+                        updatedAt: pDescription.updatedAt,
+                        deletedAt: pDescription.deletedAt,
+                    };
                 }
+
 
                 // alternativa.geoArea = gArea;
                 // alternativa.projDesc = pDescription;
