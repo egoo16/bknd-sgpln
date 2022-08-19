@@ -21,8 +21,6 @@ const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executi
 const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geographicArea"));
 const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
 const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinates"));
-const referencePopulation_1 = __importDefault(require("../../models/BancoIdeas/referencePopulation"));
-const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomination"));
 const preInvestmentHistory_1 = __importDefault(require("../../models/BancoIdeas/preInvestmentHistory"));
 function FgetPreinversion(idAlternativa) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -198,10 +196,17 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
     return __awaiter(this, void 0, void 0, function* () {
         try {
             popDemiliation.AlterId = idAlternativa;
-            let refModel = yield referencePopulation_1.default.findAll();
-            popDemiliation.refPopId = refModel[0].codigo;
-            let DenModel = yield denomination_1.default.findAll();
-            popDemiliation.denId = DenModel[0].codigo;
+            // let refModel = await referencePopulation.findAll();
+            // popDemiliation.refPopId = refModel[0].codigo;
+            // let DenModel = await denomination.findAll();
+            // popDemiliation.denId = DenModel[0].codigo;
+            if (popDemiliation.estimateBeneficiaries && popDemiliation.totalPopulation) {
+                let estimateBeneficiaries = parseInt(popDemiliation.estimateBeneficiaries, 10);
+                let totalPopulation = parseInt(popDemiliation.totalPopulation, 10);
+                let multCov = (estimateBeneficiaries / totalPopulation);
+                let resCov = (multCov * 100);
+                popDemiliation.coverage = resCov;
+            }
             let populationDelimitationCreated = yield populationDelimitation_1.default.create(popDemiliation, { transaction });
             return { populationDelimitationCreated, message: `Delimitación preliminar ingresada correctamente` };
         }

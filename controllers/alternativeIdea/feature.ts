@@ -162,13 +162,19 @@ export async function FcresponsableEntity(resEntity: any, idAlternativa: number,
 export async function FcreatePopulationDemilitation(popDemiliation: any, idAlternativa: number, transaction: any) {
     try {
         popDemiliation.AlterId = idAlternativa;
-        let refModel = await referencePopulation.findAll();
-        popDemiliation.refPopId = refModel[0].codigo;
+        // let refModel = await referencePopulation.findAll();
+        // popDemiliation.refPopId = refModel[0].codigo;
 
+        // let DenModel = await denomination.findAll();
+        // popDemiliation.denId = DenModel[0].codigo;
 
-        let DenModel = await denomination.findAll();
-        popDemiliation.denId = DenModel[0].codigo;
-
+        if (popDemiliation.estimateBeneficiaries && popDemiliation.totalPopulation) {
+            let estimateBeneficiaries = parseInt(popDemiliation.estimateBeneficiaries, 10);
+            let totalPopulation = parseInt(popDemiliation.totalPopulation, 10);
+            let multCov = (estimateBeneficiaries / totalPopulation);
+            let resCov = (multCov * 100);
+            popDemiliation.coverage = resCov;
+        }
 
         let populationDelimitationCreated = await populationDelimitation.create(popDemiliation, { transaction })
         return { populationDelimitationCreated, message: `Delimitación preliminar ingresada correctamente` };
@@ -181,8 +187,8 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
 export async function FcreateProjectDescription(proDescription: any, idAlternativa: number, transaction: any) {
     try {
         proDescription.AlterId = idAlternativa
-        if (proDescription.annual || proDescription.annual == true) { proDescription.annual = 1}
-        else if (!proDescription.annual || proDescription.annual == false) {proDescription.annual = 0}
+        if (proDescription.annual || proDescription.annual == true) { proDescription.annual = 1 }
+        else if (!proDescription.annual || proDescription.annual == false) { proDescription.annual = 0 }
         let proDesctiptionCreated = await projectDescription.create(proDescription, { transaction })
         proDescription.execTime.projDescId = proDesctiptionCreated.codigo
         await executionTime.create(proDescription.execTime, { transaction })
