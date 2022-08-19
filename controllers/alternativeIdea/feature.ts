@@ -10,6 +10,7 @@ import ideaAlternative from "../../models/BancoIdeas/ideaAlternative";
 import coordinates from "../../models/BancoIdeas/coordinates";
 import referencePopulation from "../../models/BancoIdeas/referencePopulation";
 import denomination from "../../models/BancoIdeas/denomination";
+import preInvestmentHistory from "../../models/BancoIdeas/preInvestmentHistory";
 
 export async function FgetPreinversion(idAlternativa: any) {
     try {
@@ -91,6 +92,7 @@ export async function FgetPreinversion(idAlternativa: any) {
                 resultado: etapa
             }
         }
+        await FcreatePreInvestment(preInversion, proDes.ideaAlternativeId)
         return { preInversion };
     } catch (error) {
         //devuelve errores al cliente
@@ -113,6 +115,28 @@ export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: 
         throw `Error al ingresar Idea alternativa: ${error}`;
     }
 }
+export async function FcreatePreInvestment(preInversion: any, idAlternativa: any) {
+    try {
+        let preInversionCreate = {
+            ideaAlternativeId: idAlternativa,
+            rangoValor: preInversion.rango.valor,
+            rangoResultado: preInversion.rango.resultado,
+            estimacionValor: preInversion.estimacion.valor,
+            estimacionResultado: preInversion.estimacion.resultado,
+            complejidadValor: preInversion.complejidad.valor,
+            complejidadResultado: preInversion.complejidad.resultado,
+            etapaValor: preInversion.etapa.valor,
+            etapaResultado: preInversion.etapa.resultado
+        }
+        preInversion.ideaAlternativeId = idAlternativa
+        let preInvestmentHistoryCreated = await preInvestmentHistory.create(preInversionCreate)
+        return { preInvestmentHistoryCreated, message: `Pre inversion historico creado correctamente` };
+    } catch (error) {
+        //devuelve errores al cliente
+        throw `Error al ingresar Pre inversion historico: ${error}`;
+    }
+}
+
 export async function FcreatePreleminaryName(prName: any, idAlternativa: number, transaction: any) {
     try {
         prName.ideaAlternativeId = idAlternativa
