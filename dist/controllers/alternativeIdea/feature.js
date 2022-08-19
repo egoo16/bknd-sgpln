@@ -27,8 +27,8 @@ const preInvestmentHistory_1 = __importDefault(require("../../models/BancoIdeas/
 function FgetPreinversion(idAlternativa) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const proDes = yield projectDescription_1.default.findOne({ where: { ideaAlternativeId: idAlternativa } });
-            const popDel = yield populationDelimitation_1.default.findOne({ where: { ideaAlternativeId: idAlternativa } });
+            const proDes = yield projectDescription_1.default.findOne({ where: { AlterId: idAlternativa } });
+            const popDel = yield populationDelimitation_1.default.findOne({ where: { AlterId: idAlternativa } });
             let costo = proDes.estimatedCost;
             let rangoInversion = 0;
             let resRangoInversion = '';
@@ -127,11 +127,11 @@ function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
         try {
             let ideaAlternativeCreated = yield ideaAlternative_1.default.create(ideaAlt, { transaction });
             let codigoAlternativa = ideaAlternativeCreated.codigo;
-            yield FcreatePreleminaryName(ideaAlt.preliminaryName, codigoAlternativa, transaction);
-            yield FcresponsableEntity(ideaAlt.responsibleEntity, codigoAlternativa, transaction);
-            yield FcreatePopulationDemilitation(ideaAlt.populationDelimitation, codigoAlternativa, transaction);
-            yield FcreateGeographicArea(ideaAlt.geographicArea, codigoAlternativa, transaction);
-            yield FcreateProjectDescription(ideaAlt.projectDescription, codigoAlternativa, transaction);
+            yield FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction);
+            yield FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction);
+            yield FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction);
+            yield FcreateGeographicArea(ideaAlt.geoArea, codigoAlternativa, transaction);
+            yield FcreateProjectDescription(ideaAlt.projDesc, codigoAlternativa, transaction);
             return { message: `Idea alternativa creada correctamente` };
         }
         catch (error) {
@@ -169,7 +169,7 @@ exports.FcreatePreInvestment = FcreatePreInvestment;
 function FcreatePreleminaryName(prName, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            prName.ideaAlternativeId = idAlternativa;
+            prName.AlterId = idAlternativa;
             let preliminaryNameCreated = yield preliminaryName_1.default.create(prName, { transaction });
             return { preliminaryNameCreated, message: `Nombre preliminar ingresado correctamente` };
         }
@@ -183,7 +183,7 @@ exports.FcreatePreleminaryName = FcreatePreleminaryName;
 function FcresponsableEntity(resEntity, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            resEntity.ideaAlternativeId = idAlternativa;
+            resEntity.AlterId = idAlternativa;
             let responsableEntityCreated = yield responsibleEntity_1.default.create(resEntity, { transaction });
             return { responsableEntityCreated, message: `Entidad responsable ingresada correctamente` };
         }
@@ -197,11 +197,11 @@ exports.FcresponsableEntity = FcresponsableEntity;
 function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            popDemiliation.ideaAlternativeId = idAlternativa;
+            popDemiliation.AlterId = idAlternativa;
             let refModel = yield referencePopulation_1.default.findAll();
-            popDemiliation.referencePopulationId = refModel[0].codigo;
+            popDemiliation.refPopId = refModel[0].codigo;
             let DenModel = yield denomination_1.default.findAll();
-            popDemiliation.denominationId = DenModel[0].codigo;
+            popDemiliation.denId = DenModel[0].codigo;
             let populationDelimitationCreated = yield populationDelimitation_1.default.create(popDemiliation, { transaction });
             return { populationDelimitationCreated, message: `Delimitación preliminar ingresada correctamente` };
         }
@@ -215,10 +215,16 @@ exports.FcreatePopulationDemilitation = FcreatePopulationDemilitation;
 function FcreateProjectDescription(proDescription, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            proDescription.ideaAlternativeId = idAlternativa;
+            proDescription.AlterId = idAlternativa;
+            if (proDescription.annual || proDescription.annual == true) {
+                proDescription.annual = 1;
+            }
+            else if (!proDescription.annual || proDescription.annual == false) {
+                proDescription.annual = 0;
+            }
             let proDesctiptionCreated = yield projectDescription_1.default.create(proDescription, { transaction });
-            proDescription.executionTime.projectDescriptionId = proDesctiptionCreated.codigo;
-            yield executionTime_1.default.create(proDescription.executionTime, { transaction });
+            proDescription.execTime.projDescId = proDesctiptionCreated.codigo;
+            yield executionTime_1.default.create(proDescription.execTime, { transaction });
             return { proDesctiptionCreated, message: `Descripción preliminar de la idea proyecto ingresada correctamente` };
         }
         catch (error) {
@@ -231,10 +237,10 @@ exports.FcreateProjectDescription = FcreateProjectDescription;
 function FcreateGeographicArea(geograpicArea, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            geograpicArea.ideaAlternativeId = idAlternativa;
+            geograpicArea.AlterId = idAlternativa;
             let geographicAreaCreated = yield geographicArea_1.default.create(geograpicArea, { transaction });
             for (let coordinate of geograpicArea.coordinates) {
-                coordinate.geographicAreaId = geographicAreaCreated.codigo;
+                coordinate.geoAreaId = geographicAreaCreated.codigo;
                 yield coordinates_1.default.create(coordinate, { transaction });
             }
             return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };

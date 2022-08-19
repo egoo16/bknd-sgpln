@@ -3,14 +3,15 @@ import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
 
 const executionTime = db.define(
-    "executionTime",
+    "execTime",
     {
-        codigo: {
-            type: Sequelize.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
-        },
-        projectDescriptionId: { type: Sequelize.INTEGER, allowNull: false },   
+    codigo: {
+      type: Sequelize.UUID,
+      primaryKey: true,
+      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
+    },
+        projDescId: { type: Sequelize.UUID, allowNull: false },   
         tentativeTermMonth: { type: Sequelize.STRING },
         tentativeTermYear: { type: Sequelize.STRING },
         executionDateMonth: { type: Sequelize.STRING },

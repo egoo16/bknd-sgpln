@@ -3,14 +3,15 @@ import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
 
 const responsibleEntity = db.define(
-    "responsibleEntity",
+    "resEntity",
     {
         codigo: {
-            type: Sequelize.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
+            type: Sequelize.UUID,
+            primaryKey: true,
+            allowNull: false,
+            defaultValue: Sequelize.UUIDV4,
         },
-        ideaAlternativeId: { type: Sequelize.INTEGER, allowNull: false },
+        AlterId: { type: Sequelize.UUID, allowNull: false },
         nameEPI: { type: Sequelize.STRING },
         leaderName: { type: Sequelize.STRING },
         email: { type: Sequelize.STRING },

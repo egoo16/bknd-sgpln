@@ -5,14 +5,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
-const possibleAlternatives = connection_1.default.define("alternatives", {
+const possibleAlternatives = connection_1.default.define("Alternatives", {
     codigo: {
-        type: sequelize_oracle_1.default.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+        type: sequelize_oracle_1.default.UUID,
+        primaryKey: true,
+        allowNull: false,
+        defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
     description: { type: sequelize_oracle_1.default.STRING, required: true, allowNull: false },
-    InformationId: { type: sequelize_oracle_1.default.INTEGER, required: true },
+    InformationId: { type: sequelize_oracle_1.default.UUID, required: true },
 }, {
     underscoded: true,
     paranoid: true,

@@ -69,10 +69,10 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
             transaction,
         });
         //#region Insertando Efectos
-        const effects = body.possibleEffects;
+        const effects = body.Effects;
         if ((effects === null || effects === void 0 ? void 0 : effects.length) > 0) {
             let resEffects = yield Promise.all(effects.map((effect) => __awaiter(void 0, void 0, void 0, function* () {
-                effect.generalInformationId = informationIsert.codigo;
+                effect.InformationId = informationIsert.codigo;
                 let res = yield possibleEffects_1.default.create(effect, {
                     transaction,
                 });
@@ -81,10 +81,10 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
         }
         //#endregion Finalizó la insercion de efectos
         //#region Insertando Causas
-        const causes = body.possibleCauses;
+        const causes = body.Causes;
         if ((causes === null || causes === void 0 ? void 0 : causes.length) > 0) {
             let resCauses = yield Promise.all(causes.map((cause) => __awaiter(void 0, void 0, void 0, function* () {
-                cause.generalInformationId = informationIsert.codigo;
+                cause.InformationId = informationIsert.codigo;
                 let res = yield possibleCauses_1.default.create(cause, {
                     transaction,
                 });
@@ -93,10 +93,10 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
         }
         //#endregion Finalizó la insercion de Causas
         //#region Insertando Alternativas
-        const alternatives = body.possibleAlter;
+        const alternatives = body.Alternatives;
         if ((alternatives === null || alternatives === void 0 ? void 0 : alternatives.length) > 0) {
             let resAlternatives = yield Promise.all(alternatives.map((alternative) => __awaiter(void 0, void 0, void 0, function* () {
-                alternative.generalInformationId = informationIsert.codigo;
+                alternative.InformationId = informationIsert.codigo;
                 let res = yield possibleAlternatives_1.default.create(alternative, {
                     transaction,
                 });
@@ -141,15 +141,18 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
             include: [
                 {
                     required: false,
-                    model: possibleEffects_1.default
+                    model: possibleEffects_1.default,
+                    // as: 'possibleEffects'
                 },
                 {
                     required: false,
-                    model: possibleCauses_1.default
+                    model: possibleCauses_1.default,
+                    // as: 'possibleCauses'
                 },
                 {
                     required: false,
-                    model: possibleAlternatives_1.default
+                    model: possibleAlternatives_1.default,
+                    // as: 'possibleAlternatives'
                 },
                 {
                     required: false,

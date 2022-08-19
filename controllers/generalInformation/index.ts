@@ -63,10 +63,10 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
 
 
         //#region Insertando Efectos
-        const effects = body.possibleEffects;
+        const effects = body.Effects;
         if (effects?.length > 0) {
             let resEffects = await Promise.all(effects.map(async (effect: any) => {
-                effect.generalInformationId = informationIsert.codigo;
+                effect.InformationId = informationIsert.codigo;
                 let res = await possibleEffects.create(effect, {
                     transaction,
                 });
@@ -77,11 +77,11 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
 
         //#region Insertando Causas
 
-        const causes = body.possibleCauses;
+        const causes = body.Causes;
         if (causes?.length > 0) {
 
             let resCauses = await Promise.all(causes.map(async (cause: any) => {
-                cause.generalInformationId = informationIsert.codigo;
+                cause.InformationId = informationIsert.codigo;
                 let res = await possibleCauses.create(cause, {
                     transaction,
                 });
@@ -92,10 +92,10 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
 
         //#region Insertando Alternativas
 
-        const alternatives = body.possibleAlter;
+        const alternatives = body.Alternatives;
         if (alternatives?.length > 0) {
             let resAlternatives = await Promise.all(alternatives.map(async (alternative: any) => {
-                alternative.generalInformationId = informationIsert.codigo;
+                alternative.InformationId = informationIsert.codigo;
                 let res = await possibleAlternatives.create(alternative, {
                     transaction,
                 });
@@ -142,17 +142,22 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
                 {
                     required: false,
 
-                    model: possibleEffects
+                    model: possibleEffects,
+                    // as: 'possibleEffects'
                 },
                 {
                     required: false,
 
-                    model: possibleCauses
+                    model: possibleCauses,
+                    // as: 'possibleCauses'
+
                 },
                 {
                     required: false,
 
-                    model: possibleAlternatives
+                    model: possibleAlternatives,
+                    // as: 'possibleAlternatives'
+
                 },
                 {
                     required: false,

@@ -14,8 +14,8 @@ import preInvestmentHistory from "../../models/BancoIdeas/preInvestmentHistory";
 
 export async function FgetPreinversion(idAlternativa: any) {
     try {
-        const proDes = await projectDescription.findOne({ where: { ideaAlternativeId: idAlternativa } })
-        const popDel = await populationDelimitation.findOne({ where: { ideaAlternativeId: idAlternativa } })
+        const proDes = await projectDescription.findOne({ where: { AlterId: idAlternativa } })
+        const popDel = await populationDelimitation.findOne({ where: { AlterId: idAlternativa } })
         let costo = proDes.estimatedCost
         let rangoInversion = 0
         let resRangoInversion = ''
@@ -103,11 +103,11 @@ export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: 
     try {
         let ideaAlternativeCreated = await ideaAlternative.create(ideaAlt, { transaction })
         let codigoAlternativa = ideaAlternativeCreated.codigo
-        await FcreatePreleminaryName(ideaAlt.preliminaryName, codigoAlternativa, transaction)
-        await FcresponsableEntity(ideaAlt.responsibleEntity, codigoAlternativa, transaction)
-        await FcreatePopulationDemilitation(ideaAlt.populationDelimitation, codigoAlternativa, transaction)
-        await FcreateGeographicArea(ideaAlt.geographicArea, codigoAlternativa, transaction)
-        await FcreateProjectDescription(ideaAlt.projectDescription, codigoAlternativa, transaction)
+        await FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction)
+        await FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction)
+        await FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction)
+        await FcreateGeographicArea(ideaAlt.geoArea, codigoAlternativa, transaction)
+        await FcreateProjectDescription(ideaAlt.projDesc, codigoAlternativa, transaction)
 
         return { message: `Idea alternativa creada correctamente` };
     } catch (error) {
@@ -139,7 +139,7 @@ export async function FcreatePreInvestment(preInversion: any, idAlternativa: any
 
 export async function FcreatePreleminaryName(prName: any, idAlternativa: number, transaction: any) {
     try {
-        prName.ideaAlternativeId = idAlternativa
+        prName.AlterId = idAlternativa
         let preliminaryNameCreated = await preliminaryName.create(prName, { transaction })
         return { preliminaryNameCreated, message: `Nombre preliminar ingresado correctamente` };
     } catch (error) {
@@ -150,7 +150,7 @@ export async function FcreatePreleminaryName(prName: any, idAlternativa: number,
 
 export async function FcresponsableEntity(resEntity: any, idAlternativa: number, transaction: any) {
     try {
-        resEntity.ideaAlternativeId = idAlternativa
+        resEntity.AlterId = idAlternativa
         let responsableEntityCreated = await responsableEntity.create(resEntity, { transaction })
         return { responsableEntityCreated, message: `Entidad responsable ingresada correctamente` };
     } catch (error) {
@@ -161,13 +161,13 @@ export async function FcresponsableEntity(resEntity: any, idAlternativa: number,
 
 export async function FcreatePopulationDemilitation(popDemiliation: any, idAlternativa: number, transaction: any) {
     try {
-        popDemiliation.ideaAlternativeId = idAlternativa;
+        popDemiliation.AlterId = idAlternativa;
         let refModel = await referencePopulation.findAll();
-        popDemiliation.referencePopulationId = refModel[0].codigo;
+        popDemiliation.refPopId = refModel[0].codigo;
 
 
         let DenModel = await denomination.findAll();
-        popDemiliation.denominationId = DenModel[0].codigo;
+        popDemiliation.denId = DenModel[0].codigo;
 
 
         let populationDelimitationCreated = await populationDelimitation.create(popDemiliation, { transaction })
@@ -180,10 +180,12 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
 
 export async function FcreateProjectDescription(proDescription: any, idAlternativa: number, transaction: any) {
     try {
-        proDescription.ideaAlternativeId = idAlternativa
+        proDescription.AlterId = idAlternativa
+        if (proDescription.annual || proDescription.annual == true) { proDescription.annual = 1}
+        else if (!proDescription.annual || proDescription.annual == false) {proDescription.annual = 0}
         let proDesctiptionCreated = await projectDescription.create(proDescription, { transaction })
-        proDescription.executionTime.projectDescriptionId = proDesctiptionCreated.codigo
-        await executionTime.create(proDescription.executionTime, { transaction })
+        proDescription.execTime.projDescId = proDesctiptionCreated.codigo
+        await executionTime.create(proDescription.execTime, { transaction })
 
         return { proDesctiptionCreated, message: `Descripción preliminar de la idea proyecto ingresada correctamente` };
     } catch (error) {
@@ -194,10 +196,10 @@ export async function FcreateProjectDescription(proDescription: any, idAlternati
 
 export async function FcreateGeographicArea(geograpicArea: any, idAlternativa: number, transaction: any) {
     try {
-        geograpicArea.ideaAlternativeId = idAlternativa
+        geograpicArea.AlterId = idAlternativa
         let geographicAreaCreated = await geographicArea.create(geograpicArea, { transaction })
         for (let coordinate of geograpicArea.coordinates) {
-            coordinate.geographicAreaId = geographicAreaCreated.codigo
+            coordinate.geoAreaId = geographicAreaCreated.codigo
             await coordinates.create(coordinate, { transaction })
         }
         return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };

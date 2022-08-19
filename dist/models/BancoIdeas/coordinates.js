@@ -7,11 +7,12 @@ const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
 const coordinates = connection_1.default.define("coordinates", {
     codigo: {
-        type: sequelize_oracle_1.default.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+        type: sequelize_oracle_1.default.UUID,
+        primaryKey: true,
+        allowNull: false,
+        defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    geographicAreaId: { type: sequelize_oracle_1.default.INTEGER, required: true },
+    geoAreaId: { type: sequelize_oracle_1.default.UUID, required: true },
     latitude: { type: sequelize_oracle_1.default.STRING },
     length: { type: sequelize_oracle_1.default.STRING },
 }, {

@@ -5,13 +5,14 @@ import db from "../../db/connection";
 const linkSNP = db.define(
     "linkSNP",
     {
-        codigo: {
-            type: Sequelize.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
-        },
-        ideaAlternativeId: { type: Sequelize.INTEGER, allowNull: false },
-        typePlanningId: { type: Sequelize.INTEGER, allowNull: false },
+    codigo: {
+      type: Sequelize.UUID,
+      primaryKey: true,
+      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
+    },
+        ideaAlternativeId: { type: Sequelize.UUID, allowNull: false },
+        typePlanningId: { type: Sequelize.UUID, allowNull: false },
         observation: { type: Sequelize.STRING },
         approachJustification: { type: Sequelize.STRING },
 

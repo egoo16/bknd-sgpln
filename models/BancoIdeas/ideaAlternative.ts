@@ -10,14 +10,15 @@ import qualification from "./qualification";
 import responsibleEntity from "./responsibleEntity";
 
 const ideaAlternative = db.define(
-    "ideaAlternative",
+    "alter",
     {
-        codigo: {
-            type: Sequelize.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
-        },
-        sectionBIId: { type: Sequelize.INTEGER, allowNull: false },
+    codigo: {
+      type: Sequelize.UUID,
+      primaryKey: true,
+      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
+    },
+        sectionBIId: { type: Sequelize.UUID, allowNull: false },
         state: { type: Sequelize.BOOLEAN },
 
     },
@@ -29,21 +30,21 @@ const ideaAlternative = db.define(
 );
 
 ideaAlternative.hasOne(preliminaryName, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(responsibleEntity, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(populationDelimitation, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(geographicArea, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(projectDescription, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlterId",
 });
-ideaAlternative.hasOne(qualification, { foreignKey: "ideaAlternativeId" });
+ideaAlternative.hasOne(qualification, { foreignKey: "AlterId" });
 
 // ideaAlternative.belongsTo(generalInformation, {
 //     foreignKey: "sectionBIId",

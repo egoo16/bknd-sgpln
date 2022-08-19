@@ -11,13 +11,14 @@ const preliminaryName_1 = __importDefault(require("./preliminaryName"));
 const projectDescription_1 = __importDefault(require("./projectDescription"));
 const qualification_1 = __importDefault(require("./qualification"));
 const responsibleEntity_1 = __importDefault(require("./responsibleEntity"));
-const ideaAlternative = connection_1.default.define("ideaAlternative", {
+const ideaAlternative = connection_1.default.define("alter", {
     codigo: {
-        type: sequelize_oracle_1.default.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+        type: sequelize_oracle_1.default.UUID,
+        primaryKey: true,
+        allowNull: false,
+        defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    sectionBIId: { type: sequelize_oracle_1.default.INTEGER, allowNull: false },
+    sectionBIId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     state: { type: sequelize_oracle_1.default.BOOLEAN },
 }, {
     underscoded: true,
@@ -25,21 +26,21 @@ const ideaAlternative = connection_1.default.define("ideaAlternative", {
     freezeTableName: true,
 });
 ideaAlternative.hasOne(preliminaryName_1.default, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(responsibleEntity_1.default, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(populationDelimitation_1.default, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(geographicArea_1.default, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(projectDescription_1.default, {
-    foreignKey: "ideaAlternativeId",
+    foreignKey: "AlterId",
 });
-ideaAlternative.hasOne(qualification_1.default, { foreignKey: "ideaAlternativeId" });
+ideaAlternative.hasOne(qualification_1.default, { foreignKey: "AlterId" });
 // ideaAlternative.belongsTo(generalInformation, {
 //     foreignKey: "sectionBIId",
 //     sourceKey: "codigo",

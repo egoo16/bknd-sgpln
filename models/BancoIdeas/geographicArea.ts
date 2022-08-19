@@ -4,14 +4,15 @@ import db from "../../db/connection";
 import coordinates from "./coordinates";
 
 const geographicArea = db.define(
-    "geographicArea",
+    "geoArea",
     {
-        codigo: {
-            type: Sequelize.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
-        },
-        ideaAlternativeId: { type: Sequelize.INTEGER, allowNull: false },
+    codigo: {
+      type: Sequelize.UUID,
+      primaryKey: true,
+      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
+    },
+    AlterId: { type: Sequelize.UUID, allowNull: false },
         availableTerrain: { type: Sequelize.BOOLEAN },
         oneAvailableTerrain: { type: Sequelize.BOOLEAN },
         investPurchase: { type: Sequelize.BOOLEAN },
@@ -39,6 +40,6 @@ const geographicArea = db.define(
     }
 );
 geographicArea.hasMany(coordinates, {
-    foreignKey: "geographicAreaId",
+    foreignKey: "geoAreaId",
 });
 export default geographicArea;

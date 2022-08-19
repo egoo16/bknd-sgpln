@@ -6,13 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
 const coordinates_1 = __importDefault(require("./coordinates"));
-const geographicArea = connection_1.default.define("geographicArea", {
+const geographicArea = connection_1.default.define("geoArea", {
     codigo: {
-        type: sequelize_oracle_1.default.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+        type: sequelize_oracle_1.default.UUID,
+        primaryKey: true,
+        allowNull: false,
+        defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    ideaAlternativeId: { type: sequelize_oracle_1.default.INTEGER, allowNull: false },
+    AlterId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     availableTerrain: { type: sequelize_oracle_1.default.BOOLEAN },
     oneAvailableTerrain: { type: sequelize_oracle_1.default.BOOLEAN },
     investPurchase: { type: sequelize_oracle_1.default.BOOLEAN },
@@ -37,7 +38,7 @@ const geographicArea = connection_1.default.define("geographicArea", {
     freezeTableName: true,
 });
 geographicArea.hasMany(coordinates_1.default, {
-    foreignKey: "geographicAreaId",
+    foreignKey: "geoAreaId",
 });
 exports.default = geographicArea;
 //# sourceMappingURL=geographicArea.js.map

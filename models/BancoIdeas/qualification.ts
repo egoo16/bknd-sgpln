@@ -3,14 +3,15 @@ import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
 
 const qualification = db.define(
-  "qualification",
+  "score",
   {
-        codigo: {
-            type: Sequelize.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
-        },
-    generalInformationId: { type: Sequelize.INTEGER, required: true },
+    codigo: {
+      type: Sequelize.UUID,
+      primaryKey: true,
+      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
+    },
+    AlterId: { type: Sequelize.UUID, required: true },
     descriptionProblem: { type: Sequelize.INTEGER },
     generalObjective: { type: Sequelize.INTEGER },
     analysisDelimitation: { type: Sequelize.INTEGER },
