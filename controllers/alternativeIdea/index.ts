@@ -106,7 +106,6 @@ export const getReferencePopulation = async (req: Request, res: Response) => {
 };
 
 export const getAlternative = async (req: Request, res: Response) => {
-    let transaction = await models.transaction()
     try {
         let idAlternative = req.params.id;
 

@@ -117,7 +117,6 @@ const getReferencePopulation = (req, res) => __awaiter(void 0, void 0, void 0, f
 });
 exports.getReferencePopulation = getReferencePopulation;
 const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let transaction = yield connection_1.default.transaction();
     try {
         let idAlternative = req.params.id;
         let datosResult = [];

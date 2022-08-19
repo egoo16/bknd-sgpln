@@ -189,6 +189,12 @@ function FcreateProjectDescription(proDescription, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             proDescription.AlterId = idAlternativa;
+            if (proDescription.annual || proDescription.annual == true) {
+                proDescription.annual = 1;
+            }
+            else if (!proDescription.annual || proDescription.annual == false) {
+                proDescription.annual = 0;
+            }
             let proDesctiptionCreated = yield projectDescription_1.default.create(proDescription, { transaction });
             proDescription.execTime.projDescId = proDesctiptionCreated.codigo;
             yield executionTime_1.default.create(proDescription.execTime, { transaction });
