@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreateIdeaAlternativeComplete = exports.FgetPreinversion = void 0;
+exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreatePreInvestment = exports.FcreateIdeaAlternativeComplete = exports.FgetPreinversion = void 0;
 const preliminaryName_1 = __importDefault(require("../../models/BancoIdeas/preliminaryName"));
 const responsibleEntity_1 = __importDefault(require("../../models/BancoIdeas/responsibleEntity"));
 const populationDelimitation_1 = __importDefault(require("../../models/BancoIdeas/populationDelimitation"));
@@ -23,6 +23,7 @@ const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaA
 const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinates"));
 const referencePopulation_1 = __importDefault(require("../../models/BancoIdeas/referencePopulation"));
 const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomination"));
+const preInvestmentHistory_1 = __importDefault(require("../../models/BancoIdeas/preInvestmentHistory"));
 function FgetPreinversion(idAlternativa) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -111,6 +112,7 @@ function FgetPreinversion(idAlternativa) {
                     resultado: etapa
                 }
             };
+            yield FcreatePreInvestment(preInversion, proDes.ideaAlternativeId);
             return { preInversion };
         }
         catch (error) {
@@ -139,6 +141,31 @@ function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
     });
 }
 exports.FcreateIdeaAlternativeComplete = FcreateIdeaAlternativeComplete;
+function FcreatePreInvestment(preInversion, idAlternativa) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let preInversionCreate = {
+                ideaAlternativeId: idAlternativa,
+                rangoValor: preInversion.rango.valor,
+                rangoResultado: preInversion.rango.resultado,
+                estimacionValor: preInversion.estimacion.valor,
+                estimacionResultado: preInversion.estimacion.resultado,
+                complejidadValor: preInversion.complejidad.valor,
+                complejidadResultado: preInversion.complejidad.resultado,
+                etapaValor: preInversion.etapa.valor,
+                etapaResultado: preInversion.etapa.resultado
+            };
+            preInversion.ideaAlternativeId = idAlternativa;
+            let preInvestmentHistoryCreated = yield preInvestmentHistory_1.default.create(preInversionCreate);
+            return { preInvestmentHistoryCreated, message: `Pre inversion historico creado correctamente` };
+        }
+        catch (error) {
+            //devuelve errores al cliente
+            throw `Error al ingresar Pre inversion historico: ${error}`;
+        }
+    });
+}
+exports.FcreatePreInvestment = FcreatePreInvestment;
 function FcreatePreleminaryName(prName, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
