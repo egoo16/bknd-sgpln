@@ -392,42 +392,42 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.getAlternative = getAlternative;
 const getPertinencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let transaction = yield connection_1.default.transaction();
     try {
         let idAlternative = req.params.id;
         let alternative = yield ideaAlternative_1.default.findOne({
             where: {
                 codigo: idAlternative
+            }
+        });
+        let population = yield populationDelimitation_1.default.findOne({
+            where: {
+                AlterId: alternative.codigo
             },
             include: [
                 {
                     required: false,
-                    model: populationDelimitation_1.default,
-                    include: [
-                        {
-                            required: false,
-                            model: referencePopulation_1.default
-                        },
-                        {
-                            required: false,
-                            model: denomination_1.default
-                        },
-                    ]
+                    model: referencePopulation_1.default
                 },
                 {
                     required: false,
-                    model: geographicArea_1.default,
-                    attributes: ['availableTerrain', 'oneAvailableTerrain', 'investPurchase', 'registerGovernmentTerrain', 'statusDescribe'],
+                    model: denomination_1.default
                 },
+            ]
+        });
+        let geograficArea = yield geographicArea_1.default.findOne({
+            where: {
+                AlterId: alternative.codigo
+            },
+            attributes: ['availableTerrain', 'oneAvailableTerrain', 'investPurchase', 'registerGovernmentTerrain', 'statusDescribe'],
+        });
+        let projectDes = yield projectDescription_1.default.findOne({
+            where: {
+                AlterId: alternative.codigo
+            },
+            include: [
                 {
                     required: false,
-                    model: projectDescription_1.default,
-                    include: [
-                        {
-                            required: false,
-                            model: executionTime_1.default
-                        },
-                    ]
+                    model: executionTime_1.default
                 },
             ]
         });
@@ -443,28 +443,28 @@ const getPertinencia = (req, res) => __awaiter(void 0, void 0, void 0, function*
             expectedChange: generalInformations.expectedChange
         };
         let criterio3 = {
-            totalPopulation: alternative.popDelimit.totalPopulation,
-            gender: alternative.popDelimit.gender,
-            estimateBeneficiaries: alternative.popDelimit.estimateBeneficiaries,
-            preliminaryCharacterization: alternative.popDelimit.preliminaryCharacterization,
-            coverage: alternative.popDelimit.coverage,
-            referencePopulation: alternative.popDelimit.refPop.name,
-            denomination: alternative.popDelimit.denmtion.name,
+            totalPopulation: population.totalPopulation,
+            gender: population.gender,
+            estimateBeneficiaries: population.estimateBeneficiaries,
+            preliminaryCharacterization: population.preliminaryCharacterization,
+            coverage: population.coverage,
+            referencePopulation: population.refPop.name,
+            denomination: population.denmtion.name,
         };
         let criterio4 = {
-            availableTerrain: alternative.geoArea.availableTerrain,
-            oneAvailableTerrain: alternative.geoArea.oneAvailableTerrain,
-            investPurchase: alternative.geoArea.investPurchase,
+            availableTerrain: geograficArea.availableTerrain,
+            oneAvailableTerrain: geograficArea.oneAvailableTerrain,
+            investPurchase: geograficArea.investPurchase,
         };
         let criterio5 = {
-            registerGovernmentTerrain: alternative.geoArea.registerGovernmentTerrain,
-            statusDescribe: alternative.geoArea.statusDescribe,
+            registerGovernmentTerrain: geograficArea.registerGovernmentTerrain,
+            statusDescribe: geograficArea.statusDescribe,
         };
         let criterio6 = {
-            projectType: alternative.projDesc.projectType,
-            formulationProcess: alternative.projDesc.formulationProcess,
-            descriptionInterventions: alternative.projDesc.descriptionInterventions,
-            complexity: alternative.projDesc.complexity,
+            projectType: projectDes.projectType,
+            formulationProcess: projectDes.formulationProcess,
+            descriptionInterventions: projectDes.descriptionInterventions,
+            complexity: projectDes.complexity,
         };
         let criterios = {
             criterio1, criterio2, criterio3, criterio4, criterio5, criterio6

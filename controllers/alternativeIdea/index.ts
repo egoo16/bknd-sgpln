@@ -308,20 +308,20 @@ export const getAlternative = async (req: Request, res: Response) => {
                         execTime: null,
                     };
                     if (pDescription.execTime)
-                    alternativa.projDesc.execTime = {
-                        codigo: pDescription.execTime.codigo,
-                        projDescId: pDescription.execTime.projDescId,
-                        tentativeTermMonth: pDescription.execTime.tentativeTermMonth,
-                        tentativeTermYear: pDescription.execTime.tentativeTermYear,
-                        executionDateMonth: pDescription.execTime.executionDateMonth,
-                        executionDateYear: pDescription.execTime.executionDateYear,
-                        finishDateMonth: pDescription.execTime.finishDateMonth,
-                        finishDateYear: pDescription.execTime.finishDateYear,
-                        annual: pDescription.execTime.annual,
-                        createdAt: pDescription.execTime.createdAt,
-                        updatedAt: pDescription.execTime.updatedAt,
-                        deletedAt: pDescription.execTime.deletedAt,
-                    }
+                        alternativa.projDesc.execTime = {
+                            codigo: pDescription.execTime.codigo,
+                            projDescId: pDescription.execTime.projDescId,
+                            tentativeTermMonth: pDescription.execTime.tentativeTermMonth,
+                            tentativeTermYear: pDescription.execTime.tentativeTermYear,
+                            executionDateMonth: pDescription.execTime.executionDateMonth,
+                            executionDateYear: pDescription.execTime.executionDateYear,
+                            finishDateMonth: pDescription.execTime.finishDateMonth,
+                            finishDateYear: pDescription.execTime.finishDateYear,
+                            annual: pDescription.execTime.annual,
+                            createdAt: pDescription.execTime.createdAt,
+                            updatedAt: pDescription.execTime.updatedAt,
+                            deletedAt: pDescription.execTime.deletedAt,
+                        }
                 }
                 datosResult.push(alternativa);
                 return res;
@@ -398,47 +398,53 @@ export const getAlternative = async (req: Request, res: Response) => {
 
 
 export const getPertinencia = async (req: Request, res: Response) => {
-    let transaction = await models.transaction()
     try {
         let idAlternative = req.params.id;
+
 
         let alternative = await ideaAlternative.findOne({
             where: {
                 codigo: idAlternative
+            }
+        });
+
+        let population = await populationDelimitation.findOne({
+            where: {
+                AlterId: alternative.codigo
             },
             include: [
                 {
                     required: false,
-                    model: populationDelimitation,
-                    include: [
-                        {
-                            required: false,
-                            model: referencePopulation
-                        },
-                        {
-                            required: false,
-                            model: denomination
-                        },
-                    ]
+                    model: referencePopulation
                 },
                 {
                     required: false,
-                    model: geographicArea,
-                    attributes: ['availableTerrain', 'oneAvailableTerrain', 'investPurchase', 'registerGovernmentTerrain', 'statusDescribe'],
+                    model: denomination
                 },
-                {
-                    required: false,
-                    model: projectDescription,
-                    include: [
-                        {
-                            required: false,
-                            model: executionTime
-                        },
-                    ]
-                },
-
             ]
         });
+
+
+        let geograficArea = await geographicArea.findOne({
+            where: {
+                AlterId: alternative.codigo
+            },
+            attributes: ['availableTerrain', 'oneAvailableTerrain', 'investPurchase', 'registerGovernmentTerrain', 'statusDescribe'],
+        });
+
+        let projectDes = await projectDescription.findOne({
+            where: {
+                AlterId: alternative.codigo
+            },
+            include: [
+                {
+                    required: false,
+                    model: executionTime
+                },
+            ]
+        });
+
+
 
         let generalInformations = await generalInformation.findOne({
             where: {
@@ -454,32 +460,32 @@ export const getPertinencia = async (req: Request, res: Response) => {
             expectedChange: generalInformations.expectedChange
         };
         let criterio3 = {
-            totalPopulation: alternative.popDelimit.totalPopulation,
-            gender: alternative.popDelimit.gender,
-            estimateBeneficiaries: alternative.popDelimit.estimateBeneficiaries,
-            preliminaryCharacterization: alternative.popDelimit.preliminaryCharacterization,
-            coverage: alternative.popDelimit.coverage,
-            referencePopulation: alternative.popDelimit.refPop.name,
-            denomination: alternative.popDelimit.denmtion.name,
+            totalPopulation: population.totalPopulation,
+            gender: population.gender,
+            estimateBeneficiaries: population.estimateBeneficiaries,
+            preliminaryCharacterization: population.preliminaryCharacterization,
+            coverage: population.coverage,
+            referencePopulation: population.refPop.name,
+            denomination: population.denmtion.name,
 
         };
 
         let criterio4 = {
-            availableTerrain: alternative.geoArea.availableTerrain,
-            oneAvailableTerrain: alternative.geoArea.oneAvailableTerrain,
-            investPurchase: alternative.geoArea.investPurchase,
+            availableTerrain: geograficArea.availableTerrain,
+            oneAvailableTerrain: geograficArea.oneAvailableTerrain,
+            investPurchase: geograficArea.investPurchase,
         };
 
         let criterio5 = {
-            registerGovernmentTerrain: alternative.geoArea.registerGovernmentTerrain,
-            statusDescribe: alternative.geoArea.statusDescribe,
+            registerGovernmentTerrain: geograficArea.registerGovernmentTerrain,
+            statusDescribe: geograficArea.statusDescribe,
         };
 
         let criterio6 = {
-            projectType: alternative.projDesc.projectType,
-            formulationProcess: alternative.projDesc.formulationProcess,
-            descriptionInterventions: alternative.projDesc.descriptionInterventions,
-            complexity: alternative.projDesc.complexity,
+            projectType: projectDes.projectType,
+            formulationProcess: projectDes.formulationProcess,
+            descriptionInterventions: projectDes.descriptionInterventions,
+            complexity: projectDes.complexity,
 
         };
 
