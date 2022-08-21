@@ -27,6 +27,7 @@ const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinat
 const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executionTime"));
 const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
 const qualification_1 = __importDefault(require("../../models/BancoIdeas/qualification"));
+const preInvestment_1 = __importDefault(require("../../models/BancoIdeas/preInvestment"));
 /**
  * Funcion para  listar las configuraciones globales
  * @param {*} req
@@ -179,6 +180,16 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                         },
                     ]
                 });
+                let quali = yield qualification_1.default.findOne({
+                    where: {
+                        AlterId: idAlt
+                    },
+                });
+                let preInv = yield preInvestment_1.default.findOne({
+                    where: {
+                        AlterId: idAlt
+                    },
+                });
                 let alternativa = {
                     codigo: alter.codigo,
                     sectionBIId: alter.sectionBIId,
@@ -320,6 +331,41 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                             updatedAt: pDescription.execTime.updatedAt,
                             deletedAt: pDescription.execTime.deletedAt,
                         };
+                }
+                if (quali) {
+                    alternativa.qualification = {
+                        codigo: quali.codigo,
+                        AlterId: quali.AlterId,
+                        descriptionProblem: quali.descriptionProblem,
+                        descriptionProblemDescription: quali.descriptionProblemDescription,
+                        generalObjective: quali.generalObjective,
+                        generalObjectiveDescription: quali.generalObjectiveDescription,
+                        analysisDelimitation: quali.analysisDelimitation,
+                        analysisDelimitationDescription: quali.analysisDelimitationDescription,
+                        terrainIdentification: quali.terrainIdentification,
+                        terrainIdentificationDescription: quali.terrainIdentificationDescription,
+                        legalSituation: quali.legalSituation,
+                        legalSituationDescription: quali.legalSituationDescription,
+                        descriptionAnalysis: quali.descriptionAnalysis,
+                        descriptionAnalysisDescription: quali.descriptionAnalysisDescription,
+                        descriptionGeneral: quali.descriptionGeneral,
+                        total: quali.total,
+                        result: quali.result,
+                    };
+                }
+                if (preInv) {
+                    alternativa.preInvestment = {
+                        codigo: preInv.codigo,
+                        AlterId: preInv.AlterId,
+                        rangoValor: preInv.rangoValor,
+                        rangoResultado: preInv.rangoResultado,
+                        estimacionValor: preInv.estimacionValor,
+                        estimacionResultado: preInv.estimacionResultado,
+                        complejidadValor: preInv.complejidadValor,
+                        complejidadResultado: preInv.complejidadResultado,
+                        etapaValor: preInv.etapaValor,
+                        etapaResultado: preInv.etapaResultado,
+                    };
                 }
                 datosResult.push(alternativa);
                 return res;

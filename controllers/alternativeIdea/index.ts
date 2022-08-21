@@ -17,6 +17,7 @@ import coordinates from "../../models/BancoIdeas/coordinates";
 import executionTime from "../../models/BancoIdeas/executionTime";
 import generalInformation from "../../models/BancoIdeas/generalInformation";
 import qualification from "../../models/BancoIdeas/qualification";
+import preInvestment from "../../models/BancoIdeas/preInvestment";
 
 
 /**
@@ -174,6 +175,18 @@ export const getAlternative = async (req: Request, res: Response) => {
                     ]
                 });
 
+                let quali = await qualification.findOne({
+                    where: {
+                        AlterId: idAlt
+                    },
+                });
+
+                let preInv = await preInvestment.findOne({
+                    where: {
+                        AlterId: idAlt
+                    },
+                });
+
                 let alternativa: any = {
                     codigo: alter.codigo,
                     sectionBIId: alter.sectionBIId,
@@ -322,6 +335,42 @@ export const getAlternative = async (req: Request, res: Response) => {
                             updatedAt: pDescription.execTime.updatedAt,
                             deletedAt: pDescription.execTime.deletedAt,
                         }
+                }
+                if (quali) {
+                    alternativa.qualification = {
+                        codigo: quali.codigo,
+                        AlterId: quali.AlterId,
+                        descriptionProblem: quali.descriptionProblem,
+                        descriptionProblemDescription: quali.descriptionProblemDescription,
+                        generalObjective: quali.generalObjective,
+                        generalObjectiveDescription: quali.generalObjectiveDescription,
+                        analysisDelimitation: quali.analysisDelimitation,
+                        analysisDelimitationDescription: quali.analysisDelimitationDescription,
+                        terrainIdentification: quali.terrainIdentification,
+                        terrainIdentificationDescription: quali.terrainIdentificationDescription,
+                        legalSituation: quali.legalSituation,
+                        legalSituationDescription: quali.legalSituationDescription,
+                        descriptionAnalysis: quali.descriptionAnalysis,
+                        descriptionAnalysisDescription: quali.descriptionAnalysisDescription,
+                        descriptionGeneral: quali.descriptionGeneral,
+                        total: quali.total,
+                        result: quali.result,
+                    }
+                }
+
+                if (preInv) {
+                    alternativa.preInvestment = {
+                        codigo: preInv.codigo,
+                        AlterId: preInv.AlterId,
+                        rangoValor: preInv.rangoValor,
+                        rangoResultado: preInv.rangoResultado,
+                        estimacionValor: preInv.estimacionValor,
+                        estimacionResultado: preInv.estimacionResultado,
+                        complejidadValor: preInv.complejidadValor,
+                        complejidadResultado: preInv.complejidadResultado,
+                        etapaValor: preInv.etapaValor,
+                        etapaResultado: preInv.etapaResultado,
+                    }
                 }
                 datosResult.push(alternativa);
                 return res;
