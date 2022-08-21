@@ -21,7 +21,7 @@ const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executi
 const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geographicArea"));
 const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
 const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinates"));
-const preInvestmentHistory_1 = __importDefault(require("../../models/BancoIdeas/preInvestmentHistory"));
+const preInvestment_1 = __importDefault(require("../../models/BancoIdeas/preInvestment"));
 function FgetPreinversion(idAlternativa) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -110,7 +110,7 @@ function FgetPreinversion(idAlternativa) {
                     resultado: etapa
                 }
             };
-            yield FcreatePreInvestment(preInversion, proDes.ideaAlternativeId);
+            yield FcreatePreInvestment(preInversion, proDes.AlterId);
             return { preInversion };
         }
         catch (error) {
@@ -143,7 +143,7 @@ function FcreatePreInvestment(preInversion, idAlternativa) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let preInversionCreate = {
-                ideaAlternativeId: idAlternativa,
+                AlterId: idAlternativa,
                 rangoValor: preInversion.rango.valor,
                 rangoResultado: preInversion.rango.resultado,
                 estimacionValor: preInversion.estimacion.valor,
@@ -153,8 +153,8 @@ function FcreatePreInvestment(preInversion, idAlternativa) {
                 etapaValor: preInversion.etapa.valor,
                 etapaResultado: preInversion.etapa.resultado
             };
-            preInversion.ideaAlternativeId = idAlternativa;
-            let preInvestmentHistoryCreated = yield preInvestmentHistory_1.default.create(preInversionCreate);
+            preInversion.AlterId = idAlternativa;
+            let preInvestmentHistoryCreated = yield preInvestment_1.default.create(preInversionCreate);
             return { preInvestmentHistoryCreated, message: `Pre inversion historico creado correctamente` };
         }
         catch (error) {

@@ -7,6 +7,7 @@ const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
 const geographicArea_1 = __importDefault(require("./geographicArea"));
 const populationDelimitation_1 = __importDefault(require("./populationDelimitation"));
+const preInvestment_1 = __importDefault(require("./preInvestment"));
 const preliminaryName_1 = __importDefault(require("./preliminaryName"));
 const projectDescription_1 = __importDefault(require("./projectDescription"));
 const qualification_1 = __importDefault(require("./qualification"));
@@ -41,6 +42,7 @@ ideaAlternative.hasOne(projectDescription_1.default, {
     foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(qualification_1.default, { foreignKey: "AlterId" });
+ideaAlternative.hasOne(preInvestment_1.default, { foreignKey: "AlterId" });
 // ideaAlternative.belongsTo(generalInformation, {
 //     foreignKey: "sectionBIId",
 //     sourceKey: "codigo",

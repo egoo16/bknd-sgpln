@@ -17,9 +17,9 @@ export default class Server {
 
   async dbConnection() {
     try {
-      await db.authenticate().then(() => {
+      // await db.authenticate().then(() => {
       // await db.sync({ force: true }).then(() => {
-      // await db.sync().then(() => {
+      await db.sync().then(() => {
         console.log("Database online");
       });
 

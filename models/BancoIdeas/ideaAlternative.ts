@@ -4,6 +4,7 @@ import db from "../../db/connection";
 import generalInformation from "./generalInformation";
 import geographicArea from "./geographicArea";
 import populationDelimitation from "./populationDelimitation";
+import preInvestment from "./preInvestment";
 import preliminaryName from "./preliminaryName";
 import projectDescription from "./projectDescription";
 import qualification from "./qualification";
@@ -45,6 +46,7 @@ ideaAlternative.hasOne(projectDescription, {
     foreignKey: "AlterId",
 });
 ideaAlternative.hasOne(qualification, { foreignKey: "AlterId" });
+ideaAlternative.hasOne(preInvestment, { foreignKey: "AlterId" });
 
 // ideaAlternative.belongsTo(generalInformation, {
 //     foreignKey: "sectionBIId",

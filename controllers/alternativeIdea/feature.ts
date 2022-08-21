@@ -10,7 +10,7 @@ import ideaAlternative from "../../models/BancoIdeas/ideaAlternative";
 import coordinates from "../../models/BancoIdeas/coordinates";
 import referencePopulation from "../../models/BancoIdeas/referencePopulation";
 import denomination from "../../models/BancoIdeas/denomination";
-import preInvestmentHistory from "../../models/BancoIdeas/preInvestmentHistory";
+import preInvestment from "../../models/BancoIdeas/preInvestment";
 
 export async function FgetPreinversion(idAlternativa: any) {
     try {
@@ -92,7 +92,7 @@ export async function FgetPreinversion(idAlternativa: any) {
                 resultado: etapa
             }
         }
-        await FcreatePreInvestment(preInversion, proDes.ideaAlternativeId)
+        await FcreatePreInvestment(preInversion, proDes.AlterId)
         return { preInversion };
     } catch (error) {
         //devuelve errores al cliente
@@ -118,7 +118,7 @@ export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: 
 export async function FcreatePreInvestment(preInversion: any, idAlternativa: any) {
     try {
         let preInversionCreate = {
-            ideaAlternativeId: idAlternativa,
+            AlterId: idAlternativa,
             rangoValor: preInversion.rango.valor,
             rangoResultado: preInversion.rango.resultado,
             estimacionValor: preInversion.estimacion.valor,
@@ -128,8 +128,8 @@ export async function FcreatePreInvestment(preInversion: any, idAlternativa: any
             etapaValor: preInversion.etapa.valor,
             etapaResultado: preInversion.etapa.resultado
         }
-        preInversion.ideaAlternativeId = idAlternativa
-        let preInvestmentHistoryCreated = await preInvestmentHistory.create(preInversionCreate)
+        preInversion.AlterId = idAlternativa
+        let preInvestmentHistoryCreated = await preInvestment.create(preInversionCreate)
         return { preInvestmentHistoryCreated, message: `Pre inversion historico creado correctamente` };
     } catch (error) {
         //devuelve errores al cliente

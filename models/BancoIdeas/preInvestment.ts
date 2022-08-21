@@ -2,8 +2,8 @@ import Sequelize from "sequelize-oracle";
 
 import db from "../../db/connection";
 
-const preInvestmentHistory = db.define(
-  "preInvestmentHistory",
+const preInvestment = db.define(
+  "preInvestment",
   {
     
     codigo: {
@@ -11,7 +11,7 @@ const preInvestmentHistory = db.define(
       autoIncrement: true,
       primaryKey: true
     },
-    ideaAlternativeId: { type: Sequelize.INTEGER, allowNull: false },
+    AlterId: { type: Sequelize.INTEGER, allowNull: false },
     rangoValor: { type: Sequelize.INTEGER },
     rangoResultado: { type: Sequelize.STRING},
     estimacionValor: { type: Sequelize.INTEGER },
@@ -28,4 +28,4 @@ const preInvestmentHistory = db.define(
   }
 );
 
-export default preInvestmentHistory;
+export default preInvestment;

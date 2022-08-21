@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
-const qualification = connection_1.default.define("score", {
+const qualification = connection_1.default.define("qualification", {
     codigo: {
         type: sequelize_oracle_1.default.UUID,
         primaryKey: true,
@@ -14,10 +14,20 @@ const qualification = connection_1.default.define("score", {
     },
     AlterId: { type: sequelize_oracle_1.default.UUID, required: true },
     descriptionProblem: { type: sequelize_oracle_1.default.INTEGER },
+    descriptionProblemDescription: { type: sequelize_oracle_1.default.STRING },
     generalObjective: { type: sequelize_oracle_1.default.INTEGER },
+    generalObjectiveDescription: { type: sequelize_oracle_1.default.STRING },
     analysisDelimitation: { type: sequelize_oracle_1.default.INTEGER },
+    analysisDelimitationDescription: { type: sequelize_oracle_1.default.STRING },
     terrainIdentification: { type: sequelize_oracle_1.default.INTEGER },
+    terrainIdentificationDescription: { type: sequelize_oracle_1.default.STRING },
+    legalSituation: { type: sequelize_oracle_1.default.INTEGER },
+    legalSituationDescription: { type: sequelize_oracle_1.default.STRING },
     descriptionAnalysis: { type: sequelize_oracle_1.default.INTEGER },
+    descriptionAnalysisDescription: { type: sequelize_oracle_1.default.STRING },
+    descriptionGeneral: { type: sequelize_oracle_1.default.STRING },
+    total: { type: sequelize_oracle_1.default.INTEGER },
+    result: { type: sequelize_oracle_1.default.STRING },
 }, {
     underscoded: true,
     paranoid: true,
