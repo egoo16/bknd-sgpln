@@ -123,6 +123,7 @@ exports.FgetPreinversion = FgetPreinversion;
 function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            ideaAlt.state = 'CREADA';
             let ideaAlternativeCreated = yield ideaAlternative_1.default.create(ideaAlt, { transaction });
             let codigoAlternativa = ideaAlternativeCreated.codigo;
             yield FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction);

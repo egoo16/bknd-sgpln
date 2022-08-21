@@ -20,7 +20,7 @@ const ideaAlternative = db.define(
       defaultValue: Sequelize.UUIDV4,
     },
         sectionBIId: { type: Sequelize.UUID, allowNull: false },
-        state: { type: Sequelize.BOOLEAN },
+        state: { type: Sequelize.STRING },
 
     },
     {

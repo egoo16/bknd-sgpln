@@ -101,6 +101,7 @@ export async function FgetPreinversion(idAlternativa: any) {
 }
 export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: any) {
     try {
+        ideaAlt.state = 'CREADA';
         let ideaAlternativeCreated = await ideaAlternative.create(ideaAlt, { transaction })
         let codigoAlternativa = ideaAlternativeCreated.codigo
         await FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction)

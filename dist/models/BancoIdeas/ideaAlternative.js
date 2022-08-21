@@ -20,7 +20,7 @@ const ideaAlternative = connection_1.default.define("alter", {
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
     sectionBIId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
-    state: { type: sequelize_oracle_1.default.BOOLEAN },
+    state: { type: sequelize_oracle_1.default.STRING },
 }, {
     underscoded: true,
     paranoid: true,
