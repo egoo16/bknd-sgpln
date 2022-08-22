@@ -7,11 +7,12 @@ const preInvestment = db.define(
   {
     
     codigo: {
-      type: Sequelize.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
+      type: Sequelize.UUID,
+      primaryKey: true,
+      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
     },
-    AlterId: { type: Sequelize.INTEGER, allowNull: false },
+    AlterId: { type: Sequelize.UUID, allowNull: false },
     rangoValor: { type: Sequelize.INTEGER },
     rangoResultado: { type: Sequelize.STRING},
     estimacionValor: { type: Sequelize.INTEGER },

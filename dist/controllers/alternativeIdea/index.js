@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPertinencia = exports.getAlternative = exports.getReferencePopulation = exports.getDenomination = exports.getPreinversion = exports.createIdeaAlternativeComplete = void 0;
+exports.getPertinencia = exports.getAlternative = exports.getReferencePopulation = exports.getDenomination = exports.getPreinversion = exports.addPertinenceQuality = exports.createIdeaAlternativeComplete = void 0;
 const connection_1 = __importDefault(require("../../db/connection"));
 const feature_1 = require("./feature");
 const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
@@ -47,6 +47,25 @@ function createIdeaAlternativeComplete(req, res) {
     });
 }
 exports.createIdeaAlternativeComplete = createIdeaAlternativeComplete;
+/**
+ * Funcion para  listar las configuraciones globales
+ * @param {*} req
+ */
+function addPertinenceQuality(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let transaction = yield connection_1.default.transaction();
+        try {
+            let pertinence = yield (0, feature_1.FaddPertinenceQuality)(req.body, transaction);
+            transaction.commit();
+            return res.status(200).send(pertinence);
+        }
+        catch (error) {
+            transaction.rollback();
+            return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
+        }
+    });
+}
+exports.addPertinenceQuality = addPertinenceQuality;
 /**
  * Funcion para  listar las configuraciones globales
  * @param {*} req

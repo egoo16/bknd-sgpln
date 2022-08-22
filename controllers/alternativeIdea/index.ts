@@ -2,7 +2,7 @@
 
 import { Request, Response } from "express";
 import models from "../../db/connection";
-import { FcreateIdeaAlternativeComplete, FgetPreinversion } from './feature';
+import { FaddPertinenceQuality, FcreateIdeaAlternativeComplete, FgetPreinversion } from './feature';
 
 
 import ideaAlternative from "../../models/BancoIdeas/ideaAlternative";
@@ -35,6 +35,24 @@ export async function createIdeaAlternativeComplete(req: Request, res: Response)
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
     }
 }
+
+/**
+ * Funcion para  listar las configuraciones globales
+ * @param {*} req
+ */
+ export async function addPertinenceQuality(req: Request, res: Response) {
+    let transaction = await models.transaction()
+    try {
+        let pertinence = await FaddPertinenceQuality(req.body, transaction)
+        transaction.commit()
+        return res.status(200).send(pertinence)    
+    } catch (error: any) {
+        transaction.rollback()
+        return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
+    }
+}
+
+
 
 /**
  * Funcion para  listar las configuraciones globales
@@ -493,15 +511,12 @@ export const getPertinencia = async (req: Request, res: Response) => {
             ]
         });
 
-
-
         let generalInformations = await generalInformation.findOne({
             where: {
                 codigo: alternative.sectionBIId
             },
             attributes: ['baseLine', 'generalObjective', 'expectedChange'],
         });
-
 
         let criterio1 = { baseLine: generalInformations.baseLine };
         let criterio2 = {

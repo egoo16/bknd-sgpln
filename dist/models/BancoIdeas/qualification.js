@@ -27,7 +27,7 @@ const qualification = connection_1.default.define("qualification", {
     descriptionAnalysisDescription: { type: sequelize_oracle_1.default.STRING },
     descriptionGeneral: { type: sequelize_oracle_1.default.STRING },
     total: { type: sequelize_oracle_1.default.INTEGER },
-    result: { type: sequelize_oracle_1.default.STRING },
+    result: { type: sequelize_oracle_1.default.STRING }, // Pertinente o No Pertinente
 }, {
     underscoded: true,
     paranoid: true,

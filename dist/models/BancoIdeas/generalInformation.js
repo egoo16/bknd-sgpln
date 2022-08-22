@@ -28,6 +28,7 @@ const generalInformation = connection_1.default.define("Information", {
     dateOut: { type: sequelize_oracle_1.default.DATE },
     punctuation: { type: sequelize_oracle_1.default.INTEGER },
     state: { type: sequelize_oracle_1.default.STRING },
+    result: { type: sequelize_oracle_1.default.STRING },
     idEntity: { type: sequelize_oracle_1.default.STRING, required: true, allowNull: false },
     nameEntity: { type: sequelize_oracle_1.default.STRING, required: true, allowNull: false },
     responsibleName: {

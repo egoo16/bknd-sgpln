@@ -9,5 +9,6 @@ preliminarRoute.get("/denomination", alternativeIdea_1.getDenomination);
 preliminarRoute.get("/referencePopulation", alternativeIdea_1.getReferencePopulation);
 preliminarRoute.get("/:id", alternativeIdea_1.getAlternative);
 preliminarRoute.get("/pertinencia/:id", alternativeIdea_1.getPertinencia);
+preliminarRoute.post("/send-pertinencia/", alternativeIdea_1.addPertinenceQuality);
 exports.default = preliminarRoute;
 //# sourceMappingURL=ideaAlternative.js.map

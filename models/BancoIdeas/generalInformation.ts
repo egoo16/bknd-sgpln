@@ -28,6 +28,7 @@ const generalInformation = db.define(
         dateOut: { type: Sequelize.DATE },
         punctuation: { type: Sequelize.INTEGER },
         state: { type: Sequelize.STRING },
+        result: { type: Sequelize.STRING }, //PENDIENTE | PERTINENTE | NO PERTINENTE
         idEntity: { type: Sequelize.STRING, required: true, allowNull: false },
         nameEntity: { type: Sequelize.STRING, required: true, allowNull: false },
         responsibleName: {

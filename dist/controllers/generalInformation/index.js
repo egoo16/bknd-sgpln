@@ -42,6 +42,7 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
         }
         //#endregion
         informationModel.state = 'CREADA';
+        informationModel.result = 'PENDIENTE';
         //#region Correlative
         const correlative = yield generalInformation_1.default.max("correlation");
         if (correlative) {

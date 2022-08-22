@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreatePreInvestment = exports.FcreateIdeaAlternativeComplete = exports.FgetPreinversion = void 0;
+exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreatePreInvestment = exports.FaddPertinenceQuality = exports.FcreateIdeaAlternativeComplete = exports.FgetPreinversion = void 0;
 const preliminaryName_1 = __importDefault(require("../../models/BancoIdeas/preliminaryName"));
 const responsibleEntity_1 = __importDefault(require("../../models/BancoIdeas/responsibleEntity"));
 const populationDelimitation_1 = __importDefault(require("../../models/BancoIdeas/populationDelimitation"));
@@ -21,7 +21,11 @@ const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executi
 const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geographicArea"));
 const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
 const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinates"));
+const referencePopulation_1 = __importDefault(require("../../models/BancoIdeas/referencePopulation"));
+const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomination"));
 const preInvestment_1 = __importDefault(require("../../models/BancoIdeas/preInvestment"));
+const qualification_1 = __importDefault(require("../../models/BancoIdeas/qualification"));
+const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
 function FgetPreinversion(idAlternativa) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -140,6 +144,53 @@ function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
     });
 }
 exports.FcreateIdeaAlternativeComplete = FcreateIdeaAlternativeComplete;
+function FaddPertinenceQuality(pertinence, transaction) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let total = pertinence.total;
+            let result = '';
+            if (total >= 60) {
+                pertinence.result = 'PERTINENTE';
+                result = 'PERTINENTE';
+            }
+            else {
+                pertinence.result = 'NO PERTINENTE';
+                result = 'NO PERTINENTE';
+            }
+            let pertinenceResult = yield qualification_1.default.create(pertinence, { transaction });
+            let alternative = yield ideaAlternative_1.default.findOne({
+                where: {
+                    codigo: pertinence.AlterId
+                }
+            });
+            alternative.state = 'CALIFICADA';
+            alternative.save();
+            let generalIdea = yield generalInformation_1.default.findOne({
+                where: {
+                    codigo: alternative.sectionBIId
+                }
+            });
+            let state = generalIdea.result;
+            if (state == 'PENDIENTE') {
+                generalIdea.result = result;
+                generalIdea.state = 'CALIFICADA';
+                generalIdea.save();
+            }
+            else if (state == 'NO PERTINENTE') {
+                if (result != 'NO PERTINENTE') {
+                    generalIdea.result = result;
+                    generalIdea.save();
+                }
+            }
+            return { message: `Idea alternativa creada correctamente` };
+        }
+        catch (error) {
+            //devuelve errores al cliente
+            throw `Error al ingresar Idea alternativa: ${error}`;
+        }
+    });
+}
+exports.FaddPertinenceQuality = FaddPertinenceQuality;
 function FcreatePreInvestment(preInversion, idAlternativa) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -197,10 +248,10 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
     return __awaiter(this, void 0, void 0, function* () {
         try {
             popDemiliation.AlterId = idAlternativa;
-            // let refModel = await referencePopulation.findAll();
-            // popDemiliation.refPopId = refModel[0].codigo;
-            // let DenModel = await denomination.findAll();
-            // popDemiliation.denId = DenModel[0].codigo;
+            let refModel = yield referencePopulation_1.default.findAll();
+            popDemiliation.refPopId = refModel[0].codigo;
+            let DenModel = yield denomination_1.default.findAll();
+            popDemiliation.denId = DenModel[0].codigo;
             if (popDemiliation.estimateBeneficiaries && popDemiliation.totalPopulation) {
                 let estimateBeneficiaries = parseInt(popDemiliation.estimateBeneficiaries, 10);
                 let totalPopulation = parseInt(popDemiliation.totalPopulation, 10);

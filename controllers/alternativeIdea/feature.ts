@@ -11,6 +11,8 @@ import coordinates from "../../models/BancoIdeas/coordinates";
 import referencePopulation from "../../models/BancoIdeas/referencePopulation";
 import denomination from "../../models/BancoIdeas/denomination";
 import preInvestment from "../../models/BancoIdeas/preInvestment";
+import qualification from "../../models/BancoIdeas/qualification";
+import generalInformation from "../../models/BancoIdeas/generalInformation";
 
 export async function FgetPreinversion(idAlternativa: any) {
     try {
@@ -116,6 +118,59 @@ export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: 
         throw `Error al ingresar Idea alternativa: ${error}`;
     }
 }
+
+export async function FaddPertinenceQuality(pertinence: any, transaction: any) {
+    try {
+
+        let total = pertinence.total;
+        let result = '';
+
+        if (total >= 60) {
+            pertinence.result = 'PERTINENTE';
+            result = 'PERTINENTE';
+        } else {
+            pertinence.result = 'NO PERTINENTE';
+            result = 'NO PERTINENTE';
+        }
+
+        let pertinenceResult = await qualification.create(pertinence, { transaction });
+
+        let alternative = await ideaAlternative.findOne({
+            where: {
+                codigo: pertinence.AlterId
+            }
+        });
+
+        alternative.state = 'CALIFICADA';
+        alternative.save();
+
+        let generalIdea = await generalInformation.findOne({
+            where: {
+                codigo: alternative.sectionBIId
+            }
+        })
+
+        let state = generalIdea.result;
+
+        if (state == 'PENDIENTE') {
+            generalIdea.result = result;
+            generalIdea.state = 'CALIFICADA'
+            generalIdea.save();
+        } else if (state == 'NO PERTINENTE') {
+            if (result != 'NO PERTINENTE') {
+                generalIdea.result = result;
+                generalIdea.save();
+            }
+        }
+
+        return { message: `Idea alternativa creada correctamente` };
+    } catch (error) {
+        //devuelve errores al cliente
+        throw `Error al ingresar Idea alternativa: ${error}`;
+    }
+}
+
+
 export async function FcreatePreInvestment(preInversion: any, idAlternativa: any) {
     try {
         let preInversionCreate = {
@@ -163,11 +218,11 @@ export async function FcresponsableEntity(resEntity: any, idAlternativa: number,
 export async function FcreatePopulationDemilitation(popDemiliation: any, idAlternativa: number, transaction: any) {
     try {
         popDemiliation.AlterId = idAlternativa;
-        // let refModel = await referencePopulation.findAll();
-        // popDemiliation.refPopId = refModel[0].codigo;
+        let refModel = await referencePopulation.findAll();
+        popDemiliation.refPopId = refModel[0].codigo;
 
-        // let DenModel = await denomination.findAll();
-        // popDemiliation.denId = DenModel[0].codigo;
+        let DenModel = await denomination.findAll();
+        popDemiliation.denId = DenModel[0].codigo;
 
         if (popDemiliation.estimateBeneficiaries && popDemiliation.totalPopulation) {
             let estimateBeneficiaries = parseInt(popDemiliation.estimateBeneficiaries, 10);

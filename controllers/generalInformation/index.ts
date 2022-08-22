@@ -32,6 +32,7 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
         }
         //#endregion
         informationModel.state = 'CREADA';
+        informationModel.result = 'PENDIENTE';
 
 
         //#region Correlative

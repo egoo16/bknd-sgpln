@@ -33,7 +33,7 @@ const qualification = db.define(
 
     descriptionGeneral: { type: Sequelize.STRING },
     total: { type: Sequelize.INTEGER },
-    result: { type: Sequelize.STRING },
+    result: { type: Sequelize.STRING }, // Pertinente o No Pertinente
   },
   {
     underscoded: true,

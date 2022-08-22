@@ -7,11 +7,12 @@ const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
 const preInvestment = connection_1.default.define("preInvestment", {
     codigo: {
-        type: sequelize_oracle_1.default.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+        type: sequelize_oracle_1.default.UUID,
+        primaryKey: true,
+        allowNull: false,
+        defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    AlterId: { type: sequelize_oracle_1.default.INTEGER, allowNull: false },
+    AlterId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     rangoValor: { type: sequelize_oracle_1.default.INTEGER },
     rangoResultado: { type: sequelize_oracle_1.default.STRING },
     estimacionValor: { type: sequelize_oracle_1.default.INTEGER },
