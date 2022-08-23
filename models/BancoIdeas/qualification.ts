@@ -13,23 +13,23 @@ const qualification = db.define(
     },
     AlterId: { type: Sequelize.UUID, required: true },
 
-    descriptionProblem: { type: Sequelize.INTEGER },
-    descriptionProblemDescription: { type: Sequelize.STRING },
+    descProblem: { type: Sequelize.INTEGER },
+    descProblemComment: { type: Sequelize.STRING },
 
-    generalObjective: { type: Sequelize.INTEGER },
-    generalObjectiveDescription: { type: Sequelize.STRING },
+    generalObjct: { type: Sequelize.INTEGER },
+    generalObjctComment: { type: Sequelize.STRING },
 
-    analysisDelimitation: { type: Sequelize.INTEGER },
-    analysisDelimitationDescription: { type: Sequelize.STRING },
+    anlysDelimitation: { type: Sequelize.INTEGER },
+    anlysDelimitationComment: { type: Sequelize.STRING },
 
-    terrainIdentification: { type: Sequelize.INTEGER },
-    terrainIdentificationDescription: { type: Sequelize.STRING },
+    terrainIdent: { type: Sequelize.INTEGER },
+    terrainIdentComment: { type: Sequelize.STRING },
 
     legalSituation: { type: Sequelize.INTEGER },
-    legalSituationDescription: { type: Sequelize.STRING },
+    legalSituationComment: { type: Sequelize.STRING },
 
-    descriptionAnalysis: { type: Sequelize.INTEGER },
-    descriptionAnalysisDescription: { type: Sequelize.STRING },
+    descAnlys: { type: Sequelize.INTEGER },
+    descAnlysComment: { type: Sequelize.STRING },
 
     descriptionGeneral: { type: Sequelize.STRING },
     total: { type: Sequelize.INTEGER },
