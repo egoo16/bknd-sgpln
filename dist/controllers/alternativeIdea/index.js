@@ -83,16 +83,15 @@ function getPreinversion(req, res) {
 }
 exports.getPreinversion = getPreinversion;
 const getDenomination = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let transaction = yield connection_1.default.transaction();
     try {
         let data = yield denomination_1.default.findAll();
         if (data.length <= 0) {
             let den1 = { name: 'Alumnos' };
-            let denCreated = yield denomination_1.default.create(den1, { transaction });
+            let denCreated = yield denomination_1.default.create(den1);
             den1.name = 'Pacientes';
-            denCreated = yield denomination_1.default.create(den1, { transaction });
+            denCreated = yield denomination_1.default.create(den1);
             den1.name = 'Agricultores';
-            denCreated = yield denomination_1.default.create(den1, { transaction });
+            denCreated = yield denomination_1.default.create(den1);
         }
         data = yield denomination_1.default.findAll();
         res.status(200).json({
@@ -109,18 +108,17 @@ const getDenomination = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.getDenomination = getDenomination;
 const getReferencePopulation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let transaction = yield connection_1.default.transaction();
     try {
         let data = yield referencePopulation_1.default.findAll();
         if (data.length <= 0) {
             let ref = { name: 'Nacional' };
-            let denCreated = yield referencePopulation_1.default.create(ref, { transaction });
+            let denCreated = yield referencePopulation_1.default.create(ref);
             ref.name = 'Departamental';
-            denCreated = yield referencePopulation_1.default.create(ref, { transaction });
+            denCreated = yield referencePopulation_1.default.create(ref);
             ref.name = 'Municipal';
-            denCreated = yield referencePopulation_1.default.create(ref, { transaction });
+            denCreated = yield referencePopulation_1.default.create(ref);
             ref.name = 'Comunal';
-            denCreated = yield referencePopulation_1.default.create(ref, { transaction });
+            denCreated = yield referencePopulation_1.default.create(ref);
         }
         data = yield referencePopulation_1.default.findAll();
         res.status(200).json({

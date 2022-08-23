@@ -154,7 +154,6 @@ export async function FaddPertinenceQuality(pertinence: any, transaction: any) {
 
         if (state == 'PENDIENTE') {
             generalIdea.result = result;
-            generalIdea.state = 'CALIFICADA'
             generalIdea.save();
         } else if (state == 'NO PERTINENTE') {
             if (result != 'NO PERTINENTE') {
@@ -218,11 +217,11 @@ export async function FcresponsableEntity(resEntity: any, idAlternativa: number,
 export async function FcreatePopulationDemilitation(popDemiliation: any, idAlternativa: number, transaction: any) {
     try {
         popDemiliation.AlterId = idAlternativa;
-        let refModel = await referencePopulation.findAll();
-        popDemiliation.refPopId = refModel[0].codigo;
+        // let refModel = await referencePopulation.findAll();
+        // popDemiliation.refPopId = refModel[0].codigo;
 
-        let DenModel = await denomination.findAll();
-        popDemiliation.denId = DenModel[0].codigo;
+        // let DenModel = await denomination.findAll();
+        // popDemiliation.denId = DenModel[0].codigo;
 
         if (popDemiliation.estimateBeneficiaries && popDemiliation.totalPopulation) {
             let estimateBeneficiaries = parseInt(popDemiliation.estimateBeneficiaries, 10);
