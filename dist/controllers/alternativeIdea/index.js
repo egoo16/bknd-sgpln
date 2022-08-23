@@ -151,10 +151,6 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                     required: false,
                     model: responsibleEntity_1.default
                 },
-                {
-                    required: false,
-                    model: qualification_1.default
-                },
             ]
         });
         if (data || data.length > 0) {

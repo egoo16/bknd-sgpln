@@ -141,11 +141,6 @@ export const getAlternative = async (req: Request, res: Response) => {
                     required: false,
                     model: responsibleEntity
                 },
-
-                {
-                    required: false,
-                    model: qualification
-                },
             ]
         });
 
