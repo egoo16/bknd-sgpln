@@ -5,7 +5,7 @@ const generalRouter = Router();
 
 generalRouter.post("/information", postGeneralInformation);
 generalRouter.get("/information", getGeneralInformation);
-generalRouter.get("/send-idea", sendIdea);
-generalRouter.get("/return-idea", returnIdea);
+generalRouter.get("/send-idea/:id", sendIdea);
+generalRouter.get("/return-idea/:id", returnIdea);
 
 export default generalRouter;
