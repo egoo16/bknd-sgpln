@@ -180,3 +180,50 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
         });
     }
 };
+
+
+/**
+ * Funcion para  listar las configuraciones globales
+ * @param {*} req
+ */
+ export async function sendIdea(req: Request, res: Response) {
+    try {
+        let idIdea = req.params.id;
+
+        let generalIdea = await generalInformation.findOne({
+            where: {
+                codigo: idIdea
+            }
+        })
+
+        generalIdea.state = 'ENVIADA';
+        generalIdea.save();
+        return res.status(200).send(generalIdea)    
+
+    } catch (error: any) {
+        return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
+    }
+}
+
+/**
+ * Funcion para  listar las configuraciones globales
+ * @param {*} req
+ */
+ export async function returnIdea(req: Request, res: Response) {
+    try {
+        let idIdea = req.params.id;
+
+        let generalIdea = await generalInformation.findOne({
+            where: {
+                codigo: idIdea
+            }
+        })
+
+        generalIdea.state = 'CALIFICADA';
+        generalIdea.save();
+
+        return res.status(200).send(generalIdea)    
+    } catch (error: any) {
+        return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
+    }
+}

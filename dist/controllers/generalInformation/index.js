@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getGeneralInformation = exports.postGeneralInformation = void 0;
+exports.returnIdea = exports.sendIdea = exports.getGeneralInformation = exports.postGeneralInformation = void 0;
 const connection_1 = __importDefault(require("../../db/connection"));
 const moment_1 = __importDefault(require("moment"));
 const Sequelize = require('sequelize-oracle');
@@ -174,4 +174,50 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.getGeneralInformation = getGeneralInformation;
+/**
+ * Funcion para  listar las configuraciones globales
+ * @param {*} req
+ */
+function sendIdea(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let idIdea = req.params.id;
+            let generalIdea = yield generalInformation_1.default.findOne({
+                where: {
+                    codigo: idIdea
+                }
+            });
+            generalIdea.state = 'ENVIADA';
+            generalIdea.save();
+            return res.status(200).send(generalIdea);
+        }
+        catch (error) {
+            return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
+        }
+    });
+}
+exports.sendIdea = sendIdea;
+/**
+ * Funcion para  listar las configuraciones globales
+ * @param {*} req
+ */
+function returnIdea(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let idIdea = req.params.id;
+            let generalIdea = yield generalInformation_1.default.findOne({
+                where: {
+                    codigo: idIdea
+                }
+            });
+            generalIdea.state = 'CALIFICADA';
+            generalIdea.save();
+            return res.status(200).send(generalIdea);
+        }
+        catch (error) {
+            return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
+        }
+    });
+}
+exports.returnIdea = returnIdea;
 //# sourceMappingURL=index.js.map
