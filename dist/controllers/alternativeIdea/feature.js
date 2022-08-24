@@ -138,6 +138,7 @@ function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
             return { message: `Idea alternativa creada correctamente` };
         }
         catch (error) {
+            transaction.rollback();
             //devuelve errores al cliente
             throw `Error al ingresar Idea alternativa: ${error}`;
         }
@@ -223,6 +224,7 @@ function FcreatePreleminaryName(prName, idAlternativa, transaction) {
             return { preliminaryNameCreated, message: `Nombre preliminar ingresado correctamente` };
         }
         catch (error) {
+            transaction.rollback();
             //devuelve errores al cliente
             throw `Error al ingresar nombre preliminar de proyecto: ${error}`;
         }
@@ -237,6 +239,7 @@ function FcresponsableEntity(resEntity, idAlternativa, transaction) {
             return { responsableEntityCreated, message: `Entidad responsable ingresada correctamente` };
         }
         catch (error) {
+            transaction.rollback();
             //devuelve errores al cliente
             throw `Error al ingresar entidad responsable: ${error}`;
         }
@@ -291,6 +294,7 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
         }
         catch (error) {
             //devuelve errores al cliente
+            transaction.rollback();
             throw `Error al ingresar delimitación preliminar: ${error}`;
         }
     });
@@ -312,6 +316,7 @@ function FcreateProjectDescription(proDescription, idAlternativa, transaction) {
             return { proDesctiptionCreated, message: `Descripción preliminar de la idea proyecto ingresada correctamente` };
         }
         catch (error) {
+            transaction.rollback();
             //devuelve errores al cliente
             throw `Error al ingresar descripción preliminar de la idea proyecto preliminar: ${error}`;
         }
@@ -330,6 +335,7 @@ function FcreateGeographicArea(geograpicArea, idAlternativa, transaction) {
             return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };
         }
         catch (error) {
+            transaction.rollback();
             //devuelve errores al cliente
             throw `Error al ingresar area geografica del proyecto: ${error}`;
         }

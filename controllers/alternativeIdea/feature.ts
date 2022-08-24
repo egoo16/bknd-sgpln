@@ -114,6 +114,7 @@ export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: 
 
         return { message: `Idea alternativa creada correctamente` };
     } catch (error) {
+        transaction.rollback()
         //devuelve errores al cliente
         throw `Error al ingresar Idea alternativa: ${error}`;
     }
@@ -198,6 +199,7 @@ export async function FcreatePreleminaryName(prName: any, idAlternativa: number,
         let preliminaryNameCreated = await preliminaryName.create(prName, { transaction })
         return { preliminaryNameCreated, message: `Nombre preliminar ingresado correctamente` };
     } catch (error) {
+        transaction.rollback()
         //devuelve errores al cliente
         throw `Error al ingresar nombre preliminar de proyecto: ${error}`;
     }
@@ -209,6 +211,7 @@ export async function FcresponsableEntity(resEntity: any, idAlternativa: number,
         let responsableEntityCreated = await responsableEntity.create(resEntity, { transaction })
         return { responsableEntityCreated, message: `Entidad responsable ingresada correctamente` };
     } catch (error) {
+        transaction.rollback()
         //devuelve errores al cliente
         throw `Error al ingresar entidad responsable: ${error}`;
     }
@@ -266,6 +269,7 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
         return { populationDelimitationCreated, message: `Delimitación preliminar ingresada correctamente` };
     } catch (error) {
         //devuelve errores al cliente
+        transaction.rollback()
         throw `Error al ingresar delimitación preliminar: ${error}`;
     }
 }
@@ -281,6 +285,7 @@ export async function FcreateProjectDescription(proDescription: any, idAlternati
 
         return { proDesctiptionCreated, message: `Descripción preliminar de la idea proyecto ingresada correctamente` };
     } catch (error) {
+        transaction.rollback()
         //devuelve errores al cliente
         throw `Error al ingresar descripción preliminar de la idea proyecto preliminar: ${error}`;
     }
@@ -296,6 +301,7 @@ export async function FcreateGeographicArea(geograpicArea: any, idAlternativa: n
         }
         return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };
     } catch (error) {
+        transaction.rollback()
         //devuelve errores al cliente
         throw `Error al ingresar area geografica del proyecto: ${error}`;
     }
