@@ -223,6 +223,37 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
         // let DenModel = await denomination.findAll();
         // popDemiliation.denId = DenModel[0].codigo;
 
+        let referenceName = popDemiliation.refPopId;
+        let reference = await referencePopulation.findOne({
+            where: {
+                name: referenceName
+            }
+        });
+
+        if (!reference) {
+            let refModel = { name: referenceName }
+            let referenceCreate = await referencePopulation.create(refModel);
+            popDemiliation.refPopId = referenceCreate.codigo;
+        } else {
+            popDemiliation.refPopId = reference.codigo;
+        }
+
+        let denominationName = popDemiliation.denId;
+        let denmtion = await denomination.findOne({
+            where: {
+                name: denominationName
+            }
+        });
+
+        if (!denmtion) {
+            let denModel = { name: denominationName }
+            let denCreate = await referencePopulation.create(denModel);
+            popDemiliation.denId = denCreate.codigo;
+        } else {
+            popDemiliation.denId = denmtion.codigo;
+        }
+
+
         if (popDemiliation.estimateBeneficiaries && popDemiliation.totalPopulation) {
             let estimateBeneficiaries = parseInt(popDemiliation.estimateBeneficiaries, 10);
             let totalPopulation = parseInt(popDemiliation.totalPopulation, 10);

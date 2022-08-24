@@ -21,6 +21,8 @@ const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executi
 const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geographicArea"));
 const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
 const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinates"));
+const referencePopulation_1 = __importDefault(require("../../models/BancoIdeas/referencePopulation"));
+const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomination"));
 const preInvestment_1 = __importDefault(require("../../models/BancoIdeas/preInvestment"));
 const qualification_1 = __importDefault(require("../../models/BancoIdeas/qualification"));
 const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
@@ -249,6 +251,34 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
             // popDemiliation.refPopId = refModel[0].codigo;
             // let DenModel = await denomination.findAll();
             // popDemiliation.denId = DenModel[0].codigo;
+            let referenceName = popDemiliation.refPopId;
+            let reference = yield referencePopulation_1.default.findOne({
+                where: {
+                    name: referenceName
+                }
+            });
+            if (!reference) {
+                let refModel = { name: referenceName };
+                let referenceCreate = yield referencePopulation_1.default.create(refModel);
+                popDemiliation.refPopId = referenceCreate.codigo;
+            }
+            else {
+                popDemiliation.refPopId = reference.codigo;
+            }
+            let denominationName = popDemiliation.denId;
+            let denmtion = yield denomination_1.default.findOne({
+                where: {
+                    name: denominationName
+                }
+            });
+            if (!denmtion) {
+                let denModel = { name: denominationName };
+                let denCreate = yield referencePopulation_1.default.create(denModel);
+                popDemiliation.denId = denCreate.codigo;
+            }
+            else {
+                popDemiliation.denId = denmtion.codigo;
+            }
             if (popDemiliation.estimateBeneficiaries && popDemiliation.totalPopulation) {
                 let estimateBeneficiaries = parseInt(popDemiliation.estimateBeneficiaries, 10);
                 let totalPopulation = parseInt(popDemiliation.totalPopulation, 10);
