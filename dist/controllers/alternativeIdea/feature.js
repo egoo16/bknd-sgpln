@@ -260,9 +260,10 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
                     name: referenceName
                 }
             });
+            console.log('🚀🚀🚀 Datos: ', referenceName, reference);
             if (!reference) {
-                let refModel = { name: referenceName };
-                let referenceCreate = yield referencePopulation_1.default.create(refModel, { transaction });
+                let ref = { name: referenceName };
+                let referenceCreate = yield referencePopulation_1.default.create(ref, { transaction });
                 popDemiliation.refPopId = referenceCreate.codigo;
             }
             else {
@@ -274,9 +275,10 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
                     name: denominationName
                 }
             });
+            console.log('🚀🚀🚀 Datos: ', denominationName, denmtion);
             if (!denmtion) {
                 let denModel = { name: denominationName };
-                let denCreate = yield referencePopulation_1.default.create(denModel, { transaction });
+                let denCreate = yield denomination_1.default.create(denModel, { transaction });
                 popDemiliation.denId = denCreate.codigo;
             }
             else {

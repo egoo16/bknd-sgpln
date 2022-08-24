@@ -233,9 +233,11 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
             }
         });
 
+        console.log('🚀🚀🚀 Datos: ', referenceName, reference)
+
         if (!reference) {
-            let refModel = { name: referenceName }
-            let referenceCreate = await referencePopulation.create(refModel, { transaction });
+            let ref = { name: referenceName };
+            let referenceCreate = await referencePopulation.create(ref, { transaction });
             popDemiliation.refPopId = referenceCreate.codigo;
         } else {
             popDemiliation.refPopId = reference.codigo;
@@ -247,10 +249,11 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
                 name: denominationName
             }
         });
+        console.log('🚀🚀🚀 Datos: ', denominationName, denmtion)
 
         if (!denmtion) {
             let denModel = { name: denominationName }
-            let denCreate = await referencePopulation.create(denModel, { transaction });
+            let denCreate = await denomination.create(denModel, { transaction });
             popDemiliation.denId = denCreate.codigo;
         } else {
             popDemiliation.denId = denmtion.codigo;
