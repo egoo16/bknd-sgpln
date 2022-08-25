@@ -184,9 +184,31 @@ export async function FcreatePreInvestment(preInversion: any, idAlternativa: any
             etapaValor: preInversion.etapa.valor,
             etapaResultado: preInversion.etapa.resultado
         }
-        preInversion.AlterId = idAlternativa
-        let preInvestmentHistoryCreated = await preInvestment.create(preInversionCreate)
-        return { preInvestmentHistoryCreated, message: `Pre inversion historico creado correctamente` };
+
+        let preInvestmentLoad = await preInvestment.findOne({
+            where: {
+                AlterId: idAlternativa
+            }
+        })
+
+        if (!preInvestmentLoad) {
+            preInversion.AlterId = idAlternativa
+            let preInvestmentHistoryCreated = await preInvestment.create(preInversionCreate);
+            return { preInvestmentHistoryCreated, message: `Pre inversion historico creado correctamente` };
+        } else {
+            preInvestmentLoad.rangoValor = preInversion.rango.valor;
+            preInvestmentLoad.rangoResultado = preInversion.rango.resultado;
+            preInvestmentLoad.estimacionValor = preInversion.estimacion.valor;
+            preInvestmentLoad.estimacionResultado = preInversion.estimacion.resultado;
+            preInvestmentLoad.complejidadValor = preInversion.complejidad.valor;
+            preInvestmentLoad.complejidadResultado = preInversion.complejidad.resultado;
+            preInvestmentLoad.etapaValor = preInversion.etapa.valor;
+            preInvestmentLoad.etapaResultado = preInversion.etapa.resultad;
+            preInvestmentLoad.save()
+            return { preInvestmentLoad, message: `Pre inversion historico creado correctamente` };
+
+        }
+
     } catch (error) {
         //devuelve errores al cliente
         throw `Error al ingresar Pre inversion historico: ${error}`;

@@ -205,9 +205,28 @@ function FcreatePreInvestment(preInversion, idAlternativa) {
                 etapaValor: preInversion.etapa.valor,
                 etapaResultado: preInversion.etapa.resultado
             };
-            preInversion.AlterId = idAlternativa;
-            let preInvestmentHistoryCreated = yield preInvestment_1.default.create(preInversionCreate);
-            return { preInvestmentHistoryCreated, message: `Pre inversion historico creado correctamente` };
+            let preInvestmentLoad = yield preInvestment_1.default.findOne({
+                where: {
+                    AlterId: idAlternativa
+                }
+            });
+            if (!preInvestmentLoad) {
+                preInversion.AlterId = idAlternativa;
+                let preInvestmentHistoryCreated = yield preInvestment_1.default.create(preInversionCreate);
+                return { preInvestmentHistoryCreated, message: `Pre inversion historico creado correctamente` };
+            }
+            else {
+                preInvestmentLoad.rangoValor = preInversion.rango.valor;
+                preInvestmentLoad.rangoResultado = preInversion.rango.resultado;
+                preInvestmentLoad.estimacionValor = preInversion.estimacion.valor;
+                preInvestmentLoad.estimacionResultado = preInversion.estimacion.resultado;
+                preInvestmentLoad.complejidadValor = preInversion.complejidad.valor;
+                preInvestmentLoad.complejidadResultado = preInversion.complejidad.resultado;
+                preInvestmentLoad.etapaValor = preInversion.etapa.valor;
+                preInvestmentLoad.etapaResultado = preInversion.etapa.resultad;
+                preInvestmentLoad.save();
+                return { preInvestmentLoad, message: `Pre inversion historico creado correctamente` };
+            }
         }
         catch (error) {
             //devuelve errores al cliente
