@@ -140,7 +140,7 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
         const generalInformations = await generalInformation.findAll({
             where,
             order: [
-                ['correlation', 'DESC']
+                ['correlation', 'ASC']
             ],
             include: [
                 {

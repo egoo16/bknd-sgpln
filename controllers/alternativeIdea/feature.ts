@@ -174,7 +174,22 @@ export async function FaddPertinenceQuality(pertinence: any, transaction: any) {
 
             return { message: `Matriz de Pertinencia agregada correctamente` };
         } else {
-            pertinenceMatrix = pertinence;
+
+            pertinenceMatrix.descProblem = pertinence.pertinenceMatrix;
+            pertinenceMatrix.descProblemComment = pertinence.pertinenceMatrix;
+            pertinenceMatrix.generalObjct = pertinence.pertinenceMatrix;
+            pertinenceMatrix.generalObjctComment = pertinence.pertinenceMatrix;
+            pertinenceMatrix.anlysDelimitation = pertinence.pertinenceMatrix;
+            pertinenceMatrix.anlysDelimitationComment = pertinence.pertinenceMatrix;
+            pertinenceMatrix.terrainIdent = pertinence.pertinenceMatrix;
+            pertinenceMatrix.terrainIdentComment = pertinence.pertinenceMatrix;
+            pertinenceMatrix.legalSituation = pertinence.pertinenceMatrix;
+            pertinenceMatrix.legalSituationComment = pertinence.pertinenceMatrix;
+            pertinenceMatrix.descAnlys = pertinence.pertinenceMatrix;
+            pertinenceMatrix.descAnlysComment = pertinence.pertinenceMatrix;
+            pertinenceMatrix.descriptionGeneral = pertinence.pertinenceMatrix;
+            pertinenceMatrix.total = pertinence.pertinenceMatrix;
+            pertinenceMatrix.result = pertinence.pertinenceMatrix;
             pertinenceMatrix.save();
             return { message: `Matriz de Pertinencia actualizada correctamente` };
         }

@@ -140,7 +140,7 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
         const generalInformations = yield generalInformation_1.default.findAll({
             where,
             order: [
-                ['correlation', 'DESC']
+                ['correlation', 'ASC']
             ],
             include: [
                 {
