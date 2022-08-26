@@ -134,36 +134,50 @@ export async function FaddPertinenceQuality(pertinence: any, transaction: any) {
             result = 'NO PERTINENTE';
         }
 
-        let pertinenceResult = await qualification.create(pertinence, { transaction });
 
-        let alternative = await ideaAlternative.findOne({
+        let pertinenceMatrix = await qualification.findOne({
             where: {
-                codigo: pertinence.AlterId
-            }
-        });
-
-        alternative.state = 'CALIFICADA';
-        alternative.save();
-
-        let generalIdea = await generalInformation.findOne({
-            where: {
-                codigo: alternative.sectionBIId
+                AlterId: pertinence.AlterId
             }
         })
 
-        let state = generalIdea.result;
+        if (!pertinenceMatrix) {
 
-        if (state == 'PENDIENTE') {
-            generalIdea.result = result;
-            generalIdea.save();
-        } else if (state == 'NO PERTINENTE') {
-            if (result != 'NO PERTINENTE') {
+            let pertinenceResult = await qualification.create(pertinence, { transaction });
+
+            let alternative = await ideaAlternative.findOne({
+                where: {
+                    codigo: pertinence.AlterId
+                }
+            });
+
+            alternative.state = 'CALIFICADA';
+            alternative.save();
+
+            let generalIdea = await generalInformation.findOne({
+                where: {
+                    codigo: alternative.sectionBIId
+                }
+            })
+
+            let state = generalIdea.result;
+
+            if (state == 'PENDIENTE') {
                 generalIdea.result = result;
                 generalIdea.save();
+            } else if (state == 'NO PERTINENTE') {
+                if (result != 'NO PERTINENTE') {
+                    generalIdea.result = result;
+                    generalIdea.save();
+                }
             }
-        }
 
-        return { message: `Idea alternativa creada correctamente` };
+            return { message: `Matriz de Pertinencia agregada correctamente` };
+        } else {
+            pertinenceMatrix = pertinence;
+            pertinenceMatrix.save();
+            return { message: `Matriz de Pertinencia actualizada correctamente` };
+        }
     } catch (error) {
         //devuelve errores al cliente
         throw `Error al ingresar Idea alternativa: ${error}`;

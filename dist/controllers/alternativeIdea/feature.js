@@ -158,31 +158,43 @@ function FaddPertinenceQuality(pertinence, transaction) {
                 pertinence.result = 'NO PERTINENTE';
                 result = 'NO PERTINENTE';
             }
-            let pertinenceResult = yield qualification_1.default.create(pertinence, { transaction });
-            let alternative = yield ideaAlternative_1.default.findOne({
+            let pertinenceMatrix = yield qualification_1.default.findOne({
                 where: {
-                    codigo: pertinence.AlterId
+                    AlterId: pertinence.AlterId
                 }
             });
-            alternative.state = 'CALIFICADA';
-            alternative.save();
-            let generalIdea = yield generalInformation_1.default.findOne({
-                where: {
-                    codigo: alternative.sectionBIId
-                }
-            });
-            let state = generalIdea.result;
-            if (state == 'PENDIENTE') {
-                generalIdea.result = result;
-                generalIdea.save();
-            }
-            else if (state == 'NO PERTINENTE') {
-                if (result != 'NO PERTINENTE') {
+            if (!pertinenceMatrix) {
+                let pertinenceResult = yield qualification_1.default.create(pertinence, { transaction });
+                let alternative = yield ideaAlternative_1.default.findOne({
+                    where: {
+                        codigo: pertinence.AlterId
+                    }
+                });
+                alternative.state = 'CALIFICADA';
+                alternative.save();
+                let generalIdea = yield generalInformation_1.default.findOne({
+                    where: {
+                        codigo: alternative.sectionBIId
+                    }
+                });
+                let state = generalIdea.result;
+                if (state == 'PENDIENTE') {
                     generalIdea.result = result;
                     generalIdea.save();
                 }
+                else if (state == 'NO PERTINENTE') {
+                    if (result != 'NO PERTINENTE') {
+                        generalIdea.result = result;
+                        generalIdea.save();
+                    }
+                }
+                return { message: `Matriz de Pertinencia agregada correctamente` };
             }
-            return { message: `Idea alternativa creada correctamente` };
+            else {
+                pertinenceMatrix = pertinence;
+                pertinenceMatrix.save();
+                return { message: `Matriz de Pertinencia actualizada correctamente` };
+            }
         }
         catch (error) {
             //devuelve errores al cliente
