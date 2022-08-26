@@ -361,9 +361,11 @@ function FcreateGeographicArea(geograpicArea, idAlternativa, transaction) {
         try {
             geograpicArea.AlterId = idAlternativa;
             let geographicAreaCreated = yield geographicArea_1.default.create(geograpicArea, { transaction });
-            for (let coordinate of geograpicArea.coordinates) {
-                coordinate.geoAreaId = geographicAreaCreated.codigo;
-                yield coordinates_1.default.create(coordinate, { transaction });
+            if (geograpicArea.coordinates) {
+                for (let coordinate of geograpicArea.coordinates) {
+                    coordinate.geoAreaId = geographicAreaCreated.codigo;
+                    yield coordinates_1.default.create(coordinate, { transaction });
+                }
             }
             return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };
         }

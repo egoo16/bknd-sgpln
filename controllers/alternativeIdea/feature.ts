@@ -334,9 +334,11 @@ export async function FcreateGeographicArea(geograpicArea: any, idAlternativa: n
     try {
         geograpicArea.AlterId = idAlternativa
         let geographicAreaCreated = await geographicArea.create(geograpicArea, { transaction })
-        for (let coordinate of geograpicArea.coordinates) {
-            coordinate.geoAreaId = geographicAreaCreated.codigo
-            await coordinates.create(coordinate, { transaction })
+        if (geograpicArea.coordinates) {
+            for (let coordinate of geograpicArea.coordinates) {
+                coordinate.geoAreaId = geographicAreaCreated.codigo
+                await coordinates.create(coordinate, { transaction })
+            }
         }
         return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };
     } catch (error) {
