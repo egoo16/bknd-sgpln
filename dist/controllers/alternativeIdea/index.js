@@ -175,12 +175,6 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                     where: {
                         AlterId: idAlt
                     },
-                    include: [
-                        {
-                            required: false,
-                            model: coordinates_1.default
-                        },
-                    ]
                 });
                 let pDescription = yield projectDescription_1.default.findOne({
                     where: {
@@ -271,6 +265,11 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                     };
                 }
                 if (gArea) {
+                    let coordenadas = yield coordinates_1.default.findAll({
+                        where: {
+                            geoAreaId: gArea.codigo
+                        }
+                    });
                     alternativa.geoArea = {
                         codigo: gArea.codigo,
                         AlterId: gArea.AlterId,
@@ -297,19 +296,19 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
                         deletedAt: gArea.deletedAt,
                     };
                     alternativa.geoArea.coordinates = [];
-                }
-                if ((gArea === null || gArea === void 0 ? void 0 : gArea.coordinates) || (gArea === null || gArea === void 0 ? void 0 : gArea.coordinates.length) > 0) {
-                    gArea.coordinates.map((coordinate) => {
-                        let coord = {
-                            codigo: coordinate.codigo,
-                            geoAreaId: coordinate.geoAreaId,
-                            latitude: coordinate.latitude,
-                            createdAt: coordinate.createdAt,
-                            updatedAt: coordinate.updatedAt,
-                            deletedAt: coordinate.deletedAt,
-                        };
-                        alternativa.geoArea.coordinates.push(coordinate);
-                    });
+                    if (coordenadas) {
+                        coordenadas.map((coordinate) => {
+                            let coord = {
+                                codigo: coordinate.codigo,
+                                geoAreaId: coordinate.geoAreaId,
+                                latitude: coordinate.latitude,
+                                createdAt: coordinate.createdAt,
+                                updatedAt: coordinate.updatedAt,
+                                deletedAt: coordinate.deletedAt,
+                            };
+                            alternativa.geoArea.coordinates.push(coord);
+                        });
+                    }
                 }
                 if (pDescription) {
                     alternativa.projDesc = {

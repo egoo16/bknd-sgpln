@@ -167,12 +167,6 @@ export const getAlternative = async (req: Request, res: Response) => {
                     where: {
                         AlterId: idAlt
                     },
-                    include: [
-                        {
-                            required: false,
-                            model: coordinates
-                        },
-                    ]
                 });
                 let pDescription = await projectDescription.findOne({
                     where: {
@@ -269,8 +263,15 @@ export const getAlternative = async (req: Request, res: Response) => {
                         deletedAt: popDelimitation.denmtion.deletedAt,
                     };
                 }
-
                 if (gArea) {
+
+                    let coordenadas = await coordinates.findAll({
+                        where: {
+                            geoAreaId: gArea.codigo
+                        }
+                    })
+
+
                     alternativa.geoArea = {
                         codigo: gArea.codigo,
                         AlterId: gArea.AlterId,
@@ -297,21 +298,21 @@ export const getAlternative = async (req: Request, res: Response) => {
                         deletedAt: gArea.deletedAt,
                     };
                     alternativa.geoArea.coordinates = []
+                    if (coordenadas) {
+                        coordenadas.map((coordinate: any) => {
+                            let coord = {
+                                codigo: coordinate.codigo,
+                                geoAreaId: coordinate.geoAreaId,
+                                latitude: coordinate.latitude,
+                                createdAt: coordinate.createdAt,
+                                updatedAt: coordinate.updatedAt,
+                                deletedAt: coordinate.deletedAt,
+                            }
+                            alternativa.geoArea.coordinates.push(coord);
+                        });
+                    }
                 }
 
-                if (gArea?.coordinates || gArea?.coordinates.length > 0) {
-                    gArea.coordinates.map((coordinate: any) => {
-                        let coord = {
-                            codigo: coordinate.codigo,
-                            geoAreaId: coordinate.geoAreaId,
-                            latitude: coordinate.latitude,
-                            createdAt: coordinate.createdAt,
-                            updatedAt: coordinate.updatedAt,
-                            deletedAt: coordinate.deletedAt,
-                        }
-                        alternativa.geoArea.coordinates.push(coordinate);
-                    });
-                }
 
                 if (pDescription) {
                     alternativa.projDesc = {
