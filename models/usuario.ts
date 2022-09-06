@@ -6,9 +6,14 @@ const Usuario = db.define(
   "Usuario",
   {
     id: {
-      type: Sequelize.INTEGER,
-      autoIncrement: true,
+      type: Sequelize.UUID,
       primaryKey: true,
+      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
+    },
+    name: {
+      type: Sequelize.STRING,
+      required: true,
     },
     username: {
       type: Sequelize.STRING,
@@ -19,6 +24,16 @@ const Usuario = db.define(
       type: Sequelize.STRING,
       required: true,
       allowNull: false,
+    },
+    role: {
+      type: Sequelize.STRING,
+      defaultValue: 'USER_ROLE'
+    },
+    id_inst: {
+      type: Sequelize.STRING,
+    },
+    name_inst: {
+      type: Sequelize.STRING,
     },
   },
   {

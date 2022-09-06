@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUsuario = exports.getUsuarios = void 0;
 const usuario_1 = __importDefault(require("../models/usuario"));
+const bcrypt = require('bcrypt');
 const getUsuarios = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const usuarios = yield usuario_1.default.findAll();
     res.json({
@@ -32,11 +33,24 @@ const getUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.getUsuario = getUsuario;
 const postUsuario = (req, res) => {
-    const { body } = req;
-    res.json({
-        msg: "postUsuario",
-        body,
-    });
+    try {
+        if (req.body) {
+            const { body } = req;
+            let usuario = {
+                username: body.username,
+                password: bcrypt.hashSync(body.password, 10),
+                name: body.name,
+                id_Institution: '1',
+                name_Institution: 'INSTITUCION TEST'
+            };
+            res.json({
+                msg: "postUsuario",
+                body,
+            });
+        }
+    }
+    catch (error) {
+    }
 };
 exports.postUsuario = postUsuario;
 const putUsuario = (req, res) => {

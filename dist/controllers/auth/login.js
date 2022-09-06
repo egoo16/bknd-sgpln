@@ -16,15 +16,37 @@ exports.loginUsuario = void 0;
 const usuario_1 = __importDefault(require("../../models/usuario"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const environment_1 = require("../../global/environment");
+const bcrypt = require('bcrypt');
 const loginUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = req.body;
         if (body) {
+            const usuarios = yield usuario_1.default.findAll();
+            if (!usuarios || usuarios.length <= 0) {
+                let userTest = {
+                    username: 'normal',
+                    password: bcrypt.hashSync('123456', 10),
+                    name: 'Usuario Externo de Prueba',
+                    id_inst: '1',
+                    name_inst: 'INSTITUCION TEST',
+                    role: 'USER_ROLE',
+                };
+                let userTestCreate = yield usuario_1.default.create(userTest);
+                userTest = {
+                    username: 'admin',
+                    password: bcrypt.hashSync('123456', 10),
+                    name: 'Usuario Administrador de Prueba',
+                    id_inst: '1',
+                    name_inst: 'INSTITUCION TEST',
+                    role: 'ADMIN_ROLE',
+                };
+                userTestCreate = yield usuario_1.default.create(userTest);
+            }
             const usuario = yield usuario_1.default.findOne({
                 where: { username: body.username },
             });
             if (usuario) {
-                if (body.password === usuario.password) {
+                if (bcrypt.compareSync(body.password, usuario.password)) {
                     usuario.password = ":D";
                     //Creacion del Token
                     const token = jsonwebtoken_1.default.sign({ usuario }, environment_1.SEED, {
