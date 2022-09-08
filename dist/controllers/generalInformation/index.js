@@ -125,7 +125,7 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
     try {
         let where = {};
         if (req.query) {
-            if (req.query.state) {
+            if (req.query.state && req.query.state != 'TODAS') {
                 where.state = req.query.state;
             }
             if (req.query.institucionId) {

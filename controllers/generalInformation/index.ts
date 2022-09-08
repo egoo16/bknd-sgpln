@@ -128,7 +128,8 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
         let where: any = {}
 
         if (req.query) {
-            if (req.query.state) { where.state = req.query.state }
+
+            if (req.query.state && req.query.state != 'TODAS') { where.state = req.query.state }
             if (req.query.institucionId) { where.idEntity = req.query.institucionId }
             if (req.query.fechaDesde && req.query.fechaHasta) {
                 where.createdAt = {
