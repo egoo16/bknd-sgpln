@@ -147,7 +147,7 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 };
             }
         }
-        const generalInformations = yield generalInformation_1.default.findAll({
+        let generalInformations = yield generalInformation_1.default.findAll({
             where,
             order: [
                 ['correlation', 'ASC']
@@ -174,9 +174,53 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 },
             ]
         });
+        let ideas = [];
+        if (generalInformations || generalInformations.length > 0) {
+            let resGIdea = yield Promise.all(generalInformations.map((idea) => __awaiter(void 0, void 0, void 0, function* () {
+                let alternativeF = yield (0, feature_1.getAlternatives)(idea.codigo);
+                console.log('Las alternativas de la Idea', alternativeF);
+                idea.alternatives = 'Texto de Prueba alternativesF';
+                let ideaFind = {
+                    codigo: idea.codigo,
+                    author: idea.author,
+                    analizer: idea.analizer,
+                    idStage: idea.idStage,
+                    productId: idea.productId,
+                    productName: idea.productName,
+                    date: idea.date,
+                    correlation: idea.correlation,
+                    registerCode: idea.registerCode,
+                    planningInstrument: idea.planningInstrument,
+                    description: idea.description,
+                    dateOut: idea.dateOut,
+                    punctuation: idea.punctuation,
+                    state: idea.state,
+                    result: idea.result,
+                    idEntity: idea.idEntity,
+                    nameEntity: idea.nameEntity,
+                    responsibleName: idea.responsibleName,
+                    email: idea.email,
+                    phone: idea.phone,
+                    definitionPotentiality: idea.definitionPotentiality,
+                    baseLine: idea.baseLine,
+                    descriptionCurrentSituation: idea.descriptionCurrentSituation,
+                    generalObjective: idea.generalObjective,
+                    expectedChange: idea.expectedChange,
+                    createdAt: idea.createdAt,
+                    updatedAt: idea.updatedAt,
+                    deletedAt: idea.deletedAt,
+                };
+                ideaFind.Effects = idea.Effects;
+                ideaFind.Causes = idea.Causes;
+                ideaFind.Alternatives = idea.Alternatives;
+                ideaFind.stage = idea.stage;
+                ideaFind.alternatives = alternativeF;
+                ideas.push(ideaFind);
+            })));
+        }
         res.status(201).json({
             msg: "Datos Obtenidos",
-            generalInformations,
+            generalInformations: ideas,
         });
     }
     catch (error) {

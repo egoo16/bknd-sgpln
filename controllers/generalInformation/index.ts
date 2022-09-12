@@ -7,9 +7,7 @@ import stage from "../../models/BancoIdeas/stage";
 import possibleEffects from "../../models/BancoIdeas/possibleEffects";
 import possibleCauses from "../../models/BancoIdeas/possibleCauses";
 import possibleAlternatives from "../../models/BancoIdeas/possibleAlternatives";
-import { FaddPertinenceQuality, FcreateIdeaAlternativeComplete, FgetPreinversion } from '../alternativeIdea/feature';
-
-
+import { FaddPertinenceQuality, FcreateIdeaAlternativeComplete, FgetPreinversion, getAlternatives } from '../alternativeIdea/feature';
 
 export const postGeneralInformation = async (req: Request, res: Response) => {
     let transaction = await models.transaction();
@@ -151,7 +149,7 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
             }
         }
 
-        const generalInformations = await generalInformation.findAll({
+        let generalInformations = await generalInformation.findAll({
             where,
             order: [
                 ['correlation', 'ASC']
@@ -185,10 +183,63 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
             ]
         });
 
+        let ideas: any[] = []
+
+        if (generalInformations || generalInformations.length > 0) {
+            let resGIdea = await Promise.all(
+                generalInformations.map(async (idea: any) => {
+
+                    let alternativeF =  await getAlternatives(idea.codigo);
+                    console.log('Las alternativas de la Idea',alternativeF)
+                    idea.alternatives = 'Texto de Prueba alternativesF';
+                    let ideaFind : any = {
+                        codigo: idea.codigo,
+                        author: idea.author,
+                        analizer: idea.analizer,
+                        idStage: idea.idStage,
+                        productId: idea.productId,
+                        productName: idea.productName,
+                        date: idea.date,
+                        correlation: idea.correlation,
+                        registerCode: idea.registerCode,
+                        planningInstrument: idea.planningInstrument,
+                        description: idea.description,
+                        dateOut: idea.dateOut,
+                        punctuation: idea.punctuation,
+                        state: idea.state,
+                        result: idea.result,
+                        idEntity: idea.idEntity,
+                        nameEntity: idea.nameEntity,
+                        responsibleName: idea.responsibleName,
+                        email: idea.email,
+                        phone: idea.phone,
+                        definitionPotentiality: idea.definitionPotentiality,
+                        baseLine: idea.baseLine,
+                        descriptionCurrentSituation: idea.descriptionCurrentSituation,
+                        generalObjective: idea.generalObjective,
+                        expectedChange: idea.expectedChange,
+                        createdAt: idea.createdAt,
+                        updatedAt: idea.updatedAt,
+                        deletedAt: idea.deletedAt,
+                    }
+                    ideaFind.Effects = idea.Effects;
+                    ideaFind.Causes = idea.Causes;
+                    ideaFind.Alternatives = idea.Alternatives;
+                    ideaFind.stage = idea.stage;
+                    ideaFind.alternatives = alternativeF;
+
+
+                    ideas.push(ideaFind)
+
+
+                })
+            )
+        }
+
 
         res.status(201).json({
             msg: "Datos Obtenidos",
-            generalInformations,
+            generalInformations: ideas,
         });
     } catch (error) {
         res.status(500).json({
