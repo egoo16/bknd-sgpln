@@ -21,6 +21,7 @@ const stage_1 = __importDefault(require("../../models/BancoIdeas/stage"));
 const possibleEffects_1 = __importDefault(require("../../models/BancoIdeas/possibleEffects"));
 const possibleCauses_1 = __importDefault(require("../../models/BancoIdeas/possibleCauses"));
 const possibleAlternatives_1 = __importDefault(require("../../models/BancoIdeas/possibleAlternatives"));
+const feature_1 = require("../alternativeIdea/feature");
 const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let transaction = yield connection_1.default.transaction();
     try {
@@ -105,6 +106,15 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
             })));
         }
         //#endregion Finalizó la insercion de Alternativas
+        //#region Insert Alternativa completa Body
+        let alternativesBody = body.alternatives;
+        if ((alternativesBody === null || alternativesBody === void 0 ? void 0 : alternativesBody.length) > 0) {
+            let resBodyAlternatives = yield Promise.all(alternativesBody.map((alternative) => __awaiter(void 0, void 0, void 0, function* () {
+                alternative.sectionBIId = informationIsert.codigo;
+                let res = yield (0, feature_1.FcreateIdeaAlternativeComplete)(alternative, transaction);
+            })));
+        }
+        //#endregion
         yield transaction.commit();
         res.status(201).json({
             msg: "ideaIsertada Correctamente",

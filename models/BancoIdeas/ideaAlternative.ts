@@ -21,6 +21,7 @@ const ideaAlternative = db.define(
     },
         sectionBIId: { type: Sequelize.UUID, allowNull: false },
         state: { type: Sequelize.STRING },
+        analizer: { type: Sequelize.STRING },
 
     },
     {

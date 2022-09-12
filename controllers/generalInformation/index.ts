@@ -7,6 +7,7 @@ import stage from "../../models/BancoIdeas/stage";
 import possibleEffects from "../../models/BancoIdeas/possibleEffects";
 import possibleCauses from "../../models/BancoIdeas/possibleCauses";
 import possibleAlternatives from "../../models/BancoIdeas/possibleAlternatives";
+import { FaddPertinenceQuality, FcreateIdeaAlternativeComplete, FgetPreinversion } from '../alternativeIdea/feature';
 
 
 
@@ -104,6 +105,18 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
             }));
         }
         //#endregion Finalizó la insercion de Alternativas
+
+        //#region Insert Alternativa completa Body
+        
+        let alternativesBody = body.alternatives;
+        if (alternativesBody?.length > 0) {
+            let resBodyAlternatives = await Promise.all(alternativesBody.map(async (alternative: any) => {
+                alternative.sectionBIId = informationIsert.codigo;
+                let res = await FcreateIdeaAlternativeComplete(alternative, transaction)
+            }))
+        }
+
+        //#endregion
 
 
         await transaction.commit();
