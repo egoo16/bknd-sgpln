@@ -190,8 +190,6 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
                 generalInformations.map(async (idea: any) => {
 
                     let alternativeF =  await getAlternatives(idea.codigo);
-                    console.log('Las alternativas de la Idea',alternativeF)
-                    idea.alternatives = 'Texto de Prueba alternativesF';
                     let ideaFind : any = {
                         codigo: idea.codigo,
                         author: idea.author,

@@ -178,8 +178,6 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
         if (generalInformations || generalInformations.length > 0) {
             let resGIdea = yield Promise.all(generalInformations.map((idea) => __awaiter(void 0, void 0, void 0, function* () {
                 let alternativeF = yield (0, feature_1.getAlternatives)(idea.codigo);
-                console.log('Las alternativas de la Idea', alternativeF);
-                idea.alternatives = 'Texto de Prueba alternativesF';
                 let ideaFind = {
                     codigo: idea.codigo,
                     author: idea.author,
