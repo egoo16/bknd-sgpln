@@ -115,9 +115,14 @@ const getObjetos = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.getObjetos = getObjetos;
 const getProductos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log();
+        if (!req.query.idEntidad) {
+            throw 'Se esperaba Id de la Entidad';
+        }
+        let idEntidad = req.query.idEntidad;
         let resultado = [];
         let data = [];
-        let query = `SELECT * FROM SCHE$SIPLAN20.SP20$PRODUCTO`;
+        let query = `SELECT * FROM SCHE$SIPLAN20.SP20$PRODUCTO WHERE SPPRO$INSTO = '${idEntidad}'`;
         yield connection_1.default.query(query).spread((result) => { resultado = result; }).catch((error) => {
             res.status(500).json({
                 msg: "Error",
@@ -129,6 +134,7 @@ const getProductos = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 let dato = {
                     codigo: res.SPPRO$ID_PRODUCTO,
                     nombre: res.SPPRO$DESCRIPCION,
+                    idEntidad: res.SPPRO$INSTO,
                 };
                 data.push(dato);
             });

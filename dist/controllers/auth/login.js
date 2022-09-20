@@ -27,8 +27,8 @@ const loginUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     username: 'normal',
                     password: bcrypt.hashSync('123456', 10),
                     name: 'Usuario Externo de Prueba',
-                    id_inst: '1',
-                    name_inst: 'INSTITUCION TEST',
+                    id_inst: '9000',
+                    name_inst: 'MINISTERIO DE SALUD PUBLICA Y ASISTENCIA SOCIAL',
                     role: 'USER_ROLE',
                 };
                 let userTestCreate = yield usuario_1.default.create(userTest);
