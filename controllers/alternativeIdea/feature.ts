@@ -25,13 +25,13 @@ export async function FgetPreinversion(idAlternativa: any) {
         let rangoInversion = 0
         let resRangoInversion = ''
         //RANGO DE INVERSIÓN
-        if (costo < 900000) {
+        if (costo <= 900000) {
             rangoInversion = 6
             resRangoInversion = '<=900,000'
-        } else if (costo > 900001 && costo <= 10000000) {
+        } else if (costo >= 900001 && costo <= 10000000) {
             rangoInversion = 8
             resRangoInversion = '>900,001<=10,000,000'
-        } else if (costo > 10000001 && costo <= 50000000) {
+        } else if (costo >= 10000001 && costo <= 50000000) {
             rangoInversion = 10
             resRangoInversion = '>10,000,001<=50,000,000'
         } else if (costo >= 50000001) {
@@ -43,15 +43,15 @@ export async function FgetPreinversion(idAlternativa: any) {
         let estBenefits = 0
         let resEstBenefits = ''
         if (benefits <= 1000) {
-            estBenefits = 4.5
+            estBenefits = 4
             resEstBenefits = '1 <= 1,000'
-        } else if (benefits > 1001 && benefits <= 10000) {
+        } else if (benefits >= 1001 && benefits <= 10000) {
             estBenefits = 6
             resEstBenefits = '>1,001 <= 10,000'
-        } else if (benefits > 10001 && benefits <= 20000) {
-            estBenefits = 7.5
+        } else if (benefits >= 10001 && benefits <= 20000) {
+            estBenefits = 8
             resEstBenefits = '>10,001 <= 20,000'
-        } else if (benefits > 20001) {
+        } else if (benefits >= 20001) {
             estBenefits = 12
             resEstBenefits = '>20,001'
         }
@@ -287,7 +287,6 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
             }
         });
 
-        console.log('🚀🚀🚀 Datos: ', referenceName, reference)
 
         if (!reference) {
             let ref = { name: referenceName };
@@ -303,7 +302,6 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
                 name: denominationName
             }
         });
-        console.log('🚀🚀🚀 Datos: ', denominationName, denmtion)
 
         if (!denmtion) {
             let denModel = { name: denominationName }
@@ -366,7 +364,7 @@ export async function FcreateGeographicArea(geograpicArea: any, idAlternativa: n
     }
 }
 
-export async function getAlternatives(idIdea: string){
+export async function getAlternatives(idIdea: string) {
 
     let idAlternative = idIdea;
 
