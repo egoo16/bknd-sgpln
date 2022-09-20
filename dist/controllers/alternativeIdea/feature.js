@@ -36,15 +36,15 @@ function FgetPreinversion(idAlternativa) {
             let rangoInversion = 0;
             let resRangoInversion = '';
             //RANGO DE INVERSIÓN
-            if (costo < 900000) {
+            if (costo <= 900000) {
                 rangoInversion = 6;
                 resRangoInversion = '<=900,000';
             }
-            else if (costo > 900001 && costo <= 10000000) {
+            else if (costo >= 900001 && costo <= 10000000) {
                 rangoInversion = 8;
                 resRangoInversion = '>900,001<=10,000,000';
             }
-            else if (costo > 10000001 && costo <= 50000000) {
+            else if (costo >= 10000001 && costo <= 50000000) {
                 rangoInversion = 10;
                 resRangoInversion = '>10,000,001<=50,000,000';
             }
@@ -57,18 +57,18 @@ function FgetPreinversion(idAlternativa) {
             let estBenefits = 0;
             let resEstBenefits = '';
             if (benefits <= 1000) {
-                estBenefits = 4.5;
+                estBenefits = 4;
                 resEstBenefits = '1 <= 1,000';
             }
-            else if (benefits > 1001 && benefits <= 10000) {
+            else if (benefits >= 1001 && benefits <= 10000) {
                 estBenefits = 6;
                 resEstBenefits = '>1,001 <= 10,000';
             }
-            else if (benefits > 10001 && benefits <= 20000) {
-                estBenefits = 7.5;
+            else if (benefits >= 10001 && benefits <= 20000) {
+                estBenefits = 8;
                 resEstBenefits = '>10,001 <= 20,000';
             }
-            else if (benefits > 20001) {
+            else if (benefits >= 20001) {
                 estBenefits = 12;
                 resEstBenefits = '>20,001';
             }
@@ -306,7 +306,6 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
                     name: referenceName
                 }
             });
-            console.log('🚀🚀🚀 Datos: ', referenceName, reference);
             if (!reference) {
                 let ref = { name: referenceName };
                 let referenceCreate = yield referencePopulation_1.default.create(ref, { transaction });
@@ -321,7 +320,6 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
                     name: denominationName
                 }
             });
-            console.log('🚀🚀🚀 Datos: ', denominationName, denmtion);
             if (!denmtion) {
                 let denModel = { name: denominationName };
                 let denCreate = yield denomination_1.default.create(denModel, { transaction });
