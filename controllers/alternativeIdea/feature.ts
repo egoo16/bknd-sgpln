@@ -21,7 +21,7 @@ export async function FgetPreinversion(idAlternativa: any) {
     try {
         const proDes = await projectDescription.findOne({ where: { AlterId: idAlternativa } })
         const popDel = await populationDelimitation.findOne({ where: { AlterId: idAlternativa } })
-        let costo = proDes.estimatedCost
+        let costo = proDes.investmentCost
         let rangoInversion = 0
         let resRangoInversion = ''
         //RANGO DE INVERSIÓN
@@ -82,7 +82,7 @@ export async function FgetPreinversion(idAlternativa: any) {
         let preInversion = {
             rango: {
                 valor: rangoInversion,
-                resultado: resRangoInversion
+                resultado: resRangoInversion,
             },
             estimacion: {
                 valor: estBenefits,
@@ -93,7 +93,7 @@ export async function FgetPreinversion(idAlternativa: any) {
                 resultado: complejidad
             },
             etapa: {
-                valor: totalSuma,
+                valor: total,
                 resultado: etapa
             }
         }

@@ -32,7 +32,7 @@ function FgetPreinversion(idAlternativa) {
         try {
             const proDes = yield projectDescription_1.default.findOne({ where: { AlterId: idAlternativa } });
             const popDel = yield populationDelimitation_1.default.findOne({ where: { AlterId: idAlternativa } });
-            let costo = proDes.estimatedCost;
+            let costo = proDes.investmentCost;
             let rangoInversion = 0;
             let resRangoInversion = '';
             //RANGO DE INVERSIÓN
@@ -100,7 +100,7 @@ function FgetPreinversion(idAlternativa) {
             let preInversion = {
                 rango: {
                     valor: rangoInversion,
-                    resultado: resRangoInversion
+                    resultado: resRangoInversion,
                 },
                 estimacion: {
                     valor: estBenefits,
@@ -111,7 +111,7 @@ function FgetPreinversion(idAlternativa) {
                     resultado: complejidad
                 },
                 etapa: {
-                    valor: totalSuma,
+                    valor: total,
                     resultado: etapa
                 }
             };
