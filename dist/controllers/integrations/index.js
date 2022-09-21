@@ -122,7 +122,7 @@ const getProductos = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         let idEntidad = req.query.idEntidad;
         let resultado = [];
         let data = [];
-        let query = `SELECT * FROM SCHE$SIPLAN20.SP20$PRODUCTO WHERE SPPRO$INSTO = '${idEntidad}'`;
+        let query = `SELECT * FROM SCHE$SIPLAN20.SP20$PRODUCTO WHERE SPPRO$INSTO = '${idEntidad}' FETCH FIRST 1000 ROWS ONLY`;
         yield connection_1.default.query(query).spread((result) => { resultado = result; }).catch((error) => {
             res.status(500).json({
                 msg: "Error",
@@ -142,6 +142,9 @@ const getProductos = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(200).json({
             msg: "Datos Obtenidos",
             data,
+            items1: data.length,
+            resultado,
+            items2: resultado.length
         });
     }
     catch (error) {

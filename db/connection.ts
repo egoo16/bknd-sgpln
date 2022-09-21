@@ -2,7 +2,9 @@
 
 const Sequelize = require('sequelize-oracle');
 
-import oracledb from 'oracledb'; 
+// import oracledb from 'oracledb'; 
+import oracledb  from 'oracledb'; 
+oracledb.maxRows = 0;
 
 // oracledb.initOracleClient({ libDir: "C:Oracleinstantclient_21_6" });
 let db: any;

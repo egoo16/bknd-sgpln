@@ -115,7 +115,7 @@ export const getProductos = async (req: Request, res: Response) => {
     try {
 
         console.log();
-        if (!req.query.idEntidad){
+        if (!req.query.idEntidad) {
             throw 'Se esperaba Id de la Entidad'
         }
 
@@ -124,7 +124,7 @@ export const getProductos = async (req: Request, res: Response) => {
         let resultado: any[] = [];
         let data: any[] = [];
 
-        let query = `SELECT * FROM SCHE$SIPLAN20.SP20$PRODUCTO WHERE SPPRO$INSTO = '${idEntidad}'`;
+        let query = `SELECT * FROM SCHE$SIPLAN20.SP20$PRODUCTO WHERE SPPRO$INSTO = '${idEntidad}' FETCH FIRST 1000 ROWS ONLY`;
 
         await models.query(query).spread((result: any) => { resultado = result; }).catch((error: any) => {
             res.status(500).json({
@@ -147,6 +147,9 @@ export const getProductos = async (req: Request, res: Response) => {
         res.status(200).json({
             msg: "Datos Obtenidos",
             data,
+            items1: data.length,
+            resultado,
+            items2: resultado.length
         });
     } catch (error) {
         res.status(500).json({
