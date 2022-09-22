@@ -141,6 +141,9 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
             if (req.query.institucionId) {
                 where.idEntity = req.query.institucionId;
             }
+            if (req.query.number) {
+                where.registerCode = req.query.number;
+            }
             if (req.query.fechaDesde && req.query.fechaHasta) {
                 where.createdAt = {
                     [connection_1.default.Op.between]: [req.query.fechaDesde, req.query.fechaHasta],

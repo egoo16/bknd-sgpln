@@ -122,7 +122,8 @@ const getProductos = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         let idEntidad = req.query.idEntidad;
         let resultado = [];
         let data = [];
-        let query = `SELECT * FROM SCHE$SIPLAN20.SP20$PRODUCTO WHERE SPPRO$INSTO = '${idEntidad}' FETCH FIRST 1000 ROWS ONLY`;
+        let datar = [];
+        let query = `SELECT * FROM SCHE$SIPLAN20.SP20$PRODUCTO WHERE SPPRO$INSTO = '${idEntidad}'`;
         yield connection_1.default.query(query).spread((result) => { resultado = result; }).catch((error) => {
             res.status(500).json({
                 msg: "Error",
@@ -138,11 +139,18 @@ const getProductos = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 };
                 data.push(dato);
             });
+            const eliminaDatosDuplicados = (arr) => {
+                const datosMap = arr.map((dato) => {
+                    return [dato.nombre, dato];
+                });
+                return [...new Map(datosMap).values()];
+            };
+            datar = eliminaDatosDuplicados(data);
         }
         res.status(200).json({
             msg: "Datos Obtenidos",
-            data,
-            items1: data.length,
+            data: datar,
+            items1: datar.length,
             resultado,
             items2: resultado.length
         });

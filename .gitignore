@@ -4,3 +4,8 @@ dist/db/connection.*
 dist/db/connection.js
 dist/db/connection.js.map
 db/connection.ts
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
