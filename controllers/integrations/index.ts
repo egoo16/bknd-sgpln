@@ -155,9 +155,6 @@ export const getProductos = async (req: Request, res: Response) => {
         res.status(200).json({
             msg: "Datos Obtenidos",
             data: datar,
-            items1: datar.length,
-            resultado,
-            items2: resultado.length
         });
     } catch (error) {
         res.status(500).json({

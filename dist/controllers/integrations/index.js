@@ -150,9 +150,6 @@ const getProductos = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(200).json({
             msg: "Datos Obtenidos",
             data: datar,
-            items1: datar.length,
-            resultado,
-            items2: resultado.length
         });
     }
     catch (error) {
