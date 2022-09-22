@@ -1,10 +1,3 @@
-connection.js
-/dist/db/connection.*
-dist/db/connection.*
-dist/db/connection.js
-dist/db/connection.js.map
-db/connection.ts
-
 # Node
 /node_modules
 node_modules
