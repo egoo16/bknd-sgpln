@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import models from "../../db/connection";
 import moment from "moment";
 const Sequelize = require('sequelize-oracle');
+const { Op } = require("sequelize-oracle");
+
 import generalInformation from "../../models/BancoIdeas/generalInformation";
 import stage from "../../models/BancoIdeas/stage";
 import possibleEffects from "../../models/BancoIdeas/possibleEffects";
@@ -105,7 +107,7 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
         //#endregion Finalizó la insercion de Alternativas
 
         //#region Insert Alternativa completa Body
-        
+
         let alternativesBody = body.alternatives;
         if (alternativesBody?.length > 0) {
             let resBodyAlternatives = await Promise.all(alternativesBody.map(async (alternative: any) => {
@@ -137,119 +139,121 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
     try {
 
         let where: any = {}
+        let filtros = req.query
 
-        if (req.query) {
+        if (filtros) {
 
-            if (req.query.state && req.query.state != 'TODAS') { where.state = req.query.state }
-            if (req.query.institucionId) { where.idEntity = req.query.institucionId }
-            if (req.query.number) {
+            if (filtros.state && filtros.state != 'TODAS') { where.state = filtros.state }
+            if (filtros.institucionId) { where.idEntity = filtros.institucionId }
+            if (filtros.numberIdea) {
                 where.registerCode = {
-                    [models.Op.substring]: [req.query.number],
+                    $like: `%${filtros.numberIdea}%`
                 }
             }
-            if (req.query.fechaDesde && req.query.fechaHasta) {
+            if (filtros.fechaDesde && filtros.fechaHasta) {
                 where.createdAt = {
-                    [models.Op.between]: [req.query.fechaDesde, req.query.fechaHasta],
+                    [models.Op.between]: [filtros.fechaDesde, filtros.fechaHasta],
                 }
             }
         }
+        console.log(where)
 
         let generalInformations = await generalInformation.findAll({
-            where,
-            order: [
-                ['correlation', 'ASC']
-            ],
-            include: [
-                {
-                    required: false,
+        where,
+        order: [
+            ['correlation', 'ASC']
+        ],
+        include: [
+            {
+                required: false,
 
-                    model: possibleEffects,
-                    // as: 'possibleEffects'
-                },
-                {
-                    required: false,
+                model: possibleEffects,
+                // as: 'possibleEffects'
+            },
+            {
+                required: false,
 
-                    model: possibleCauses,
-                    // as: 'possibleCauses'
+                model: possibleCauses,
+                // as: 'possibleCauses'
 
-                },
-                {
-                    required: false,
+            },
+            {
+                required: false,
 
-                    model: possibleAlternatives,
-                    // as: 'possibleAlternatives'
+                model: possibleAlternatives,
+                // as: 'possibleAlternatives'
 
-                },
-                {
-                    required: false,
+            },
+            {
+                required: false,
 
-                    model: stage
-                },
-            ]
-        });
+                model: stage
+            },
+        ]
+    });
 
-        let ideas: any[] = []
+    let ideas: any[] = []
 
-        if (generalInformations || generalInformations.length > 0) {
-            let resGIdea = await Promise.all(
-                generalInformations.map(async (idea: any) => {
+    if (generalInformations || generalInformations.length > 0) {
+        let resGIdea = await Promise.all(
+            generalInformations.map(async (idea: any) => {
 
-                    let alternativeF =  await getAlternatives(idea.codigo);
-                    let ideaFind : any = {
-                        codigo: idea.codigo,
-                        author: idea.author,
-                        analizer: idea.analizer,
-                        idStage: idea.idStage,
-                        productId: idea.productId,
-                        productName: idea.productName,
-                        date: idea.date,
-                        correlation: idea.correlation,
-                        registerCode: idea.registerCode,
-                        planningInstrument: idea.planningInstrument,
-                        description: idea.description,
-                        dateOut: idea.dateOut,
-                        punctuation: idea.punctuation,
-                        state: idea.state,
-                        result: idea.result,
-                        idEntity: idea.idEntity,
-                        nameEntity: idea.nameEntity,
-                        responsibleName: idea.responsibleName,
-                        email: idea.email,
-                        phone: idea.phone,
-                        definitionPotentiality: idea.definitionPotentiality,
-                        baseLine: idea.baseLine,
-                        descriptionCurrentSituation: idea.descriptionCurrentSituation,
-                        generalObjective: idea.generalObjective,
-                        expectedChange: idea.expectedChange,
-                        createdAt: idea.createdAt,
-                        updatedAt: idea.updatedAt,
-                        deletedAt: idea.deletedAt,
-                    }
-                    ideaFind.Effects = idea.Effects;
-                    ideaFind.Causes = idea.Causes;
-                    ideaFind.Alternatives = idea.Alternatives;
-                    ideaFind.stage = idea.stage;
-                    ideaFind.alternatives = alternativeF;
-
-
-                    ideas.push(ideaFind)
+                let alternativeF = await getAlternatives(idea.codigo);
+                let ideaFind: any = {
+                    codigo: idea.codigo,
+                    author: idea.author,
+                    analizer: idea.analizer,
+                    idStage: idea.idStage,
+                    productId: idea.productId,
+                    productName: idea.productName,
+                    date: idea.date,
+                    correlation: idea.correlation,
+                    registerCode: idea.registerCode,
+                    planningInstrument: idea.planningInstrument,
+                    description: idea.description,
+                    dateOut: idea.dateOut,
+                    punctuation: idea.punctuation,
+                    state: idea.state,
+                    result: idea.result,
+                    idEntity: idea.idEntity,
+                    nameEntity: idea.nameEntity,
+                    responsibleName: idea.responsibleName,
+                    email: idea.email,
+                    phone: idea.phone,
+                    definitionPotentiality: idea.definitionPotentiality,
+                    baseLine: idea.baseLine,
+                    descriptionCurrentSituation: idea.descriptionCurrentSituation,
+                    generalObjective: idea.generalObjective,
+                    expectedChange: idea.expectedChange,
+                    createdAt: idea.createdAt,
+                    updatedAt: idea.updatedAt,
+                    deletedAt: idea.deletedAt,
+                }
+                ideaFind.Effects = idea.Effects;
+                ideaFind.Causes = idea.Causes;
+                ideaFind.Alternatives = idea.Alternatives;
+                ideaFind.stage = idea.stage;
+                ideaFind.alternatives = alternativeF;
 
 
-                })
-            )
-        }
+                ideas.push(ideaFind)
 
 
-        res.status(201).json({
-            msg: "Datos Obtenidos",
-            generalInformations: ideas,
-        });
-    } catch (error) {
-        res.status(500).json({
-            msg: "Error",
-            error,
-        });
+            })
+        )
     }
+
+
+    res.status(201).json({
+        msg: "Datos Obtenidos",
+        generalInformations: ideas,
+    });
+} catch (error) {
+    res.status(500).json({
+        msg: "Error",
+        error,
+    });
+}
 };
 
 
@@ -257,7 +261,7 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
  * Funcion para  listar las configuraciones globales
  * @param {*} req
  */
- export async function sendIdea(req: Request, res: Response) {
+export async function sendIdea(req: Request, res: Response) {
     try {
         let idIdea = req.params.id;
 
@@ -269,7 +273,7 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
 
         generalIdea.state = 'ENVIADA';
         generalIdea.save();
-        return res.status(200).send(generalIdea)    
+        return res.status(200).send(generalIdea)
 
     } catch (error: any) {
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
@@ -280,7 +284,7 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
  * Funcion para  listar las configuraciones globales
  * @param {*} req
  */
- export async function returnIdea(req: Request, res: Response) {
+export async function returnIdea(req: Request, res: Response) {
     try {
         let idIdea = req.params.id;
 
@@ -293,7 +297,7 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
         generalIdea.state = 'CALIFICADA';
         generalIdea.save();
 
-        return res.status(200).send(generalIdea)    
+        return res.status(200).send(generalIdea)
     } catch (error: any) {
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
     }

@@ -16,6 +16,7 @@ exports.returnIdea = exports.sendIdea = exports.getGeneralInformation = exports.
 const connection_1 = __importDefault(require("../../db/connection"));
 const moment_1 = __importDefault(require("moment"));
 const Sequelize = require('sequelize-oracle');
+const { Op } = require("sequelize-oracle");
 const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
 const stage_1 = __importDefault(require("../../models/BancoIdeas/stage"));
 const possibleEffects_1 = __importDefault(require("../../models/BancoIdeas/possibleEffects"));
@@ -134,24 +135,26 @@ exports.postGeneralInformation = postGeneralInformation;
 const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let where = {};
-        if (req.query) {
-            if (req.query.state && req.query.state != 'TODAS') {
-                where.state = req.query.state;
+        let filtros = req.query;
+        if (filtros) {
+            if (filtros.state && filtros.state != 'TODAS') {
+                where.state = filtros.state;
             }
-            if (req.query.institucionId) {
-                where.idEntity = req.query.institucionId;
+            if (filtros.institucionId) {
+                where.idEntity = filtros.institucionId;
             }
-            if (req.query.number) {
+            if (filtros.numberIdea) {
                 where.registerCode = {
-                    [connection_1.default.Op.substring]: [req.query.number],
+                    $like: `%${filtros.numberIdea}%`
                 };
             }
-            if (req.query.fechaDesde && req.query.fechaHasta) {
+            if (filtros.fechaDesde && filtros.fechaHasta) {
                 where.createdAt = {
-                    [connection_1.default.Op.between]: [req.query.fechaDesde, req.query.fechaHasta],
+                    [connection_1.default.Op.between]: [filtros.fechaDesde, filtros.fechaHasta],
                 };
             }
         }
+        console.log(where);
         let generalInformations = yield generalInformation_1.default.findAll({
             where,
             order: [
