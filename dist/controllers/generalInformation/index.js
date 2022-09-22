@@ -143,9 +143,9 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
             if (filtros.institucionId) {
                 where.idEntity = filtros.institucionId;
             }
-            if (filtros.numberIdea) {
+            if (filtros.number) {
                 where.registerCode = {
-                    $like: `%${filtros.numberIdea}%`
+                    $like: `%${filtros.number}%`
                 };
             }
             if (filtros.fechaDesde && filtros.fechaHasta) {

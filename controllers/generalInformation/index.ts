@@ -145,9 +145,9 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
 
             if (filtros.state && filtros.state != 'TODAS') { where.state = filtros.state }
             if (filtros.institucionId) { where.idEntity = filtros.institucionId }
-            if (filtros.numberIdea) {
+            if (filtros.number) {
                 where.registerCode = {
-                    $like: `%${filtros.numberIdea}%`
+                    $like: `%${filtros.number}%`
                 }
             }
             if (filtros.fechaDesde && filtros.fechaHasta) {
