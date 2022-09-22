@@ -144,7 +144,7 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
             if (req.query.institucionId) { where.idEntity = req.query.institucionId }
             if (req.query.number) {
                 where.registerCode = {
-                    [models.Sequelize.Op.substring]: [req.query.number],
+                    [models.Op.substring]: [req.query.number],
                 }
             }
             if (req.query.fechaDesde && req.query.fechaHasta) {

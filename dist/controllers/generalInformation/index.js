@@ -143,7 +143,7 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
             }
             if (req.query.number) {
                 where.registerCode = {
-                    [connection_1.default.Sequelize.Op.substring]: [req.query.number],
+                    [connection_1.default.Op.substring]: [req.query.number],
                 };
             }
             if (req.query.fechaDesde && req.query.fechaHasta) {
