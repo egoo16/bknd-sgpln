@@ -142,7 +142,9 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 where.idEntity = req.query.institucionId;
             }
             if (req.query.number) {
-                where.registerCode = { [connection_1.default.Op.substring]: req.query.number };
+                where.registerCode = {
+                    [connection_1.default.Sequelize.Op.substring]: [req.query.number],
+                };
             }
             if (req.query.fechaDesde && req.query.fechaHasta) {
                 where.createdAt = {

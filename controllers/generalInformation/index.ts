@@ -142,7 +142,11 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
 
             if (req.query.state && req.query.state != 'TODAS') { where.state = req.query.state }
             if (req.query.institucionId) { where.idEntity = req.query.institucionId }
-            if (req.query.number) { where.registerCode = {[models.Op.substring]: req.query.number} }
+            if (req.query.number) {
+                where.registerCode = {
+                    [models.Sequelize.Op.substring]: [req.query.number],
+                }
+            }
             if (req.query.fechaDesde && req.query.fechaHasta) {
                 where.createdAt = {
                     [models.Op.between]: [req.query.fechaDesde, req.query.fechaHasta],
