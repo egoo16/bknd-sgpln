@@ -123,8 +123,9 @@ export const getProductos = async (req: Request, res: Response) => {
 
         let resultado: any[] = [];
         let data: any[] = [];
+        let datar: any[] = [];
 
-        let query = `SELECT * FROM SCHE$SIPLAN20.SP20$PRODUCTO WHERE SPPRO$INSTO = '${idEntidad}' FETCH FIRST 1000 ROWS ONLY`;
+        let query = `SELECT * FROM SCHE$SIPLAN20.SP20$PRODUCTO WHERE SPPRO$INSTO = '${idEntidad}'`;
 
         await models.query(query).spread((result: any) => { resultado = result; }).catch((error: any) => {
             res.status(500).json({
@@ -142,12 +143,19 @@ export const getProductos = async (req: Request, res: Response) => {
                 }
                 data.push(dato);
             })
+            const eliminaDatosDuplicados = (arr: any) => {
+                const datosMap = arr.map((dato: any) => {
+                    return [dato.nombre, dato]
+                });
+                return [...new Map(datosMap).values()];
+            }
+            datar = eliminaDatosDuplicados(data);
         }
 
         res.status(200).json({
             msg: "Datos Obtenidos",
-            data,
-            items1: data.length,
+            data: datar,
+            items1: datar.length,
             resultado,
             items2: resultado.length
         });
