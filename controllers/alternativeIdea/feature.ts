@@ -1,6 +1,6 @@
 'use strict'
 
-import coordinates from "../../models/BancoIdeas/coordinates";
+import dataGeo from "../../models/BancoIdeas/datageo.model";
 import denomination from "../../models/BancoIdeas/denomination";
 import executionTime from "../../models/BancoIdeas/executionTime";
 import generalInformation from "../../models/BancoIdeas/generalInformation";
@@ -350,10 +350,10 @@ export async function FcreateGeographicArea(geograpicArea: any, idAlternativa: n
     try {
         geograpicArea.AlterId = idAlternativa
         let geographicAreaCreated = await geographicArea.create(geograpicArea, { transaction })
-        if (geograpicArea.coordinates) {
-            for (let coordinate of geograpicArea.coordinates) {
-                coordinate.geoAreaId = geographicAreaCreated.codigo
-                await coordinates.create(coordinate, { transaction })
+        if (geograpicArea.dataGeo) {
+            for (let data of geograpicArea.dataGeo) {
+                data.geoAreaId = geographicAreaCreated.codigo
+                await dataGeo.create(data, { transaction })
             }
         }
         return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };
@@ -507,7 +507,7 @@ export async function getAlternatives(idIdea: string) {
             }
             if (gArea) {
 
-                let coordenadas = await coordinates.findAll({
+                let datageo = await dataGeo.findAll({
                     where: {
                         geoAreaId: gArea.codigo
                     }
@@ -520,37 +520,46 @@ export async function getAlternatives(idIdea: string) {
                     availableTerrain: gArea.availableTerrain,
                     oneAvailableTerrain: gArea.oneAvailableTerrain,
                     investPurchase: gArea.investPurchase,
-                    governmentTerrain: gArea.governmentTerrain,
-                    registerGovernmentTerrain: gArea.registerGovernmentTerrain,
-                    statusDescribe: gArea.statusDescribe,
-                    finca: gArea.finca,
-                    folio: gArea.folio,
-                    libro: gArea.libro,
-                    plano: gArea.plano,
-                    slightIncline: gArea.slightIncline,
-                    broken: gArea.broken,
-                    image: gArea.image,
-                    imageUrl: gArea.imageUrl,
-                    description: gArea.description,
-                    basicServices: gArea.basicServices,
-                    descriptionBasicServices: gArea.descriptionBasicServices,
-                    descriptionLocation: gArea.descriptionLocation,
                     createdAt: gArea.createdAt,
                     updatedAt: gArea.updatedAt,
                     deletedAt: gArea.deletedAt,
                 };
-                alternativa.geoArea.coordinates = []
-                if (coordenadas) {
-                    coordenadas.map((coordinate: any) => {
+                alternativa.geoArea.dataGeo = []
+                if (datageo) {
+                    datageo.map((dta: any) => {
                         let coord = {
-                            codigo: coordinate.codigo,
-                            geoAreaId: coordinate.geoAreaId,
-                            latitude: coordinate.latitude,
-                            createdAt: coordinate.createdAt,
-                            updatedAt: coordinate.updatedAt,
-                            deletedAt: coordinate.deletedAt,
+                            codigo: dta.codigo,
+                            geoAreaId: dta.geoAreaId,
+                            
+                            governmentTerrain: dta.governmentTerrain,
+                            registerGovernmentTerrain: dta.registerGovernmentTerrain,
+                            statusDescribe: dta.statusDescribe,
+                            finca: dta.finca,
+                            folio: dta.folio,
+                            libro: dta.libro,
+
+                            plano: dta.plano,
+                            slightIncline: dta.slightIncline,
+                            broken: dta.broken,
+                            image: dta.image,
+                            imageUrl: dta.imageUrl,
+                            description: dta.description,
+
+                            basicServices: dta.basicServices,
+                            descriptionBasicServices: dta.descriptionBasicServices,
+
+                            degreesx: dta.degreesx,
+                            minutesx: dta.minutesx,
+                            secondsx: dta.secondsx,
+                            degreesy: dta.degreesy,
+                            minutesy: dta.minutesy,
+                            secondsy: dta.secondsy,
+                            descriptionLocation: dta.descriptionLocation,
+                            createdAt: dta.createdAt,
+                            updatedAt: dta.updatedAt,
+                            deletedAt: dta.deletedAt,
                         }
-                        alternativa.geoArea.coordinates.push(coord);
+                        alternativa.geoArea.dataGeo.push(coord);
                     });
                 }
             }

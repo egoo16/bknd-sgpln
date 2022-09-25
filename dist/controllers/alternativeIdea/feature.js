@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAlternatives = exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreatePreInvestment = exports.FaddPertinenceQuality = exports.FcreateIdeaAlternativeComplete = exports.FgetPreinversion = void 0;
-const coordinates_1 = __importDefault(require("../../models/BancoIdeas/coordinates"));
+const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
 const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomination"));
 const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executionTime"));
 const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
@@ -374,10 +374,10 @@ function FcreateGeographicArea(geograpicArea, idAlternativa, transaction) {
         try {
             geograpicArea.AlterId = idAlternativa;
             let geographicAreaCreated = yield geographicArea_1.default.create(geograpicArea, { transaction });
-            if (geograpicArea.coordinates) {
-                for (let coordinate of geograpicArea.coordinates) {
-                    coordinate.geoAreaId = geographicAreaCreated.codigo;
-                    yield coordinates_1.default.create(coordinate, { transaction });
+            if (geograpicArea.dataGeo) {
+                for (let data of geograpicArea.dataGeo) {
+                    data.geoAreaId = geographicAreaCreated.codigo;
+                    yield datageo_model_1.default.create(data, { transaction });
                 }
             }
             return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };
@@ -521,7 +521,7 @@ function getAlternatives(idIdea) {
                     };
                 }
                 if (gArea) {
-                    let coordenadas = yield coordinates_1.default.findAll({
+                    let datageo = yield datageo_model_1.default.findAll({
                         where: {
                             geoAreaId: gArea.codigo
                         }
@@ -532,37 +532,42 @@ function getAlternatives(idIdea) {
                         availableTerrain: gArea.availableTerrain,
                         oneAvailableTerrain: gArea.oneAvailableTerrain,
                         investPurchase: gArea.investPurchase,
-                        governmentTerrain: gArea.governmentTerrain,
-                        registerGovernmentTerrain: gArea.registerGovernmentTerrain,
-                        statusDescribe: gArea.statusDescribe,
-                        finca: gArea.finca,
-                        folio: gArea.folio,
-                        libro: gArea.libro,
-                        plano: gArea.plano,
-                        slightIncline: gArea.slightIncline,
-                        broken: gArea.broken,
-                        image: gArea.image,
-                        imageUrl: gArea.imageUrl,
-                        description: gArea.description,
-                        basicServices: gArea.basicServices,
-                        descriptionBasicServices: gArea.descriptionBasicServices,
-                        descriptionLocation: gArea.descriptionLocation,
                         createdAt: gArea.createdAt,
                         updatedAt: gArea.updatedAt,
                         deletedAt: gArea.deletedAt,
                     };
-                    alternativa.geoArea.coordinates = [];
-                    if (coordenadas) {
-                        coordenadas.map((coordinate) => {
+                    alternativa.geoArea.dataGeo = [];
+                    if (datageo) {
+                        datageo.map((dta) => {
                             let coord = {
-                                codigo: coordinate.codigo,
-                                geoAreaId: coordinate.geoAreaId,
-                                latitude: coordinate.latitude,
-                                createdAt: coordinate.createdAt,
-                                updatedAt: coordinate.updatedAt,
-                                deletedAt: coordinate.deletedAt,
+                                codigo: dta.codigo,
+                                geoAreaId: dta.geoAreaId,
+                                governmentTerrain: dta.governmentTerrain,
+                                registerGovernmentTerrain: dta.registerGovernmentTerrain,
+                                statusDescribe: dta.statusDescribe,
+                                finca: dta.finca,
+                                folio: dta.folio,
+                                libro: dta.libro,
+                                plano: dta.plano,
+                                slightIncline: dta.slightIncline,
+                                broken: dta.broken,
+                                image: dta.image,
+                                imageUrl: dta.imageUrl,
+                                description: dta.description,
+                                basicServices: dta.basicServices,
+                                descriptionBasicServices: dta.descriptionBasicServices,
+                                degreesx: dta.degreesx,
+                                minutesx: dta.minutesx,
+                                secondsx: dta.secondsx,
+                                degreesy: dta.degreesy,
+                                minutesy: dta.minutesy,
+                                secondsy: dta.secondsy,
+                                descriptionLocation: dta.descriptionLocation,
+                                createdAt: dta.createdAt,
+                                updatedAt: dta.updatedAt,
+                                deletedAt: dta.deletedAt,
                             };
-                            alternativa.geoArea.coordinates.push(coord);
+                            alternativa.geoArea.dataGeo.push(coord);
                         });
                     }
                 }

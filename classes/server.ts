@@ -1,8 +1,6 @@
 import express from "express";
 import db from "../db/connection";
 import { SERVER_PORT } from "../global/environment";
-import denomination from "../models/BancoIdeas/denomination";
-import populationDelimitation from "../models/BancoIdeas/populationDelimitation";
 import referencePopulation from "../models/BancoIdeas/referencePopulation";
 
 export default class Server {
