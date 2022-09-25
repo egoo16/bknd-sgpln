@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { addPertinenceQuality, createIdeaAlternativeComplete, getAlternative, getDenomination, getPertinencia, getPreinversion, getReferencePopulation } from "../../controllers/alternativeIdea";
+import { addPertinenceQuality, createIdeaAlternativeComplete, updateIdeaAlternativeComplete, getAlternative, getDenomination, getPertinencia, getPreinversion, getReferencePopulation } from "../../controllers/alternativeIdea";
 
 const preliminarRoute = Router();
 
 preliminarRoute.get("/preinversion/:id", getPreinversion);
 preliminarRoute.post("/", createIdeaAlternativeComplete);
+preliminarRoute.put("/", updateIdeaAlternativeComplete);
 preliminarRoute.get("/denomination", getDenomination);
 preliminarRoute.get("/referencePopulation", getReferencePopulation);
 preliminarRoute.get("/:id", getAlternative);
