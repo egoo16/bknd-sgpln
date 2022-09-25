@@ -37,12 +37,12 @@ export async function createIdeaAlternativeComplete(req: Request, res: Response)
  * Funcion para  listar las configuraciones globales
  * @param {*} req
  */
- export async function addPertinenceQuality(req: Request, res: Response) {
+export async function addPertinenceQuality(req: Request, res: Response) {
     let transaction = await models.transaction()
     try {
         let pertinence = await FaddPertinenceQuality(req.body, transaction)
         transaction.commit()
-        return res.status(200).send(pertinence)    
+        return res.status(200).send(pertinence)
     } catch (error: any) {
         transaction.rollback()
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
@@ -250,14 +250,17 @@ export const getPertinencia = async (req: Request, res: Response) => {
  * Funcion para  actualizar Alternativa
  * @param {*} req
  */
- export async function updateIdeaAlternativeComplete(req: Request, res: Response) {
-    let transaction = await models.transaction()
+export async function updateIdeaAlternativeComplete(req: Request, res: Response) {
+    let transaction;
     try {
-        let ideaAlternative = await fupdateIdeaAlternativeComplete(req.body, transaction)
-        transaction.commit()
+        let ideaAlternative;
+        transaction = await models.transaction()
+
+        ideaAlternative = await fupdateIdeaAlternativeComplete(req.body, transaction)
+        // await transaction.commit()
         return res.status(200).send(ideaAlternative)
     } catch (error: any) {
-        transaction.rollback()
+        await transaction.rollback();
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
     }
 }

@@ -1048,9 +1048,8 @@ function fupdateIdeaAlternativeComplete(ideaAlt, transaction) {
             };
         }
         catch (error) {
-            transaction.rollback();
             //devuelve errores al cliente
-            throw `Error al ingresar Idea alternativa: ${error}`;
+            throw `Error al Actualizada Idea alternativa: ${error}`;
         }
     });
 }

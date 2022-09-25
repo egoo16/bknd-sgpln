@@ -244,14 +244,16 @@ exports.getPertinencia = getPertinencia;
  */
 function updateIdeaAlternativeComplete(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        let transaction = yield connection_1.default.transaction();
+        let transaction;
         try {
-            let ideaAlternative = yield (0, feature_1.fupdateIdeaAlternativeComplete)(req.body, transaction);
-            transaction.commit();
+            let ideaAlternative;
+            transaction = yield connection_1.default.transaction();
+            ideaAlternative = yield (0, feature_1.fupdateIdeaAlternativeComplete)(req.body, transaction);
+            // await transaction.commit()
             return res.status(200).send(ideaAlternative);
         }
         catch (error) {
-            transaction.rollback();
+            yield transaction.rollback();
             return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
         }
     });

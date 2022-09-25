@@ -1,5 +1,5 @@
 'use strict'
-
+import models from "../../db/connection";
 import dataGeo from "../../models/BancoIdeas/datageo.model";
 import denomination from "../../models/BancoIdeas/denomination";
 import executionTime from "../../models/BancoIdeas/executionTime";
@@ -1051,12 +1051,11 @@ export async function fupdateIdeaAlternativeComplete(ideaAlt: any, transaction: 
             }
         });
 
-        if (altActive){
-            await altActive.destroy({transaction});
+        if (altActive) {
+                await altActive.destroy({ transaction });
         } else {
             throw `Error al actualizar Alternativa, no existe el ID enviado`
         }
-
 
         ideaAlt.codigo = undefined;
         ideaAlt.state = 'CREADA';
@@ -1076,8 +1075,7 @@ export async function fupdateIdeaAlternativeComplete(ideaAlt: any, transaction: 
             alternative
         };
     } catch (error) {
-        transaction.rollback()
         //devuelve errores al cliente
-        throw `Error al ingresar Idea alternativa: ${error}`;
+        throw `Error al Actualizada Idea alternativa: ${error}`;
     }
 }
