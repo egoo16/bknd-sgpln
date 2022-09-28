@@ -7,11 +7,14 @@ import UPLOAD_ROUTER from "./files/uploads";
 import ideaAlternative from "./ideaAlternative/ideaAlternative";
 import integrations from "./integrations/integrations";
 import usuarioRouter from "./usuarios";
+import sinafipRouter from  './sinafip/sinafip.route'
 
 const router = Router();
 
+const prefix= 'api'
 // Rutas
 router.use("/api/upload/", UPLOAD_ROUTER);
+router.use(`/${prefix}/sinafip/`,sinafipRouter)
 router.use("/api/integrations/", integrations);
 router.use("/api/alternative/", ideaAlternative);
 router.use("/api/general/", generalRouter);

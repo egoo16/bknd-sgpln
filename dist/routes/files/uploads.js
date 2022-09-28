@@ -298,4 +298,3 @@ const uploadByType = (type, id, newNameFile, res) => {
     SWITCH_TYPES[type]();
 };
 exports.default = UPLOAD_ROUTER;
-//# sourceMappingURL=uploads.js.map

@@ -26,4 +26,3 @@ geographicArea.hasMany(datageo_model_1.default, {
     foreignKey: "geoAreaId",
 });
 exports.default = geographicArea;
-//# sourceMappingURL=geographicArea.js.map

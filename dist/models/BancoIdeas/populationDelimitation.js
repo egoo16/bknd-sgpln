@@ -36,4 +36,3 @@ populationDelimitation.belongsTo(denomination_1.default, {
     sourceKey: "codigo",
 });
 exports.default = populationDelimitation;
-//# sourceMappingURL=populationDelimitation.js.map

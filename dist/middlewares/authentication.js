@@ -24,4 +24,3 @@ const verificaToken = (req, res, next) => {
     }
 };
 exports.verificaToken = verificaToken;
-//# sourceMappingURL=authentication.js.map

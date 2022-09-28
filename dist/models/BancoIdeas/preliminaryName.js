@@ -30,4 +30,3 @@ const preliminaryName = connection_1.default.define("preName", {
 //     sourceKey: "codigo",
 // });
 exports.default = preliminaryName;
-//# sourceMappingURL=preliminaryName.js.map

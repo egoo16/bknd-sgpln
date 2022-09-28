@@ -20,4 +20,3 @@ const possibleCauses = connection_1.default.define("Causes", {
     freezeTableName: true,
 });
 exports.default = possibleCauses;
-//# sourceMappingURL=possibleCauses.js.map

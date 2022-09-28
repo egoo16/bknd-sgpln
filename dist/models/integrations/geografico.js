@@ -23,4 +23,3 @@ const geografico = connection_1.default.define("geografico", {
     tableName: 'SINIP.CG_GEOGRAFICO'
 });
 exports.default = geografico;
-//# sourceMappingURL=geografico.js.map

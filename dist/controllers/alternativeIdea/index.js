@@ -259,4 +259,3 @@ function updateIdeaAlternativeComplete(req, res) {
     });
 }
 exports.updateIdeaAlternativeComplete = updateIdeaAlternativeComplete;
-//# sourceMappingURL=index.js.map

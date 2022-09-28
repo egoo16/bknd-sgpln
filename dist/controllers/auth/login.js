@@ -77,4 +77,3 @@ const loginUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.loginUsuario = loginUsuario;
-//# sourceMappingURL=login.js.map

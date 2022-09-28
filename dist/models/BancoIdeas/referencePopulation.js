@@ -19,4 +19,3 @@ const referencePopulation = connection_1.default.define("refPop", {
     freezeTableName: true,
 });
 exports.default = referencePopulation;
-//# sourceMappingURL=referencePopulation.js.map

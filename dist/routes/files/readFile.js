@@ -31,4 +31,3 @@ READ_FILE_ROUTER.get('/:type/:file', (req, res) => {
     });
 });
 exports.default = READ_FILE_ROUTER;
-//# sourceMappingURL=readFile.js.map

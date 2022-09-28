@@ -19,4 +19,3 @@ const formulationProcess = connection_1.default.define("formulationProcess", {
     freezeTableName: true,
 });
 exports.default = formulationProcess;
-//# sourceMappingURL=formulationProcess.js.map
