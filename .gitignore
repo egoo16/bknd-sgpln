@@ -5,3 +5,4 @@ npm-debug.log
 yarn-error.log
 uploads
 /uploads
+dist/db/connection.js
