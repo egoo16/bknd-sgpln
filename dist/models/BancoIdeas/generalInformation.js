@@ -68,4 +68,3 @@ generalInformation.belongsTo(stage_1.default, {
     sourceKey: "codigo",
 });
 exports.default = generalInformation;
-//# sourceMappingURL=generalInformation.js.map

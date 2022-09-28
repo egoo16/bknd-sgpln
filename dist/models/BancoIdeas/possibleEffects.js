@@ -20,4 +20,3 @@ const possibleEffects = connection_1.default.define("Effects", {
     freezeTableName: true,
 });
 exports.default = possibleEffects;
-//# sourceMappingURL=possibleEffects.js.map

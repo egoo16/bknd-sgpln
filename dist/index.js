@@ -20,4 +20,3 @@ server.app.use("/", router_1.default);
 server.start(() => {
     console.log(`Servidor corriendo en el puerto ${server.port}`);
 });
-//# sourceMappingURL=index.js.map

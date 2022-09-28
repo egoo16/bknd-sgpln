@@ -8,4 +8,3 @@ integrationsRouter.get("/procesos", integrations_1.getProcesos);
 integrationsRouter.get("/objetos", integrations_1.getObjetos);
 integrationsRouter.get("/productos", integrations_1.getProductos);
 exports.default = integrationsRouter;
-//# sourceMappingURL=integrations.js.map

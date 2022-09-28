@@ -18,4 +18,3 @@ db = new sequelize_oracle_1.default('osnip', 'PREINV2022', 'F6HRj3T0L3A', {
     // logging: false,
 });
 exports.default = db;
-//# sourceMappingURL=connection.js.map

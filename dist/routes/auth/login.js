@@ -5,4 +5,3 @@ const login_1 = require("../../controllers/auth/login");
 const loginRouter = (0, express_1.Router)();
 loginRouter.post("/", login_1.loginUsuario);
 exports.default = loginRouter;
-//# sourceMappingURL=login.js.map

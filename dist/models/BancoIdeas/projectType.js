@@ -20,4 +20,3 @@ const projectType = connection_1.default.define("projectType", {
     freezeTableName: true,
 });
 exports.default = projectType;
-//# sourceMappingURL=projectType.js.map

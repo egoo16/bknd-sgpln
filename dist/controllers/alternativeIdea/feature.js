@@ -1054,4 +1054,3 @@ function fupdateIdeaAlternativeComplete(ideaAlt, transaction) {
     });
 }
 exports.fupdateIdeaAlternativeComplete = fupdateIdeaAlternativeComplete;
-//# sourceMappingURL=feature.js.map

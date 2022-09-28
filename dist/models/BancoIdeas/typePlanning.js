@@ -19,4 +19,3 @@ const typePlanning = connection_1.default.define("typePlanning", {
     freezeTableName: true,
 });
 exports.default = typePlanning;
-//# sourceMappingURL=typePlanning.js.map

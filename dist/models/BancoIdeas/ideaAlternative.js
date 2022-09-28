@@ -49,4 +49,3 @@ ideaAlternative.hasOne(preInvestment_1.default, { foreignKey: "AlterId" });
 //     sourceKey: "codigo",
 // });
 exports.default = ideaAlternative;
-//# sourceMappingURL=ideaAlternative.js.map

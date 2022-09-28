@@ -42,4 +42,3 @@ const Usuario = connection_1.default.define("Usuario", {
     freezeTableName: true,
 });
 exports.default = Usuario;
-//# sourceMappingURL=usuario.js.map

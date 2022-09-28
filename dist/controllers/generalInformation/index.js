@@ -283,4 +283,3 @@ function returnIdea(req, res) {
     });
 }
 exports.returnIdea = returnIdea;
-//# sourceMappingURL=index.js.map
