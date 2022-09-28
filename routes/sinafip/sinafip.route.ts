@@ -1,8 +1,13 @@
 import { Router } from 'express'
+import { getAllEntities } from '../../controllers/sinafip/list.controller';
 import { createRequest,deleteOneRequest,getAllRequest, getOneRequest } from '../../controllers/sinafip/request.controller';
 
 
 const sinafipRouter = Router();
+
+// Listados
+sinafipRouter.get('/entities',getAllEntities)
+
 
 sinafipRouter.post('/request/create',createRequest)
 sinafipRouter.get('/request/get-all',getAllRequest)
