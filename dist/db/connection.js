@@ -4,7 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
+const Sequelize = require('sequelize-oracle');
+// import oracledb from 'oracledb'; 
+const oracledb_1 = __importDefault(require("oracledb"));
+oracledb_1.default.maxRows = 0;
 // oracledb.initOracleClient({ libDir: "C:Oracleinstantclient_21_6" });
 let db;
 // db = new Sequelize('xepdb1', 'SYSTEM', 'database', {
@@ -12,8 +15,8 @@ let db;
 //     dialect: 'oracle',
 //     // logging: false,
 // });
-db = new sequelize_oracle_1.default('osnip', 'PREINV2022', 'F6HRj3T0L3A', {
-    host: '192.168.9.14',
+db = new Sequelize('desa', 'PREINV2022', 'F6HRj3T0L3A', {
+    host: '192.168.8.11',
     dialect: 'oracle',
     // logging: false,
 });
