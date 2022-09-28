@@ -399,26 +399,340 @@ function FcreateGeographicArea(geograpicArea, idAlternativa, transaction) {
 exports.FcreateGeographicArea = FcreateGeographicArea;
 function getAlternatives(idIdea) {
     return __awaiter(this, void 0, void 0, function* () {
-        let idAlternative = idIdea;
-        let datosResult = [];
-        let data = yield ideaAlternative_1.default.findAll({
-            where: {
-                sectionBIId: idAlternative
-            },
-            include: [
-                {
-                    required: false,
-                    model: preliminaryName_1.default
+        try {
+            let idAlternative = idIdea;
+            let datosResult = [];
+            let data = yield ideaAlternative_1.default.findAll({
+                where: {
+                    sectionBIId: idAlternative
                 },
-                {
-                    required: false,
-                    model: responsibleEntity_2.default
+                include: [
+                    {
+                        required: false,
+                        model: preliminaryName_1.default
+                    },
+                    {
+                        required: false,
+                        model: responsibleEntity_2.default
+                    },
+                ]
+            });
+            if (data || data.length > 0) {
+                let resPopDel = yield Promise.all(data.map((alter) => __awaiter(this, void 0, void 0, function* () {
+                    let idAlt = alter.codigo;
+                    let popDelimitation = yield populationDelimitation_1.default.findOne({
+                        where: {
+                            AlterId: idAlt
+                        },
+                        include: [
+                            {
+                                required: false,
+                                model: referencePopulation_1.default
+                            },
+                            {
+                                required: false,
+                                model: denomination_1.default
+                            },
+                        ]
+                    });
+                    let gArea = yield geographicArea_1.default.findOne({
+                        where: {
+                            AlterId: idAlt
+                        },
+                    });
+                    let pDescription = yield projectDescription_1.default.findOne({
+                        where: {
+                            AlterId: idAlt
+                        },
+                        include: [
+                            {
+                                required: false,
+                                model: executionTime_1.default
+                            },
+                        ]
+                    });
+                    let quali = yield qualification_1.default.findOne({
+                        where: {
+                            AlterId: idAlt
+                        },
+                    });
+                    let preInv = yield preInvestment_1.default.findOne({
+                        where: {
+                            AlterId: idAlt
+                        },
+                    });
+                    let alternativa = {
+                        codigo: alter.codigo,
+                        sectionBIId: alter.sectionBIId,
+                        state: alter.state,
+                        createdAt: alter.createdAt,
+                        updatedAt: alter.updatedAt,
+                        deletedAt: alter.deletedAt,
+                    };
+                    alternativa.preName = {
+                        codigo: alter.preName.codigo,
+                        AlterId: alter.preName.AlterId,
+                        typeProject: alter.preName.typeProject,
+                        proccess: alter.preName.proccess,
+                        object: alter.preName.object,
+                        departament: alter.preName.departament,
+                        municipality: alter.preName.municipality,
+                        village: alter.preName.village,
+                        preliminaryName: alter.preName.preliminaryName,
+                        createdAt: alter.preName.createdAt,
+                        updatedAt: alter.preName.updatedAt,
+                        deletedAt: alter.preName.deletedAt,
+                    };
+                    alternativa.resEntity = {
+                        codigo: alter.resEntity.codigo,
+                        AlterId: alter.resEntity.AlterId,
+                        nameEPI: alter.resEntity.nameEPI,
+                        leaderName: alter.resEntity.leaderName,
+                        email: alter.resEntity.email,
+                        phone: alter.resEntity.phone,
+                        createdAt: alter.resEntity.createdAt,
+                        updatedAt: alter.resEntity.updatedAt,
+                        deletedAt: alter.resEntity.deletedAt,
+                    };
+                    if (popDelimitation) {
+                        alternativa.popDelimit = {
+                            codigo: popDelimitation.codigo,
+                            AlterId: popDelimitation.AlterId,
+                            refPopId: popDelimitation.refPopId,
+                            denId: popDelimitation.denId,
+                            totalPopulation: popDelimitation.totalPopulation,
+                            gender: popDelimitation.gender,
+                            estimateBeneficiaries: popDelimitation.estimateBeneficiaries,
+                            preliminaryCharacterization: popDelimitation.preliminaryCharacterization,
+                            coverage: popDelimitation.coverage,
+                            createdAt: popDelimitation.createdAt,
+                            updatedAt: popDelimitation.updatedAt,
+                            deletedAt: popDelimitation.deletedAt,
+                        };
+                    }
+                    if (popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.refPop) {
+                        alternativa.popDelimit.refPop = {
+                            codigo: popDelimitation.refPop.codigo,
+                            name: popDelimitation.refPop.name,
+                            createdAt: popDelimitation.refPop.createdAt,
+                            updatedAt: popDelimitation.refPop.updatedAt,
+                            deletedAt: popDelimitation.refPop.deletedAt,
+                        };
+                    }
+                    if (popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.denmtion) {
+                        alternativa.popDelimitdenmtion = {
+                            codigo: popDelimitation.denmtion.codigo,
+                            name: popDelimitation.denmtion.name,
+                            createdAt: popDelimitation.denmtion.createdAt,
+                            updatedAt: popDelimitation.denmtion.updatedAt,
+                            deletedAt: popDelimitation.denmtion.deletedAt,
+                        };
+                    }
+                    if (gArea) {
+                        let datageo = yield datageo_model_1.default.findAll({
+                            where: {
+                                geoAreaId: gArea.codigo
+                            }
+                        });
+                        alternativa.geoArea = {
+                            codigo: gArea.codigo,
+                            AlterId: gArea.AlterId,
+                            availableTerrain: gArea.availableTerrain,
+                            oneAvailableTerrain: gArea.oneAvailableTerrain,
+                            investPurchase: gArea.investPurchase,
+                            createdAt: gArea.createdAt,
+                            updatedAt: gArea.updatedAt,
+                            deletedAt: gArea.deletedAt,
+                        };
+                        alternativa.geoArea.dataGeo = [];
+                        if (datageo) {
+                            datageo.map((dta) => {
+                                let coord = {
+                                    id: dta.id,
+                                    geoAreaId: dta.geoAreaId,
+                                    governmentTerrain: dta.governmentTerrain,
+                                    registerGovernmentTerrain: dta.registerGovernmentTerrain,
+                                    statusDescribe: dta.statusDescribe,
+                                    finca: dta.finca,
+                                    folio: dta.folio,
+                                    libro: dta.libro,
+                                    plano: dta.plano,
+                                    slightIncline: dta.slightIncline,
+                                    broken: dta.broken,
+                                    image: dta.image,
+                                    imageUrl: dta.imageUrl,
+                                    description: dta.description,
+                                    basicServices: dta.basicServices,
+                                    descriptionBasicServices: dta.descriptionBasicServices,
+                                    degreesx: dta.degreesx,
+                                    minutesx: dta.minutesx,
+                                    secondsx: dta.secondsx,
+                                    degreesy: dta.degreesy,
+                                    minutesy: dta.minutesy,
+                                    secondsy: dta.secondsy,
+                                    descriptionLocation: dta.descriptionLocation,
+                                    createdAt: dta.createdAt,
+                                    updatedAt: dta.updatedAt,
+                                    deletedAt: dta.deletedAt,
+                                };
+                                alternativa.geoArea.dataGeo.push(coord);
+                            });
+                        }
+                    }
+                    if (pDescription) {
+                        alternativa.projDesc = {
+                            codigo: pDescription.codigo,
+                            AlterId: pDescription.AlterId,
+                            projectType: pDescription.projectType,
+                            formulationProcess: pDescription.formulationProcess,
+                            formulationProcessDescription: pDescription.formulationProcessDescription,
+                            descriptionInterventions: pDescription.descriptionInterventions,
+                            complexity: pDescription.complexity,
+                            estimatedCost: pDescription.estimatedCost,
+                            investmentCost: pDescription.investmentCost,
+                            fundingSources: pDescription.fundingSources,
+                            foundingSourcesName: pDescription.foundingSourcesName,
+                            createdAt: pDescription.createdAt,
+                            updatedAt: pDescription.updatedAt,
+                            deletedAt: pDescription.deletedAt,
+                            execTime: null,
+                        };
+                        if (pDescription.execTime)
+                            alternativa.projDesc.execTime = {
+                                codigo: pDescription.execTime.codigo,
+                                projDescId: pDescription.execTime.projDescId,
+                                tentativeTermMonth: pDescription.execTime.tentativeTermMonth,
+                                tentativeTermYear: pDescription.execTime.tentativeTermYear,
+                                executionDateMonth: pDescription.execTime.executionDateMonth,
+                                executionDateYear: pDescription.execTime.executionDateYear,
+                                finishDateMonth: pDescription.execTime.finishDateMonth,
+                                finishDateYear: pDescription.execTime.finishDateYear,
+                                annual: pDescription.execTime.annual,
+                                createdAt: pDescription.execTime.createdAt,
+                                updatedAt: pDescription.execTime.updatedAt,
+                                deletedAt: pDescription.execTime.deletedAt,
+                            };
+                    }
+                    if (quali) {
+                        alternativa.qualification = {
+                            codigo: quali.codigo,
+                            AlterId: quali.AlterId,
+                            descProblem: quali.descProblem,
+                            descProblemComment: quali.descProblemComment,
+                            generalObjct: quali.generalObjct,
+                            generalObjctComment: quali.generalObjctComment,
+                            anlysDelimitation: quali.anlysDelimitation,
+                            anlysDelimitationComment: quali.anlysDelimitationComment,
+                            terrainIdent: quali.terrainIdent,
+                            terrainIdentComment: quali.terrainIdentComment,
+                            legalSituation: quali.legalSituation,
+                            legalSituationComment: quali.legalSituationComment,
+                            descAnlys: quali.descAnlys,
+                            descAnlysComment: quali.descAnlysComment,
+                            descriptionGeneral: quali.descriptionGeneral,
+                            total: quali.total,
+                            result: quali.result,
+                        };
+                    }
+                    if (preInv) {
+                        alternativa.preInvestment = {
+                            codigo: preInv.codigo,
+                            AlterId: preInv.AlterId,
+                            rangoValor: preInv.rangoValor,
+                            rangoResultado: preInv.rangoResultado,
+                            estimacionValor: preInv.estimacionValor,
+                            estimacionResultado: preInv.estimacionResultado,
+                            complejidadValor: preInv.complejidadValor,
+                            complejidadResultado: preInv.complejidadResultado,
+                            etapaValor: preInv.etapaValor,
+                            etapaResultado: preInv.etapaResultado,
+                        };
+                    }
+                    datosResult.push(alternativa);
+                })));
+            }
+            // let datosResult = await ideaAlternative.findAll({
+            //     where: {
+            //         sectionBIId: idAlternative
+            //     },
+            //     include: [
+            //         {
+            //             required: false,
+            //             model: preliminaryName
+            //         },
+            //         {
+            //             required: false,
+            //             model: responsibleEntity
+            //         },
+            //         {
+            //             required: false,
+            //             model: populationDelimitation,
+            //             include: [
+            //                 {
+            //                     required: false,
+            //                     model: referencePopulation
+            //                 },
+            //                 {
+            //                     required: false,
+            //                     model: denomination
+            //                 },
+            //             ]
+            //         },
+            //         {
+            //             required: false,
+            //             model: geographicArea,
+            //             include: [
+            //                 {
+            //                     required: false,
+            //                     model: coordinates
+            //                 },
+            //             ]
+            //         },
+            //         {
+            //             required: false,
+            //             model: projectDescription,
+            //             include: [
+            //                 {
+            //                     required: false,
+            //                     model: executionTime
+            //                 },
+            //             ]
+            //         },
+            //         {
+            //             required: false,
+            //             model: qualification
+            //         },
+            //     ]
+            // });
+            return datosResult;
+        }
+        catch (error) {
+            throw `Error al obtener alternativas: ${error}`;
+        }
+    });
+}
+exports.getAlternatives = getAlternatives;
+function getAlternative(idAlternative) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let datosResult;
+            let data = yield ideaAlternative_1.default.findOne({
+                where: {
+                    codigo: idAlternative
                 },
-            ]
-        });
-        if (data || data.length > 0) {
-            let resPopDel = yield Promise.all(data.map((alter) => __awaiter(this, void 0, void 0, function* () {
-                let idAlt = alter.codigo;
+                include: [
+                    {
+                        required: false,
+                        model: preliminaryName_1.default
+                    },
+                    {
+                        required: false,
+                        model: responsibleEntity_2.default
+                    },
+                ]
+            });
+            if (data) {
+                let idAlt = data.codigo;
                 let popDelimitation = yield populationDelimitation_1.default.findOne({
                     where: {
                         AlterId: idAlt
@@ -461,37 +775,37 @@ function getAlternatives(idIdea) {
                     },
                 });
                 let alternativa = {
-                    codigo: alter.codigo,
-                    sectionBIId: alter.sectionBIId,
-                    state: alter.state,
-                    createdAt: alter.createdAt,
-                    updatedAt: alter.updatedAt,
-                    deletedAt: alter.deletedAt,
+                    codigo: data.codigo,
+                    sectionBIId: data.sectionBIId,
+                    state: data.data,
+                    createdAt: data.createdAt,
+                    updatedAt: data.updatedAt,
+                    deletedAt: data.deletedAt,
                 };
                 alternativa.preName = {
-                    codigo: alter.preName.codigo,
-                    AlterId: alter.preName.AlterId,
-                    typeProject: alter.preName.typeProject,
-                    proccess: alter.preName.proccess,
-                    object: alter.preName.object,
-                    departament: alter.preName.departament,
-                    municipality: alter.preName.municipality,
-                    village: alter.preName.village,
-                    preliminaryName: alter.preName.preliminaryName,
-                    createdAt: alter.preName.createdAt,
-                    updatedAt: alter.preName.updatedAt,
-                    deletedAt: alter.preName.deletedAt,
+                    codigo: data.preName.codigo,
+                    AlterId: data.preName.AlterId,
+                    typeProject: data.preName.typeProject,
+                    proccess: data.preName.proccess,
+                    object: data.preName.object,
+                    departament: data.preName.departament,
+                    municipality: data.preName.municipality,
+                    village: data.preName.village,
+                    preliminaryName: data.preName.preliminaryName,
+                    createdAt: data.preName.createdAt,
+                    updatedAt: data.preName.updatedAt,
+                    deletedAt: data.preName.deletedAt,
                 };
                 alternativa.resEntity = {
-                    codigo: alter.resEntity.codigo,
-                    AlterId: alter.resEntity.AlterId,
-                    nameEPI: alter.resEntity.nameEPI,
-                    leaderName: alter.resEntity.leaderName,
-                    email: alter.resEntity.email,
-                    phone: alter.resEntity.phone,
-                    createdAt: alter.resEntity.createdAt,
-                    updatedAt: alter.resEntity.updatedAt,
-                    deletedAt: alter.resEntity.deletedAt,
+                    codigo: data.resEntity.codigo,
+                    AlterId: data.resEntity.AlterId,
+                    nameEPI: data.resEntity.nameEPI,
+                    leaderName: data.resEntity.leaderName,
+                    email: data.resEntity.email,
+                    phone: data.resEntity.phone,
+                    createdAt: data.resEntity.createdAt,
+                    updatedAt: data.resEntity.updatedAt,
+                    deletedAt: data.resEntity.deletedAt,
                 };
                 if (popDelimitation) {
                     alternativa.popDelimit = {
@@ -547,7 +861,7 @@ function getAlternatives(idIdea) {
                     if (datageo) {
                         datageo.map((dta) => {
                             let coord = {
-                                codigo: dta.codigo,
+                                id: dta.id,
                                 geoAreaId: dta.geoAreaId,
                                 governmentTerrain: dta.governmentTerrain,
                                 registerGovernmentTerrain: dta.registerGovernmentTerrain,
@@ -647,371 +961,67 @@ function getAlternatives(idIdea) {
                         etapaResultado: preInv.etapaResultado,
                     };
                 }
-                datosResult.push(alternativa);
-            })));
+                datosResult = alternativa;
+                ;
+            }
+            // let datosResult = await ideaAlternative.findAll({
+            //     where: {
+            //         sectionBIId: idAlternative
+            //     },
+            //     include: [
+            //         {
+            //             required: false,
+            //             model: preliminaryName
+            //         },
+            //         {
+            //             required: false,
+            //             model: responsibleEntity
+            //         },
+            //         {
+            //             required: false,
+            //             model: populationDelimitation,
+            //             include: [
+            //                 {
+            //                     required: false,
+            //                     model: referencePopulation
+            //                 },
+            //                 {
+            //                     required: false,
+            //                     model: denomination
+            //                 },
+            //             ]
+            //         },
+            //         {
+            //             required: false,
+            //             model: geographicArea,
+            //             include: [
+            //                 {
+            //                     required: false,
+            //                     model: coordinates
+            //                 },
+            //             ]
+            //         },
+            //         {
+            //             required: false,
+            //             model: projectDescription,
+            //             include: [
+            //                 {
+            //                     required: false,
+            //                     model: executionTime
+            //                 },
+            //             ]
+            //         },
+            //         {
+            //             required: false,
+            //             model: qualification
+            //         },
+            //     ]
+            // });
+            return datosResult;
         }
-        // let datosResult = await ideaAlternative.findAll({
-        //     where: {
-        //         sectionBIId: idAlternative
-        //     },
-        //     include: [
-        //         {
-        //             required: false,
-        //             model: preliminaryName
-        //         },
-        //         {
-        //             required: false,
-        //             model: responsibleEntity
-        //         },
-        //         {
-        //             required: false,
-        //             model: populationDelimitation,
-        //             include: [
-        //                 {
-        //                     required: false,
-        //                     model: referencePopulation
-        //                 },
-        //                 {
-        //                     required: false,
-        //                     model: denomination
-        //                 },
-        //             ]
-        //         },
-        //         {
-        //             required: false,
-        //             model: geographicArea,
-        //             include: [
-        //                 {
-        //                     required: false,
-        //                     model: coordinates
-        //                 },
-        //             ]
-        //         },
-        //         {
-        //             required: false,
-        //             model: projectDescription,
-        //             include: [
-        //                 {
-        //                     required: false,
-        //                     model: executionTime
-        //                 },
-        //             ]
-        //         },
-        //         {
-        //             required: false,
-        //             model: qualification
-        //         },
-        //     ]
-        // });
-        return datosResult;
-    });
-}
-exports.getAlternatives = getAlternatives;
-function getAlternative(idAlternative) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let datosResult;
-        let data = yield ideaAlternative_1.default.findOne({
-            where: {
-                codigo: idAlternative
-            },
-            include: [
-                {
-                    required: false,
-                    model: preliminaryName_1.default
-                },
-                {
-                    required: false,
-                    model: responsibleEntity_2.default
-                },
-            ]
-        });
-        if (data) {
-            let idAlt = data.codigo;
-            let popDelimitation = yield populationDelimitation_1.default.findOne({
-                where: {
-                    AlterId: idAlt
-                },
-                include: [
-                    {
-                        required: false,
-                        model: referencePopulation_1.default
-                    },
-                    {
-                        required: false,
-                        model: denomination_1.default
-                    },
-                ]
-            });
-            let gArea = yield geographicArea_1.default.findOne({
-                where: {
-                    AlterId: idAlt
-                },
-            });
-            let pDescription = yield projectDescription_1.default.findOne({
-                where: {
-                    AlterId: idAlt
-                },
-                include: [
-                    {
-                        required: false,
-                        model: executionTime_1.default
-                    },
-                ]
-            });
-            let quali = yield qualification_1.default.findOne({
-                where: {
-                    AlterId: idAlt
-                },
-            });
-            let preInv = yield preInvestment_1.default.findOne({
-                where: {
-                    AlterId: idAlt
-                },
-            });
-            let alternativa = {
-                codigo: data.codigo,
-                sectionBIId: data.sectionBIId,
-                state: data.data,
-                createdAt: data.createdAt,
-                updatedAt: data.updatedAt,
-                deletedAt: data.deletedAt,
-            };
-            alternativa.preName = {
-                codigo: data.preName.codigo,
-                AlterId: data.preName.AlterId,
-                typeProject: data.preName.typeProject,
-                proccess: data.preName.proccess,
-                object: data.preName.object,
-                departament: data.preName.departament,
-                municipality: data.preName.municipality,
-                village: data.preName.village,
-                preliminaryName: data.preName.preliminaryName,
-                createdAt: data.preName.createdAt,
-                updatedAt: data.preName.updatedAt,
-                deletedAt: data.preName.deletedAt,
-            };
-            alternativa.resEntity = {
-                codigo: data.resEntity.codigo,
-                AlterId: data.resEntity.AlterId,
-                nameEPI: data.resEntity.nameEPI,
-                leaderName: data.resEntity.leaderName,
-                email: data.resEntity.email,
-                phone: data.resEntity.phone,
-                createdAt: data.resEntity.createdAt,
-                updatedAt: data.resEntity.updatedAt,
-                deletedAt: data.resEntity.deletedAt,
-            };
-            if (popDelimitation) {
-                alternativa.popDelimit = {
-                    codigo: popDelimitation.codigo,
-                    AlterId: popDelimitation.AlterId,
-                    refPopId: popDelimitation.refPopId,
-                    denId: popDelimitation.denId,
-                    totalPopulation: popDelimitation.totalPopulation,
-                    gender: popDelimitation.gender,
-                    estimateBeneficiaries: popDelimitation.estimateBeneficiaries,
-                    preliminaryCharacterization: popDelimitation.preliminaryCharacterization,
-                    coverage: popDelimitation.coverage,
-                    createdAt: popDelimitation.createdAt,
-                    updatedAt: popDelimitation.updatedAt,
-                    deletedAt: popDelimitation.deletedAt,
-                };
-            }
-            if (popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.refPop) {
-                alternativa.popDelimit.refPop = {
-                    codigo: popDelimitation.refPop.codigo,
-                    name: popDelimitation.refPop.name,
-                    createdAt: popDelimitation.refPop.createdAt,
-                    updatedAt: popDelimitation.refPop.updatedAt,
-                    deletedAt: popDelimitation.refPop.deletedAt,
-                };
-            }
-            if (popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.denmtion) {
-                alternativa.popDelimitdenmtion = {
-                    codigo: popDelimitation.denmtion.codigo,
-                    name: popDelimitation.denmtion.name,
-                    createdAt: popDelimitation.denmtion.createdAt,
-                    updatedAt: popDelimitation.denmtion.updatedAt,
-                    deletedAt: popDelimitation.denmtion.deletedAt,
-                };
-            }
-            if (gArea) {
-                let datageo = yield datageo_model_1.default.findAll({
-                    where: {
-                        geoAreaId: gArea.codigo
-                    }
-                });
-                alternativa.geoArea = {
-                    codigo: gArea.codigo,
-                    AlterId: gArea.AlterId,
-                    availableTerrain: gArea.availableTerrain,
-                    oneAvailableTerrain: gArea.oneAvailableTerrain,
-                    investPurchase: gArea.investPurchase,
-                    createdAt: gArea.createdAt,
-                    updatedAt: gArea.updatedAt,
-                    deletedAt: gArea.deletedAt,
-                };
-                alternativa.geoArea.dataGeo = [];
-                if (datageo) {
-                    datageo.map((dta) => {
-                        let coord = {
-                            codigo: dta.codigo,
-                            geoAreaId: dta.geoAreaId,
-                            governmentTerrain: dta.governmentTerrain,
-                            registerGovernmentTerrain: dta.registerGovernmentTerrain,
-                            statusDescribe: dta.statusDescribe,
-                            finca: dta.finca,
-                            folio: dta.folio,
-                            libro: dta.libro,
-                            plano: dta.plano,
-                            slightIncline: dta.slightIncline,
-                            broken: dta.broken,
-                            image: dta.image,
-                            imageUrl: dta.imageUrl,
-                            description: dta.description,
-                            basicServices: dta.basicServices,
-                            descriptionBasicServices: dta.descriptionBasicServices,
-                            degreesx: dta.degreesx,
-                            minutesx: dta.minutesx,
-                            secondsx: dta.secondsx,
-                            degreesy: dta.degreesy,
-                            minutesy: dta.minutesy,
-                            secondsy: dta.secondsy,
-                            descriptionLocation: dta.descriptionLocation,
-                            createdAt: dta.createdAt,
-                            updatedAt: dta.updatedAt,
-                            deletedAt: dta.deletedAt,
-                        };
-                        alternativa.geoArea.dataGeo.push(coord);
-                    });
-                }
-            }
-            if (pDescription) {
-                alternativa.projDesc = {
-                    codigo: pDescription.codigo,
-                    AlterId: pDescription.AlterId,
-                    projectType: pDescription.projectType,
-                    formulationProcess: pDescription.formulationProcess,
-                    formulationProcessDescription: pDescription.formulationProcessDescription,
-                    descriptionInterventions: pDescription.descriptionInterventions,
-                    complexity: pDescription.complexity,
-                    estimatedCost: pDescription.estimatedCost,
-                    investmentCost: pDescription.investmentCost,
-                    fundingSources: pDescription.fundingSources,
-                    foundingSourcesName: pDescription.foundingSourcesName,
-                    createdAt: pDescription.createdAt,
-                    updatedAt: pDescription.updatedAt,
-                    deletedAt: pDescription.deletedAt,
-                    execTime: null,
-                };
-                if (pDescription.execTime)
-                    alternativa.projDesc.execTime = {
-                        codigo: pDescription.execTime.codigo,
-                        projDescId: pDescription.execTime.projDescId,
-                        tentativeTermMonth: pDescription.execTime.tentativeTermMonth,
-                        tentativeTermYear: pDescription.execTime.tentativeTermYear,
-                        executionDateMonth: pDescription.execTime.executionDateMonth,
-                        executionDateYear: pDescription.execTime.executionDateYear,
-                        finishDateMonth: pDescription.execTime.finishDateMonth,
-                        finishDateYear: pDescription.execTime.finishDateYear,
-                        annual: pDescription.execTime.annual,
-                        createdAt: pDescription.execTime.createdAt,
-                        updatedAt: pDescription.execTime.updatedAt,
-                        deletedAt: pDescription.execTime.deletedAt,
-                    };
-            }
-            if (quali) {
-                alternativa.qualification = {
-                    codigo: quali.codigo,
-                    AlterId: quali.AlterId,
-                    descProblem: quali.descProblem,
-                    descProblemComment: quali.descProblemComment,
-                    generalObjct: quali.generalObjct,
-                    generalObjctComment: quali.generalObjctComment,
-                    anlysDelimitation: quali.anlysDelimitation,
-                    anlysDelimitationComment: quali.anlysDelimitationComment,
-                    terrainIdent: quali.terrainIdent,
-                    terrainIdentComment: quali.terrainIdentComment,
-                    legalSituation: quali.legalSituation,
-                    legalSituationComment: quali.legalSituationComment,
-                    descAnlys: quali.descAnlys,
-                    descAnlysComment: quali.descAnlysComment,
-                    descriptionGeneral: quali.descriptionGeneral,
-                    total: quali.total,
-                    result: quali.result,
-                };
-            }
-            if (preInv) {
-                alternativa.preInvestment = {
-                    codigo: preInv.codigo,
-                    AlterId: preInv.AlterId,
-                    rangoValor: preInv.rangoValor,
-                    rangoResultado: preInv.rangoResultado,
-                    estimacionValor: preInv.estimacionValor,
-                    estimacionResultado: preInv.estimacionResultado,
-                    complejidadValor: preInv.complejidadValor,
-                    complejidadResultado: preInv.complejidadResultado,
-                    etapaValor: preInv.etapaValor,
-                    etapaResultado: preInv.etapaResultado,
-                };
-            }
-            datosResult = alternativa;
-            ;
+        catch (error) {
+            throw `Error al obtener alternativa: ${error}`;
         }
-        // let datosResult = await ideaAlternative.findAll({
-        //     where: {
-        //         sectionBIId: idAlternative
-        //     },
-        //     include: [
-        //         {
-        //             required: false,
-        //             model: preliminaryName
-        //         },
-        //         {
-        //             required: false,
-        //             model: responsibleEntity
-        //         },
-        //         {
-        //             required: false,
-        //             model: populationDelimitation,
-        //             include: [
-        //                 {
-        //                     required: false,
-        //                     model: referencePopulation
-        //                 },
-        //                 {
-        //                     required: false,
-        //                     model: denomination
-        //                 },
-        //             ]
-        //         },
-        //         {
-        //             required: false,
-        //             model: geographicArea,
-        //             include: [
-        //                 {
-        //                     required: false,
-        //                     model: coordinates
-        //                 },
-        //             ]
-        //         },
-        //         {
-        //             required: false,
-        //             model: projectDescription,
-        //             include: [
-        //                 {
-        //                     required: false,
-        //                     model: executionTime
-        //                 },
-        //             ]
-        //         },
-        //         {
-        //             required: false,
-        //             model: qualification
-        //         },
-        //     ]
-        // });
-        return datosResult;
     });
 }
 exports.getAlternative = getAlternative;
@@ -1024,23 +1034,28 @@ function fupdateIdeaAlternativeComplete(ideaAlt, transaction) {
                     codigo: ideaAlt.codigo
                 }
             });
+            let ideaAlternativeCreated;
             if (altActive) {
-                yield altActive.destroy({ transaction });
+                ideaAlt.codigo = undefined;
+                ideaAlt.state = 'CREADA';
+                ideaAlternativeCreated = yield ideaAlternative_1.default.create(ideaAlt, { transaction }).then((alternativeCreated) => __awaiter(this, void 0, void 0, function* () {
+                    yield altActive.destroy({ transaction });
+                    console.log(alternativeCreated);
+                    let codigoAlternativa = alternativeCreated.codigo;
+                    yield FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction);
+                    yield FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction);
+                    yield FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction);
+                    yield FcreateGeographicArea(ideaAlt.geoArea, codigoAlternativa, transaction);
+                    yield FcreateProjectDescription(ideaAlt.projDesc, codigoAlternativa, transaction);
+                    if (alternativeCreated) {
+                        alternative = yield getAlternative(alternativeCreated.codigo);
+                    }
+                })).catch((err) => __awaiter(this, void 0, void 0, function* () {
+                    yield transaction.rollback();
+                }));
             }
             else {
                 throw `Error al actualizar Alternativa, no existe el ID enviado`;
-            }
-            ideaAlt.codigo = undefined;
-            ideaAlt.state = 'CREADA';
-            let ideaAlternativeCreated = yield ideaAlternative_1.default.create(ideaAlt, { transaction });
-            let codigoAlternativa = ideaAlternativeCreated.codigo;
-            yield FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction);
-            yield FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction);
-            yield FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction);
-            yield FcreateGeographicArea(ideaAlt.geoArea, codigoAlternativa, transaction);
-            yield FcreateProjectDescription(ideaAlt.projDesc, codigoAlternativa, transaction);
-            if (ideaAlternativeCreated) {
-                alternative = yield getAlternative(ideaAlternativeCreated.codigo);
             }
             return {
                 message: `Idea alternativa Actualizada correctamente`,

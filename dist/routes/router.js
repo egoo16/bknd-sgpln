@@ -8,11 +8,13 @@ const express_1 = require("express");
 const app_1 = __importDefault(require("./app"));
 const login_1 = __importDefault(require("./auth/login"));
 const generalInformationRoute_1 = __importDefault(require("./bancoIdeas/generalInformationRoute"));
+const uploads_1 = __importDefault(require("./files/uploads"));
 const ideaAlternative_1 = __importDefault(require("./ideaAlternative/ideaAlternative"));
 const integrations_1 = __importDefault(require("./integrations/integrations"));
 const usuarios_1 = __importDefault(require("./usuarios"));
 const router = (0, express_1.Router)();
 // Rutas
+router.use("/api/upload/", uploads_1.default);
 router.use("/api/integrations/", integrations_1.default);
 router.use("/api/alternative/", ideaAlternative_1.default);
 router.use("/api/general/", generalInformationRoute_1.default);
