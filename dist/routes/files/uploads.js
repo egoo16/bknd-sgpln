@@ -16,6 +16,7 @@ const express_1 = require("express");
 const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const fs_1 = __importDefault(require("fs"));
 const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
+const config_1 = require("../../config/config");
 // import SimulatorConfig, { ISimulatorConfig } from '../models/simulatorConfig';
 // import Layer, { ILayer } from '../models/layer'
 // import Option, { IOption } from '../models/option'
@@ -121,7 +122,7 @@ const uploadByType = (type, id, newNameFile, res) => {
                     }
                 });
             }
-            data.imageUrl = `http://localhost:3000/api/readFile/${type}/${newNameFile}`;
+            data.imageUrl = `http://${config_1.ORIGINPATH}/api/readFile/${type}/${newNameFile}`;
             data.save().then((dataSaved) => {
                 res.status(200).json({
                     ok: true,

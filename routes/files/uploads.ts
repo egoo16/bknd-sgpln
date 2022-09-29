@@ -2,6 +2,8 @@ import { Router, Request, Response } from 'express';
 import fileUpload from 'express-fileupload';
 import fs from 'fs';
 import dataGeo from '../../models/BancoIdeas/datageo.model';
+import { ORIGINPATH } from "../../config/config";
+
 
 // import SimulatorConfig, { ISimulatorConfig } from '../models/simulatorConfig';
 // import Layer, { ILayer } from '../models/layer'
@@ -128,7 +130,7 @@ const uploadByType = (type: string, id: string, newNameFile: string, res: Respon
                 });
             }
 
-            data.imageUrl = `http://localhost:3000/api/readFile/${type}/${newNameFile}`;
+            data.imageUrl = `http://${ORIGINPATH}/api/readFile/${type}/${newNameFile}`;
 
             data.save().then((dataSaved: any) => {
                 res.status(200).json({

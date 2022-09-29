@@ -6,3 +6,6 @@ yarn-error.log
 uploads
 /uploads
 dist/db/connection.js
+
+config
+/config
