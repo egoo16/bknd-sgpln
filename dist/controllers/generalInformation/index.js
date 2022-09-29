@@ -224,6 +224,16 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 ideas.push(ideaFind);
             })));
         }
+        yield ideas.sort(function (a, b) {
+            if (a.registerCode > b.registerCode) {
+                return 1;
+            }
+            if (a.registerCode < b.registerCode) {
+                return -1;
+            }
+            // a must be equal to b
+            return 0;
+        });
         res.status(201).json({
             msg: "Datos Obtenidos",
             generalInformations: ideas,

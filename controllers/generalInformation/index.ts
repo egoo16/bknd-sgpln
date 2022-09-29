@@ -243,6 +243,17 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
             )
         }
 
+        await ideas.sort(function (a, b) {
+            if (a.registerCode > b.registerCode) {
+              return 1;
+            }
+            if (a.registerCode < b.registerCode) {
+              return -1;
+            }
+            // a must be equal to b
+            return 0;
+          });
+
 
         res.status(201).json({
             msg: "Datos Obtenidos",
