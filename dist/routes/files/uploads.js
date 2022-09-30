@@ -17,10 +17,7 @@ const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const fs_1 = __importDefault(require("fs"));
 const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
 const config_1 = require("../../config/config");
-// import SimulatorConfig, { ISimulatorConfig } from '../models/simulatorConfig';
-// import Layer, { ILayer } from '../models/layer'
-// import Option, { IOption } from '../models/option'
-// import { mdAuth } from '../middleware/auth';
+const sinafip_1 = require("../../models/sinafip");
 const UPLOAD_ROUTER = (0, express_1.Router)();
 // default options
 UPLOAD_ROUTER.use((0, express_fileupload_1.default)());
@@ -28,7 +25,7 @@ UPLOAD_ROUTER.put('/:type/:id', (req, res) => {
     const type = req.params.type;
     const id = req.params.id;
     // Tipos de colecciones
-    const VALID_TYPES = ['terrain', 'projectDocument', 'tdr', 'timeline'];
+    const VALID_TYPES = ['terrain', 'projectDocument', 'tdr', 'schedule'];
     if (VALID_TYPES.indexOf(type) < 0) {
         return res.status(400).json({
             ok: false,
@@ -102,9 +99,9 @@ const uploadByType = (type, id, newNameFile, res) => {
             if (!data) {
                 return res.status(400).json({
                     ok: false,
-                    mensaje: 'The simulator configuration with the id' + id + ' does not exist',
+                    mensaje: 'Terrain with id' + id + ' does not exist',
                     errors: {
-                        message: 'There is no configuration of the simulator with that ID'
+                        message: 'There is no terrain with that ID'
                     }
                 });
             }
@@ -141,160 +138,167 @@ const uploadByType = (type, id, newNameFile, res) => {
             if (err) {
                 return res.status(500).json({
                     ok: false,
-                    mensaje: 'Error when searching for simulator configuration',
+                    mensaje: 'Error when searching for terrain',
                     errors: err
                 });
             }
         }),
-        // 'layers': () => Layer.findById(id, (err: any, layer: ILayer) => {
-        //     if (err) {
-        //         return res.status(500).json({
-        //             ok: false,
-        //             mensaje: 'Error when searching for layer',
-        //             errors: err
-        //         });
-        //     }
-        //     if (!layer) {
-        //         return res.status(400).json({
-        //             ok: false,
-        //             mensaje: 'The layer with the id' + id + ' does not exist',
-        //             errors: {
-        //                 message: 'There is no layer with this ID'
-        //             }
-        //         });
-        //     }
-        //     // Si existe un archivo almacenado anteriormente
-        //     const oldPath = './uploads/layers/' + layer.imgDefault;
-        //     if (fs.existsSync(oldPath)) {
-        //         // Borramos el archivo antiguo
-        //         fs.unlink(oldPath, err => {
-        //             if (err) {
-        //                 return res.status(500).json({
-        //                     ok: false,
-        //                     mensaje: 'Error deleting old image',
-        //                     errors: err
-        //                 });
-        //             }
-        //         });
-        //     }
-        //     layer.imgDefault = `https://backendoem.azurewebsites.net/readFile/layers/${newNameFile}`;
-        //     layer.save((err, layer) => {
-        //         if (err) {
-        //             return res.status(400).json({
-        //                 ok: false,
-        //                 mensaje: 'Error saving image',
-        //                 errors: err
-        //             });
-        //         }
-        //         res.status(200).json({
-        //             ok: true,
-        //             layer
-        //         });
-        //     });
-        // }),
-        // 'options': () => Option.findById(id, (err: any, option: IOption) => {
-        //     if (err) {
-        //         return res.status(500).json({
-        //             ok: false,
-        //             mensaje: 'Error when searching for option',
-        //             errors: err
-        //         });
-        //     }
-        //     if (!option) {
-        //         return res.status(400).json({
-        //             ok: false,
-        //             mensaje: 'The option with the id' + id + ' does not exist',
-        //             errors: {
-        //                 message: 'There is no option with this ID'
-        //             }
-        //         });
-        //     }
-        //     // Si existe un archivo almacenado anteriormente
-        //     const oldPath = './uploads/options/' + option.thumbnail;
-        //     if (fs.existsSync(oldPath)) {
-        //         // Borramos el archivo antiguo
-        //         fs.unlink(oldPath, err => {
-        //             if (err) {
-        //                 return res.status(500).json({
-        //                     ok: false,
-        //                     mensaje: 'Error deleting old image',
-        //                     errors: err
-        //                 });
-        //             }
-        //         });
-        //     }
-        //     option.thumbnail = `https://backendoem.azurewebsites.net/readFile/options/${newNameFile}`;
-        //     option.save((err, option) => {
-        //         if (err) {
-        //             return res.status(400).json({
-        //                 ok: false,
-        //                 mensaje: 'Error saving image',
-        //                 errors: err
-        //             });
-        //         }
-        //         res.status(200).json({
-        //             ok: true,
-        //             option
-        //         });
-        //     });
-        // }),
-        // 'configs': () => Option.findOne(
-        //     { "configs._id": id },
-        //     { "configs.$": true },
-        //     (err, option) => {
-        //         if (err) {
-        //             return res.status(500).json({
-        //                 ok: false,
-        //                 mensaje: 'Error when searching for configuration',
-        //                 errors: err
-        //             });
-        //         }
-        //         if (!option) {
-        //             return res.status(400).json({
-        //                 ok: false,
-        //                 mensaje: 'The configuration with the id' + id + ' does not exist',
-        //                 errors: {
-        //                     message: 'There is no configuration with this ID'
-        //                 }
-        //             });
-        //         }
-        //         // Si existe un archivo almacenado anteriormente
-        //         const oldPath = './uploads/configs/' + option.configs[0].img;
-        //         if (fs.existsSync(oldPath)) {
-        //             // Borramos el archivo antiguo
-        //             fs.unlink(oldPath, err => {
-        //                 if (err) {
-        //                     return res.status(500).json({
-        //                         ok: false,
-        //                         mensaje: 'Error deleting old image',
-        //                         errors: err
-        //                     });
-        //                 }
-        //             });
-        //         }
-        //         const IMG = `https://backendoem.azurewebsites.net/readFile/configs/${newNameFile}`;
-        //         Option.updateOne(
-        //             {
-        //                 _id: option._id,
-        //                 'configs._id': id,
-        //             },
-        //             {
-        //                 'configs.$.img': IMG,
-        //             },
-        //         ).exec((err: any, result: any) => {
-        //             if (err) {
-        //                 return res.status(400).json({
-        //                     ok: false,
-        //                     mensaje: 'Error saving image',
-        //                     errors: err
-        //                 });
-        //             }
-        //             res.status(200).json({
-        //                 ok: true,
-        //                 IMG
-        //             });
-        //         });
-        //     })
+        'projectDocument': () => sinafip_1.institution.findOne({
+            where: {
+                id
+            }
+        }).then((data) => __awaiter(void 0, void 0, void 0, function* () {
+            if (!data) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'The institution document project with id' + id + ' does not exist',
+                    errors: {
+                        message: 'There is no institution document project with that ID'
+                    }
+                });
+            }
+            // Si existe un archivo almacenado anteriormente
+            const oldPath = `./uploads/${type}/` + data.documentProject;
+            if (fs_1.default.existsSync(oldPath)) {
+                // Borramos el archivo antiguo
+                fs_1.default.unlink(oldPath, err => {
+                    if (err) {
+                        return res.status(500).json({
+                            ok: false,
+                            mensaje: 'Error deleting old image',
+                            errors: err
+                        });
+                    }
+                });
+            }
+            data.documentProject = `http://${config_1.ORIGINPATH}/api/readFile/${type}/${newNameFile}`;
+            data.save().then((dataSaved) => {
+                res.status(200).json({
+                    ok: true,
+                    dataSaved
+                });
+            }).catch((err) => {
+                if (err) {
+                    return res.status(400).json({
+                        ok: false,
+                        mensaje: 'Error saving image',
+                        errors: err
+                    });
+                }
+            });
+        })).catch((err) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error when searching for institution document project',
+                    errors: err
+                });
+            }
+        }),
+        'tdr': () => sinafip_1.requiredDocument.findOne({
+            where: {
+                id
+            }
+        }).then((data) => __awaiter(void 0, void 0, void 0, function* () {
+            if (!data) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'The required document TDR with id' + id + ' does not exist',
+                    errors: {
+                        message: 'There is no required document TDR with that ID'
+                    }
+                });
+            }
+            // Si existe un archivo almacenado anteriormente
+            const oldPath = `./uploads/${type}/` + data.tdr;
+            if (fs_1.default.existsSync(oldPath)) {
+                // Borramos el archivo antiguo
+                fs_1.default.unlink(oldPath, err => {
+                    if (err) {
+                        return res.status(500).json({
+                            ok: false,
+                            mensaje: 'Error deleting old image',
+                            errors: err
+                        });
+                    }
+                });
+            }
+            data.tdr = `http://${config_1.ORIGINPATH}/api/readFile/${type}/${newNameFile}`;
+            data.save().then((dataSaved) => {
+                res.status(200).json({
+                    ok: true,
+                    dataSaved
+                });
+            }).catch((err) => {
+                if (err) {
+                    return res.status(400).json({
+                        ok: false,
+                        mensaje: 'Error saving image',
+                        errors: err
+                    });
+                }
+            });
+        })).catch((err) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error when searching for required document TDR',
+                    errors: err
+                });
+            }
+        }),
+        'schedule': () => sinafip_1.requiredDocument.findOne({
+            where: {
+                id
+            }
+        }).then((data) => __awaiter(void 0, void 0, void 0, function* () {
+            if (!data) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'The required document schedule with id' + id + ' does not exist',
+                    errors: {
+                        message: 'There is no required document schedule with that ID'
+                    }
+                });
+            }
+            // Si existe un archivo almacenado anteriormente
+            const oldPath = `./uploads/${type}/` + data.scheduleActiv;
+            if (fs_1.default.existsSync(oldPath)) {
+                // Borramos el archivo antiguo
+                fs_1.default.unlink(oldPath, err => {
+                    if (err) {
+                        return res.status(500).json({
+                            ok: false,
+                            mensaje: 'Error deleting old image',
+                            errors: err
+                        });
+                    }
+                });
+            }
+            data.scheduleActiv = `http://${config_1.ORIGINPATH}/api/readFile/${type}/${newNameFile}`;
+            data.save().then((dataSaved) => {
+                res.status(200).json({
+                    ok: true,
+                    dataSaved
+                });
+            }).catch((err) => {
+                if (err) {
+                    return res.status(400).json({
+                        ok: false,
+                        mensaje: 'Error saving image',
+                        errors: err
+                    });
+                }
+            });
+        })).catch((err) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error when searching for required document scheduleActiv',
+                    errors: err
+                });
+            }
+        }),
     };
     SWITCH_TYPES[type]();
 };
