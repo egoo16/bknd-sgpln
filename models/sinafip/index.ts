@@ -5,3 +5,5 @@ export * from './study-description.entity';
 export * from './investment-project.entity';
 export * from './institution.entity';
 export * from './snp.entity';
+export * from './activities.entity';
+export * from './stimated-budget.entity';

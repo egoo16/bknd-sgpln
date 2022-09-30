@@ -1,7 +1,7 @@
 import db from "../../db/connection";
 import Sequelize from "sequelize-oracle";
 
-export const  institution = db.define('institution',{
+export const  institutionEntity = db.define('institution',{
 
     id :{
         type:Sequelize.UUID,
@@ -13,6 +13,9 @@ export const  institution = db.define('institution',{
         type:Sequelize.STRING,
     },
     functionProjName: {
+        type:Sequelize.STRING
+    },
+    generalStudy: {
         type:Sequelize.STRING
     },
     dcmntPreinvest: {

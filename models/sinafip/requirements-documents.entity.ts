@@ -1,7 +1,8 @@
 import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
+import { stimatedBudgetEntity } from "./stimated-budget.entity";
 
-export const  requiredDocument = db.define('requiredDocument',{
+export const  requiredDocumentEntity = db.define('requiredDocument',{
 
     id :{
         type:Sequelize.UUID,
@@ -15,16 +16,12 @@ export const  requiredDocument = db.define('requiredDocument',{
     scheduleActiv: {
         type:Sequelize.STRING
     },
-    advser: {
-        type:Sequelize.STRING
-    },
-    stimatedBudget: {
-        type:Sequelize.STRING
-    },
 
     requestId:{
         type:Sequelize.UUID
     }
     
 
-})
+});
+
+requiredDocumentEntity.hasOne(stimatedBudgetEntity ,{foreingKey:'docId'});

@@ -1,7 +1,7 @@
 import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
 
-export const  investmentProject = db.define('investmentProjects',{
+export const  investmentProjectEntity = db.define('investmentProjects',{
 
     id :{
         type:Sequelize.UUID,

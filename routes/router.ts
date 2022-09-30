@@ -13,11 +13,11 @@ const router = Router();
 const prefix= 'api'
 // Rutas
 router.use(`/${prefix}/sinafip/`,sinafipRouter)
-router.use("/api/integrations/", integrations);
-router.use("/api/alternative/", ideaAlternative);
-router.use("/api/general/", generalRouter);
-router.use("/api/login/", loginRouter);
-router.use("/api/usuarios/", usuarioRouter);
-router.use("/", appRouter);
+router.use(`/${prefix}/integrations/`, integrations);
+router.use(`/${prefix}/alternative/`, ideaAlternative);
+router.use(`/${prefix}/general/`, generalRouter);
+router.use(`/${prefix}/login/`, loginRouter);
+router.use(`/${prefix}/usuarios/`, usuarioRouter);
+router.use(`/`, appRouter);
 
 export default router;

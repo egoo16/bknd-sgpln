@@ -1,12 +1,12 @@
 import { Router } from 'express'
-import { createRequest,deleteOneRequest,getAllRequest, getOneRequest } from '../../controllers/sinafip/request.controller';
+import { createRequestSinafip ,getAllRequest,getOneRequest} from '../../controllers/sinafip/sinafip.controller';
 
 
 const sinafipRouter = Router();
 
-sinafipRouter.post('/request/create',createRequest)
+sinafipRouter.post('/request/new',createRequestSinafip)
 sinafipRouter.get('/request/get-all',getAllRequest)
 sinafipRouter.get('/request/:id',getOneRequest)
-sinafipRouter.delete('/request/delete/:id',deleteOneRequest)
+
 
 export default sinafipRouter
