@@ -71,4 +71,3 @@ const deleteUsuario = (req, res) => {
     });
 };
 exports.deleteUsuario = deleteUsuario;
-//# sourceMappingURL=usuarios.js.map

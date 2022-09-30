@@ -20,4 +20,3 @@ const possibleAlternatives = connection_1.default.define("Alternatives", {
     freezeTableName: true,
 });
 exports.default = possibleAlternatives;
-//# sourceMappingURL=possibleAlternatives.js.map

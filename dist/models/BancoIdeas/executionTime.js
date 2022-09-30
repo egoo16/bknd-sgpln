@@ -26,4 +26,3 @@ const executionTime = connection_1.default.define("execTime", {
     freezeTableName: true,
 });
 exports.default = executionTime;
-//# sourceMappingURL=executionTime.js.map

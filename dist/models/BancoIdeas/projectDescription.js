@@ -32,4 +32,3 @@ projectDescription.hasOne(executionTime_1.default, {
     foreignKey: "projDescId",
 });
 exports.default = projectDescription;
-//# sourceMappingURL=projectDescription.js.map

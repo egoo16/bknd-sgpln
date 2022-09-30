@@ -34,4 +34,3 @@ const qualification = connection_1.default.define("qualification", {
     freezeTableName: true,
 });
 exports.default = qualification;
-//# sourceMappingURL=qualification.js.map

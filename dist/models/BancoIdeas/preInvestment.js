@@ -27,4 +27,3 @@ const preInvestment = connection_1.default.define("preInvestment", {
     freezeTableName: true,
 });
 exports.default = preInvestment;
-//# sourceMappingURL=preInvestment.js.map

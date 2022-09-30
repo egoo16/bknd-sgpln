@@ -23,4 +23,3 @@ const responsibleEntity = connection_1.default.define("resEntity", {
     freezeTableName: true,
 });
 exports.default = responsibleEntity;
-//# sourceMappingURL=responsibleEntity.js.map

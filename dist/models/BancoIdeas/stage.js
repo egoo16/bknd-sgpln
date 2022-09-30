@@ -19,4 +19,3 @@ const stage = connection_1.default.define("stage", {
     freezeTableName: true,
 });
 exports.default = stage;
-//# sourceMappingURL=stage.js.map

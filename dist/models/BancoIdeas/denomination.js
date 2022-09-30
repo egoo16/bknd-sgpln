@@ -19,4 +19,3 @@ const denomination = connection_1.default.define("denmtion", {
     freezeTableName: true,
 });
 exports.default = denomination;
-//# sourceMappingURL=denomination.js.map

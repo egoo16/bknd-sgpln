@@ -44,4 +44,3 @@ const dataGeo = connection_1.default.define("dataGeo", {
     freezeTableName: true,
 });
 exports.default = dataGeo;
-//# sourceMappingURL=datageo.model.js.map

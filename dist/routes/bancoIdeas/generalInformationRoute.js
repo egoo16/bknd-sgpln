@@ -8,4 +8,3 @@ generalRouter.get("/information", generalInformation_1.getGeneralInformation);
 generalRouter.get("/send-idea/:id", generalInformation_1.sendIdea);
 generalRouter.get("/return-idea/:id", generalInformation_1.returnIdea);
 exports.default = generalRouter;
-//# sourceMappingURL=generalInformationRoute.js.map

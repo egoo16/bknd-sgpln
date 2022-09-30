@@ -19,4 +19,3 @@ const complexity = connection_1.default.define("complexity", {
     freezeTableName: true,
 });
 exports.default = complexity;
-//# sourceMappingURL=complexity.js.map
