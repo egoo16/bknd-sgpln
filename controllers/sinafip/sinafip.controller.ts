@@ -8,7 +8,7 @@ import {
     stimatedBudgetEntity,
     activitiesEntity
 } from '../../models/sinafip';
-import {request, Request, Response} from 'express';
+import {Request, Response} from 'express';
 import models from "../../db/connection";
 
 
