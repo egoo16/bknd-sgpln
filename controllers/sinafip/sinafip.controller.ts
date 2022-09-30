@@ -79,11 +79,36 @@ export async function getAllRequest(req: Request, res: Response) {
     try {
         const requests = await requestEntity.findAll();
 
+        let stimatedBudget = null;
+        let requirementsDocuments: any = null;
+
         const allRequest = await Promise.all(requests.map(async (request: any) => {
             const institution = await institutionEntity.findOne({ where: { requestId: request.id } });
             const investment = await investmentProjectEntity.findOne({ where: { requestId: request.id } });
             const studyDescription = await studyDescriptionEntity.findOne({ where: { requestId: request.id } });
             const delimit = await delimitEntity.findOne({ where: { requestId: request.id } });
+            const requirementsDocumentsGet = await requiredDocumentEntity.findOne({ where: { requestId: request.id } });
+
+            if (requirementsDocumentsGet) {
+
+                const stimatedBudgetGet = await stimatedBudgetEntity.findOne({ where: { docId: requirementsDocumentsGet.id }, });
+                
+                const getActivities = await activitiesEntity.findAll({ where: { stimatedId: stimatedBudgetGet.id } })
+                let stimatedBudget = {
+                    id: stimatedBudgetGet.id,
+                    totalStimated: stimatedBudgetGet.totalStimated,
+                    docId: stimatedBudgetGet.docId,
+                    activities: getActivities
+                }
+
+                requirementsDocuments = {
+                    id: requirementsDocumentsGet.id,
+                    tdr: requirementsDocumentsGet.tdr,
+                    scheduleActiv: requirementsDocumentsGet.scheduleActiv,
+                    requestId: requirementsDocumentsGet.requestId,
+                    stimatedBudget
+                }
+            }
 
             let reqStruct = {
                 id: request.id,
@@ -99,7 +124,8 @@ export async function getAllRequest(req: Request, res: Response) {
                 institution,
                 investment,
                 studyDescription,
-                delimit
+                delimit,
+                requirementsDocuments
             };
         }));
 

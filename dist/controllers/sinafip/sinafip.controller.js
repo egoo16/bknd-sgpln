@@ -65,11 +65,31 @@ function getAllRequest(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const requests = yield sinafip_1.requestEntity.findAll();
+            let stimatedBudget = null;
+            let requirementsDocuments = null;
             const allRequest = yield Promise.all(requests.map((request) => __awaiter(this, void 0, void 0, function* () {
                 const institution = yield sinafip_1.institutionEntity.findOne({ where: { requestId: request.id } });
                 const investment = yield sinafip_1.investmentProjectEntity.findOne({ where: { requestId: request.id } });
                 const studyDescription = yield sinafip_1.studyDescriptionEntity.findOne({ where: { requestId: request.id } });
                 const delimit = yield sinafip_1.delimitEntity.findOne({ where: { requestId: request.id } });
+                const requirementsDocumentsGet = yield sinafip_1.requiredDocumentEntity.findOne({ where: { requestId: request.id } });
+                if (requirementsDocumentsGet) {
+                    const stimatedBudgetGet = yield sinafip_1.stimatedBudgetEntity.findOne({ where: { docId: requirementsDocumentsGet.id }, });
+                    const getActivities = yield sinafip_1.activitiesEntity.findAll({ where: { stimatedId: stimatedBudgetGet.id } });
+                    let stimatedBudget = {
+                        id: stimatedBudgetGet.id,
+                        totalStimated: stimatedBudgetGet.totalStimated,
+                        docId: stimatedBudgetGet.docId,
+                        activities: getActivities
+                    };
+                    requirementsDocuments = {
+                        id: requirementsDocumentsGet.id,
+                        tdr: requirementsDocumentsGet.tdr,
+                        scheduleActiv: requirementsDocumentsGet.scheduleActiv,
+                        requestId: requirementsDocumentsGet.requestId,
+                        stimatedBudget
+                    };
+                }
                 let reqStruct = {
                     id: request.id,
                     result: request.result,
@@ -82,7 +102,8 @@ function getAllRequest(req, res) {
                 return Object.assign(Object.assign({}, reqStruct), { institution,
                     investment,
                     studyDescription,
-                    delimit });
+                    delimit,
+                    requirementsDocuments });
             })));
             return res.status(201).send({
                 msg: 'Datos Obtenidos',
