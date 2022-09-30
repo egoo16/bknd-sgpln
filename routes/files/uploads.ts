@@ -3,7 +3,7 @@ import fileUpload from 'express-fileupload';
 import fs from 'fs';
 import dataGeo from '../../models/BancoIdeas/datageo.model';
 import { ORIGINPATH } from "../../config/config";
-import { institution, requiredDocument } from '../../models/sinafip';
+import { institutionEntity, requiredDocumentEntity } from '../../models/sinafip';
 
 
 const UPLOAD_ROUTER = Router();
@@ -152,7 +152,7 @@ const uploadByType = (type: string, id: string, newNameFile: string, res: Respon
                 });
             }
         }),
-        'projectDocument': () => institution.findOne({
+        'projectDocument': () => institutionEntity.findOne({
             where: {
                 id
             }
@@ -210,7 +210,7 @@ const uploadByType = (type: string, id: string, newNameFile: string, res: Respon
                 });
             }
         }),
-        'tdr': () => requiredDocument.findOne({
+        'tdr': () => requiredDocumentEntity.findOne({
             where: {
                 id
             }
@@ -268,7 +268,7 @@ const uploadByType = (type: string, id: string, newNameFile: string, res: Respon
                 });
             }
         }),
-        'schedule': () => requiredDocument.findOne({
+        'schedule': () => requiredDocumentEntity.findOne({
             where: {
                 id
             }

@@ -3,29 +3,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.studyDescriptionEntity = void 0;
+exports.activitiesEntity = void 0;
 const connection_1 = __importDefault(require("../../db/connection"));
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
-exports.studyDescriptionEntity = connection_1.default.define('studyDescription', {
+exports.activitiesEntity = connection_1.default.define('activities', {
     id: {
         type: sequelize_oracle_1.default.UUID,
         primaryKey: true,
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4
     },
-    nameStudy: {
-        type: sequelize_oracle_1.default.STRING,
-    },
-    objetiveGeneral: {
+    activity: {
         type: sequelize_oracle_1.default.STRING
     },
-    costEstimted: {
+    unitMeasure: {
         type: sequelize_oracle_1.default.STRING
     },
-    modalityFinancing: {
+    cant: {
         type: sequelize_oracle_1.default.STRING
     },
-    requestId: {
+    priceU: {
+        type: sequelize_oracle_1.default.STRING
+    },
+    subTotal: {
+        type: sequelize_oracle_1.default.STRING
+    },
+    stimatedId: {
         type: sequelize_oracle_1.default.UUID
     }
 });

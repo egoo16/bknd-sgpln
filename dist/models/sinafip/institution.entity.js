@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.institution = void 0;
+exports.institutionEntity = void 0;
 const connection_1 = __importDefault(require("../../db/connection"));
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
-exports.institution = connection_1.default.define('institution', {
+exports.institutionEntity = connection_1.default.define('institution', {
     id: {
         type: sequelize_oracle_1.default.UUID,
         primaryKey: true,
@@ -17,6 +17,9 @@ exports.institution = connection_1.default.define('institution', {
         type: sequelize_oracle_1.default.STRING,
     },
     functionProjName: {
+        type: sequelize_oracle_1.default.STRING
+    },
+    generalStudy: {
         type: sequelize_oracle_1.default.STRING
     },
     dcmntPreinvest: {

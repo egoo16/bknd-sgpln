@@ -1,13 +1,13 @@
 import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
-import { delimit } from "./delimit.entity";
-import { institution } from "./institution.entity";
-import { investmentProject } from "./investment-project.entity";
-import { requiredDocument } from "./requirements-documents.entity";
+import { delimitEntity } from "./delimit.entity";
+import { institutionEntity } from "./institution.entity";
+import { investmentProjectEntity } from "./investment-project.entity";
+import { requiredDocumentEntity } from "./requirements-documents.entity";
 import { snp } from "./snp.entity";
-import { studyDescription } from "./study-description.entity";
+import { studyDescriptionEntity } from "./study-description.entity";
  
-export const  request = db.define('request',{
+export const  requestEntity = db.define('request',{
 
         id :{
             type:Sequelize.UUID,
@@ -29,14 +29,14 @@ export const  request = db.define('request',{
     }
 );
 
-request.hasOne(requiredDocument,{ foreingKey:'requestId'})
+requestEntity.hasOne(requiredDocumentEntity,{ foreingKey:'requestId'})
 
-request.hasOne(delimit,{ foreingKey:'requestId'})
+requestEntity.hasOne(delimitEntity,{ foreingKey:'requestId'})
 
-request.hasOne(investmentProject,{ foreingKey:'requestId'})
+requestEntity.hasOne(investmentProjectEntity ,{ foreingKey:'requestId'})
 
-request.hasOne(studyDescription,{ foreingKey:'requestId'})
+requestEntity.hasOne(studyDescriptionEntity,{ foreingKey:'requestId'})
 
-request.hasOne(institution,{ foreingKey:'requestId'})
+requestEntity.hasOne(institutionEntity,{ foreingKey:'requestId'})
 
-request.hasOne(snp,{ foreingKey:'requestId'})
+requestEntity.hasOne(snp,{ foreingKey:'requestId'})

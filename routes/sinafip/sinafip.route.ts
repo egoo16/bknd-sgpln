@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { getAllEntities, getAllgeneralStudies, getAllmodalityFinancing, getAllpreinvDocument, getAllProjectFunction } from '../../controllers/sinafip/list.controller';
-import { createRequest, deleteOneRequest, getAllRequest, getOneRequest } from '../../controllers/sinafip/request.controller';
+import {  getAllRequest, getOneRequest, createRequestSinafip } from '../../controllers/sinafip/sinafip.controller';
 
 
 const sinafipRouter = Router();
@@ -13,9 +13,12 @@ sinafipRouter.get('/preinv-document', getAllpreinvDocument)
 sinafipRouter.get('/modality-financing', getAllmodalityFinancing)
 
 
-sinafipRouter.post('/request/create', createRequest)
+sinafipRouter.post('/request/new',createRequestSinafip)
 sinafipRouter.get('/request/get-all', getAllRequest)
 sinafipRouter.get('/request/:id', getOneRequest)
-sinafipRouter.delete('/request/delete/:id', deleteOneRequest)
+// sinafipRouter.post('/request/create', createRequest)
+// sinafipRouter.delete('/request/delete/:id', deleteOneRequest)
+
+
 
 export default sinafipRouter

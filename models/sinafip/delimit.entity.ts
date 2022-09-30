@@ -1,7 +1,7 @@
 import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
 
-export const  delimit = db.define('delimit',{
+export const  delimitEntity = db.define('delimit',{
 
     id :{
         type:Sequelize.UUID,

@@ -143,7 +143,7 @@ const uploadByType = (type, id, newNameFile, res) => {
                 });
             }
         }),
-        'projectDocument': () => sinafip_1.institution.findOne({
+        'projectDocument': () => sinafip_1.institutionEntity.findOne({
             where: {
                 id
             }
@@ -195,7 +195,7 @@ const uploadByType = (type, id, newNameFile, res) => {
                 });
             }
         }),
-        'tdr': () => sinafip_1.requiredDocument.findOne({
+        'tdr': () => sinafip_1.requiredDocumentEntity.findOne({
             where: {
                 id
             }
@@ -247,7 +247,7 @@ const uploadByType = (type, id, newNameFile, res) => {
                 });
             }
         }),
-        'schedule': () => sinafip_1.requiredDocument.findOne({
+        'schedule': () => sinafip_1.requiredDocumentEntity.findOne({
             where: {
                 id
             }

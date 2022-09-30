@@ -21,3 +21,5 @@ __exportStar(require("./study-description.entity"), exports);
 __exportStar(require("./investment-project.entity"), exports);
 __exportStar(require("./institution.entity"), exports);
 __exportStar(require("./snp.entity"), exports);
+__exportStar(require("./activities.entity"), exports);
+__exportStar(require("./stimated-budget.entity"), exports);

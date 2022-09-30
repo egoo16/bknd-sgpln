@@ -1,7 +1,7 @@
 import db from "../../db/connection";
 import Sequelize from "sequelize-oracle";
 
-export const  studyDescriptionEntity = db.define('studyDescription',{
+export const  activitiesEntity = db.define('activities',{
 
     id :{
         type:Sequelize.UUID,
@@ -9,22 +9,26 @@ export const  studyDescriptionEntity = db.define('studyDescription',{
         allowNull: false,
         defaultValue: Sequelize.UUIDV4
     },
-    nameStudy: {
-        type:Sequelize.STRING,
-    },
-    objetiveGeneral: {
-        type:Sequelize.STRING
-    },
-    costEstimted: {
-        type:Sequelize.STRING
-    },
     
-    modalityFinancing: {
+    activity:{
         type:Sequelize.STRING
     },
-    requestId:{
+    unitMeasure:{
+        type:Sequelize.STRING
+    },
+    cant:{
+        type:Sequelize.STRING
+    },
+    priceU:{
+        type:Sequelize.STRING
+    },
+    subTotal:{
+        type:Sequelize.STRING
+    },
+    stimatedId:{
         type:Sequelize.UUID
     }
+
     
 
 })
