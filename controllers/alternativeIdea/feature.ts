@@ -25,17 +25,35 @@ export async function FgetPreinversion(idAlternativa: any) {
         let rangoInversion = 0
         let resRangoInversion = ''
         //RANGO DE INVERSIÓN
-        if (costo <= 900000) {
-            rangoInversion = 6
-            resRangoInversion = '<=900,000'
-        } else if (costo >= 900001 && costo <= 10000000) {
-            rangoInversion = 8
-            resRangoInversion = '>900,001<=10,000,000'
-        } else if (costo >= 10000001 && costo <= 50000000) {
+        if (costo <= 300000) {
+            rangoInversion = 2
+            resRangoInversion = '<=300,000'
+        }else if (costo >= 300001 && costo <= 500000) {
+            rangoInversion = 5
+            resRangoInversion = '>300,001<=500,000'
+        }else if (costo >= 500001 && costo <= 699999) {
+            rangoInversion = 7
+            resRangoInversion = '>500,001<=699,999'
+        } else if (costo >= 700000 && costo <= 900000) {
             rangoInversion = 10
-            resRangoInversion = '>10,000,001<=50,000,000'
+            resRangoInversion = '>700,000<=900,000'
+        }else if (costo >= 900001 && costo <= 10000000) {
+            rangoInversion = 12
+            resRangoInversion = '>900,001<=10,000,000'
+        }else if (costo >= 10000001 && costo <= 19000000) {
+            rangoInversion = 15
+            resRangoInversion = '>10,000,001<=19,000,000'
+        }else if (costo >= 19000001 && costo <= 30000000) {
+            rangoInversion = 18
+            resRangoInversion = '>19,000,001<=30,000,000'
+        }else if (costo >= 30000001 && costo <= 40000000) {
+            rangoInversion = 22
+            resRangoInversion = '>30,000,001<=40,000,000'
+        }else if (costo >= 40000001 && costo <= 50000000) {
+            rangoInversion = 25
+            resRangoInversion = '>40,000,001<=50,000,000'
         } else if (costo >= 50000001) {
-            rangoInversion = 16
+            rangoInversion = 40
             resRangoInversion = '>=50,000,001'
         }
         //ESTIMACIÓN BENEFICIARIOS 
@@ -43,38 +61,39 @@ export async function FgetPreinversion(idAlternativa: any) {
         let estBenefits = 0
         let resEstBenefits = ''
         if (benefits <= 1000) {
-            estBenefits = 4
+            estBenefits = 6
             resEstBenefits = '1 <= 1,000'
         } else if (benefits >= 1001 && benefits <= 10000) {
-            estBenefits = 6
+            estBenefits = 12
             resEstBenefits = '>1,001 <= 10,000'
         } else if (benefits >= 10001 && benefits <= 20000) {
-            estBenefits = 8
+            estBenefits = 18
             resEstBenefits = '>10,001 <= 20,000'
-        } else if (benefits >= 20001) {
-            estBenefits = 12
-            resEstBenefits = '>20,001'
+        }else if (benefits >= 20001 && benefits <= 50000) {
+            estBenefits = 24
+            resEstBenefits = '>20,001 <= 50,000'
+        } else if (benefits >= 50001) {
+            estBenefits = 30
+            resEstBenefits = '>50,001'
         }
         //COMPLEJIDAD
         let complejidad = proDes.complexity
         let complejidadTotal = 0
         if (complejidad == 'Alta') {
-            complejidadTotal = 12
+            complejidadTotal = 30
         } else if (complejidad == 'Media') {
-            complejidadTotal = 11
+            complejidadTotal = 20
         } else if (complejidad == 'Baja') {
-            complejidadTotal = 7
+            complejidadTotal = 10
         }
 
-
         let totalSuma = (rangoInversion + estBenefits + complejidadTotal)
-        let total = (((rangoInversion + estBenefits + complejidadTotal) * 100) / 40)
         let etapa = ''
-        if (total <= 19) {
+        if (totalSuma <= 40) {
             etapa = 'Perfil'
-        } else if (total >= 20 && total <= 35) {
+        } else if (totalSuma >= 41 && totalSuma <= 69) {
             etapa = 'Prefactibilidad'
-        } else if (total >= 36 && total <= 100) {
+        } else if (totalSuma >= 70 && totalSuma <= 100) {
             etapa = 'Factibilidad'
         }
 
@@ -93,7 +112,7 @@ export async function FgetPreinversion(idAlternativa: any) {
                 resultado: complejidad
             },
             etapa: {
-                valor: total,
+                valor: totalSuma,
                 resultado: etapa
             }
         }
