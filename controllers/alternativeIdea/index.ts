@@ -168,12 +168,12 @@ export const getPertinencia = async (req: Request, res: Response) => {
         });
 
 
-        let geograficArea = await geographicArea.findOne({
-            where: {
-                AlterId: alternative.codigo
-            },
-            attributes: ['availableTerrain', 'oneAvailableTerrain', 'investPurchase', 'registerGovernmentTerrain', 'statusDescribe'],
-        });
+        // let geograficArea = await geographicArea.findOne({
+        //     where: {
+        //         AlterId: alternative.codigo
+        //     },
+        //     attributes: ['availableTerrain', 'oneAvailableTerrain', 'investPurchase', 'registerGovernmentTerrain', 'statusDescribe'],
+        // });
 
         let projectDes = await projectDescription.findOne({
             where: {
@@ -210,16 +210,18 @@ export const getPertinencia = async (req: Request, res: Response) => {
 
         };
 
-        let criterio4 = {
-            availableTerrain: geograficArea.availableTerrain,
-            oneAvailableTerrain: geograficArea.oneAvailableTerrain,
-            investPurchase: geograficArea.investPurchase,
-        };
+        //TODO: Agregar Criterios
 
-        let criterio5 = {
-            registerGovernmentTerrain: geograficArea.registerGovernmentTerrain,
-            statusDescribe: geograficArea.statusDescribe,
-        };
+        // let criterio4 = {
+        //     availableTerrain: geograficArea.availableTerrain,
+        //     oneAvailableTerrain: geograficArea.oneAvailableTerrain,
+        //     investPurchase: geograficArea.investPurchase,
+        // };
+
+        // let criterio5 = {
+        //     registerGovernmentTerrain: geograficArea.registerGovernmentTerrain,
+        //     statusDescribe: geograficArea.statusDescribe,
+        // };
 
         let criterio6 = {
             projectType: projectDes.projectType,
@@ -230,7 +232,9 @@ export const getPertinencia = async (req: Request, res: Response) => {
         };
 
         let criterios = {
-            criterio1, criterio2, criterio3, criterio4, criterio5, criterio6
+            // TODO: Agregar Criterios 4 y 5
+            // criterio1, criterio2, criterio3, criterio4, criterio5, criterio6
+            criterio1, criterio2, criterio3, criterio6
         }
 
         res.status(200).json({

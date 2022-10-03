@@ -17,7 +17,6 @@ const connection_1 = __importDefault(require("../../db/connection"));
 const feature_1 = require("./feature");
 const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
 const populationDelimitation_1 = __importDefault(require("../../models/BancoIdeas/populationDelimitation"));
-const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geographicArea"));
 const projectDescription_1 = __importDefault(require("../../models/BancoIdeas/projectDescription"));
 const referencePopulation_1 = __importDefault(require("../../models/BancoIdeas/referencePopulation"));
 const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomination"));
@@ -170,12 +169,12 @@ const getPertinencia = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 },
             ]
         });
-        let geograficArea = yield geographicArea_1.default.findOne({
-            where: {
-                AlterId: alternative.codigo
-            },
-            attributes: ['availableTerrain', 'oneAvailableTerrain', 'investPurchase', 'registerGovernmentTerrain', 'statusDescribe'],
-        });
+        // let geograficArea = await geographicArea.findOne({
+        //     where: {
+        //         AlterId: alternative.codigo
+        //     },
+        //     attributes: ['availableTerrain', 'oneAvailableTerrain', 'investPurchase', 'registerGovernmentTerrain', 'statusDescribe'],
+        // });
         let projectDes = yield projectDescription_1.default.findOne({
             where: {
                 AlterId: alternative.codigo
@@ -207,15 +206,16 @@ const getPertinencia = (req, res) => __awaiter(void 0, void 0, void 0, function*
             referencePopulation: population.refPop.name,
             denomination: population.denmtion.name,
         };
-        let criterio4 = {
-            availableTerrain: geograficArea.availableTerrain,
-            oneAvailableTerrain: geograficArea.oneAvailableTerrain,
-            investPurchase: geograficArea.investPurchase,
-        };
-        let criterio5 = {
-            registerGovernmentTerrain: geograficArea.registerGovernmentTerrain,
-            statusDescribe: geograficArea.statusDescribe,
-        };
+        //TODO: Agregar Criterios
+        // let criterio4 = {
+        //     availableTerrain: geograficArea.availableTerrain,
+        //     oneAvailableTerrain: geograficArea.oneAvailableTerrain,
+        //     investPurchase: geograficArea.investPurchase,
+        // };
+        // let criterio5 = {
+        //     registerGovernmentTerrain: geograficArea.registerGovernmentTerrain,
+        //     statusDescribe: geograficArea.statusDescribe,
+        // };
         let criterio6 = {
             projectType: projectDes.projectType,
             formulationProcess: projectDes.formulationProcess,
@@ -223,7 +223,9 @@ const getPertinencia = (req, res) => __awaiter(void 0, void 0, void 0, function*
             complexity: projectDes.complexity,
         };
         let criterios = {
-            criterio1, criterio2, criterio3, criterio4, criterio5, criterio6
+            // TODO: Agregar Criterios 4 y 5
+            // criterio1, criterio2, criterio3, criterio4, criterio5, criterio6
+            criterio1, criterio2, criterio3, criterio6
         };
         res.status(200).json({
             msg: "Datos Obtenidos",
