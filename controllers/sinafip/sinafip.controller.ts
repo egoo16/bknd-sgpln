@@ -53,7 +53,7 @@ export async function createRequestSinafip(req: Request, res: Response) {
                 investment: investmentCreated,
                 studyDescription: studyDescriptionCreated,
                 delimit: delimitCreated,
-                requiredDocuments: {
+                requirementsDocuments: {
                     id: requiredDocumentCreated.id,
                     stimatedBudget: {
                         id: stimatedBugdetCreated.id,

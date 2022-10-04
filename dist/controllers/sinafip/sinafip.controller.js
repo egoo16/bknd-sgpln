@@ -42,7 +42,7 @@ function createRequestSinafip(req, res) {
                 created: requestCreated.created,
             };
             const response = {
-                request: Object.assign(Object.assign({}, reqStruct), { institution: institutionCreated, investment: investmentCreated, studyDescription: studyDescriptionCreated, delimit: delimitCreated, requiredDocuments: {
+                request: Object.assign(Object.assign({}, reqStruct), { institution: institutionCreated, investment: investmentCreated, studyDescription: studyDescriptionCreated, delimit: delimitCreated, requirementsDocuments: {
                         id: requiredDocumentCreated.id,
                         stimatedBudget: {
                             id: stimatedBugdetCreated.id,
