@@ -16,7 +16,8 @@ function createRequestSinafip(req, res) {
         // let transaction = await models.transaction()
         try {
             let allActivities = [];
-            const { status, author, institution, investment, studyDescription, delimit, requirementsDocuments } = req.body;
+            let { status, author, institution, investment, studyDescription, delimit, requirementsDocuments } = req.body;
+            status = 'CREADA';
             const { totalStimated, activities } = requirementsDocuments.stimatedBudget;
             const requestCreated = yield sinafip_1.requestEntity.create({ status, author });
             const institutionCreated = yield sinafip_1.institutionEntity.create(Object.assign(Object.assign({}, institution), { requestId: requestCreated.id }));

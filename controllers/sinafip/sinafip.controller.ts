@@ -17,7 +17,8 @@ export async function createRequestSinafip(req: Request, res: Response) {
     // let transaction = await models.transaction()
     try {
         let allActivities: any = []
-        const { status, author, institution, investment, studyDescription, delimit, requirementsDocuments } = req.body;
+        let { status, author, institution, investment, studyDescription, delimit, requirementsDocuments } = req.body;
+        status = 'CREADA';
         const { totalStimated, activities } = requirementsDocuments.stimatedBudget
         const requestCreated = await requestEntity.create({ status, author });
         const institutionCreated = await institutionEntity.create({ ...institution, requestId: requestCreated.id });
