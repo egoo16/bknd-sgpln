@@ -1,3 +1,4 @@
+import { entity } from './../../models/sinafip/entity.entity';
 import {
     requestEntity,
     institutionEntity,
@@ -186,5 +187,56 @@ export async function getOneRequest(req: Request, res: Response) {
 
     } catch (error: any) {
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
+    }
+}
+export async function updateState(req: Request, res: Response) {
+    try {
+        console.log('HOLA', req);
+        let statusOptions=['reception','analysis','denied'];
+        let idSolicitud = req.params.id;
+        let banderaSolicitud= req.params.status;
+        if (idSolicitud) {
+            let getSolicitud = await requestEntity.findOne({
+                where: {
+                    id: idSolicitud
+                }
+            });
+            if (getSolicitud) {
+                if (banderaSolicitud) {
+                    let statusFount = statusOptions.find((e: any) => banderaSolicitud == e);
+                    if (statusFount) {
+                        if (banderaSolicitud == 'reception') {
+                            getSolicitud.status = 'En Recepción';
+                        }
+                        if (banderaSolicitud == 'analysis') {
+                            getSolicitud.status = 'En Análisis';
+                        }
+                        if (banderaSolicitud == 'denied') {
+                            getSolicitud.status = 'Rechazada';
+                        }
+                        getSolicitud.save();
+                        res.status(200).send({
+                            solicitud: getSolicitud
+                        });
+                    } else {
+                        res.status(404).send({
+                            msj: 'El estado que se envío no pertenece a las opciones validas: ' + banderaSolicitud
+                        });
+                    }
+                }                
+            } else {
+                res.status(500).send({
+                    msj: 'No se encontro la solicitud con ID: ' + idSolicitud
+                });
+            }
+        } else {
+            res.status(400).send({
+                msj: 'Es necesario enviar un ID'
+            });
+        }
+
+
+    } catch (error: any) {
+        return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
     }
 }

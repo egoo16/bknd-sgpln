@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOneRequest = exports.getAllRequest = exports.createRequestSinafip = void 0;
+exports.updateState = exports.getOneRequest = exports.getAllRequest = exports.createRequestSinafip = void 0;
 const sinafip_1 = require("../../models/sinafip");
 function createRequestSinafip(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -159,3 +159,59 @@ function getOneRequest(req, res) {
     });
 }
 exports.getOneRequest = getOneRequest;
+function updateState(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            console.log('HOLA', req);
+            let statusOptions = ['reception', 'analysis', 'denied'];
+            let idSolicitud = req.params.id;
+            let banderaSolicitud = req.params.status;
+            if (idSolicitud) {
+                let getSolicitud = yield sinafip_1.requestEntity.findOne({
+                    where: {
+                        id: idSolicitud
+                    }
+                });
+                if (getSolicitud) {
+                    if (banderaSolicitud) {
+                        let statusFount = statusOptions.find((e) => banderaSolicitud == e);
+                        if (statusFount) {
+                            if (banderaSolicitud == 'reception') {
+                                getSolicitud.status = 'En Recepción';
+                            }
+                            if (banderaSolicitud == 'analysis') {
+                                getSolicitud.status = 'En Análisis';
+                            }
+                            if (banderaSolicitud == 'denied') {
+                                getSolicitud.status = 'Rechazada';
+                            }
+                            getSolicitud.save();
+                            res.status(200).send({
+                                solicitud: getSolicitud
+                            });
+                        }
+                        else {
+                            res.status(404).send({
+                                msj: 'El estado que se envío no pertenece a las opciones validas: ' + banderaSolicitud
+                            });
+                        }
+                    }
+                }
+                else {
+                    res.status(500).send({
+                        msj: 'No se encontro la solicitud con ID: ' + idSolicitud
+                    });
+                }
+            }
+            else {
+                res.status(400).send({
+                    msj: 'Es necesario enviar un ID'
+                });
+            }
+        }
+        catch (error) {
+            return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
+        }
+    });
+}
+exports.updateState = updateState;

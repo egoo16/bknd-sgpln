@@ -15,4 +15,5 @@ sinafipRouter.get('/request/get-all', sinafip_controller_1.getAllRequest);
 sinafipRouter.get('/request/:id', sinafip_controller_1.getOneRequest);
 // sinafipRouter.post('/request/create', createRequest)
 // sinafipRouter.delete('/request/delete/:id', deleteOneRequest)
+sinafipRouter.put('/request/:status/:id', sinafip_controller_1.updateState);
 exports.default = sinafipRouter;
