@@ -18,7 +18,9 @@ const projectFunction_entity_1 = require("../../models/sinafip/projectFunction.e
 function getAllEntities(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let data = yield entity_entity_1.entity.findAll();
+            let data = yield entity_entity_1.entity.findAll({
+                order: [['name', 'ASC']]
+            });
             if (data.length <= 0) {
                 let ents = ['AMSA', 'AMSCLAE', 'ANADIE', 'CAMINOS', 'CDAG', 'CGC', 'CONAP', 'CONRED', 'COPEREX', 'DEFENSORIA PENAL', 'EMPORNAC', 'ENCA',
                     'EPQ', 'FODES', 'FODIGUA', 'FONDETEL', 'FONTIERRA', 'FSS', 'IGSS', 'INAB', 'INACIF', 'INAP', 'INDE', 'INFOM', 'INGUAT', 'INSIVUMEH',
@@ -30,7 +32,9 @@ function getAllEntities(req, res) {
                     let res = yield entity_entity_1.entity.create(enti);
                     return res;
                 })));
-                data = yield entity_entity_1.entity.findAll();
+                data = yield entity_entity_1.entity.findAll({
+                    order: [['name', 'ASC']]
+                });
                 return res.status(200).send(data);
             }
             return res.status(200).send(data);
@@ -44,7 +48,9 @@ exports.getAllEntities = getAllEntities;
 function getAllProjectFunction(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let data = yield projectFunction_entity_1.projectFunction.findAll();
+            let data = yield projectFunction_entity_1.projectFunction.findAll({
+                order: [['name', 'ASC']]
+            });
             if (data.length <= 0) {
                 let ents = ['AGUA Y SANEAMIENTO', 'SALUD Y ASISTENCIASOCIAL', 'EDUCACION', 'MEDIO AMBIENTE', 'AGROPECUARIO', 'VIVIENDA', 'TRABAJO Y PREVISION SOCIAL',
                     'ENERGIA', 'TRANSPORTE', 'SEGURIDAD INTERNA', 'DESARROLLO URBANO Y RURAL', 'INDUSTRIA Y COMERCIO', 'CIENCIA Y TECNOLOGIA', 'JUDICIAL', 'ADMINISTRACION FISCAL TURISMO',
@@ -54,7 +60,9 @@ function getAllProjectFunction(req, res) {
                     let res = yield projectFunction_entity_1.projectFunction.create(enti);
                     return res;
                 })));
-                data = yield projectFunction_entity_1.projectFunction.findAll();
+                data = yield projectFunction_entity_1.projectFunction.findAll({
+                    order: [['name', 'ASC']]
+                });
                 return res.status(200).send(data);
             }
             return res.status(200).send(data);
@@ -68,7 +76,9 @@ exports.getAllProjectFunction = getAllProjectFunction;
 function getAllgeneralStudies(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let data = yield generalStudies_entity_1.generalStudies.findAll();
+            let data = yield generalStudies_entity_1.generalStudies.findAll({
+                order: [['name', 'ASC']]
+            });
             if (data.length <= 0) {
                 let ents = ['ESTUDIOS TÉCNICOS', 'ESTUDIOS ECONÓMICOS', 'ESTUDIOS SOCIALES',];
                 let resEnt = yield Promise.all(ents.map((ent) => __awaiter(this, void 0, void 0, function* () {
@@ -76,7 +86,9 @@ function getAllgeneralStudies(req, res) {
                     let res = yield generalStudies_entity_1.generalStudies.create(enti);
                     return res;
                 })));
-                data = yield generalStudies_entity_1.generalStudies.findAll();
+                data = yield generalStudies_entity_1.generalStudies.findAll({
+                    order: [['name', 'ASC']]
+                });
                 return res.status(200).send(data);
             }
             return res.status(200).send(data);
@@ -90,7 +102,9 @@ exports.getAllgeneralStudies = getAllgeneralStudies;
 function getAllpreinvDocument(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let data = yield preinvDocument_entity_1.preinvDocument.findAll();
+            let data = yield preinvDocument_entity_1.preinvDocument.findAll({
+                order: [['name', 'ASC']]
+            });
             if (data.length <= 0) {
                 let ents = ['PERFIL', 'PREFACTIBILIDAD', 'FACTIBILIDAD', 'MEGAPROYECTO', 'DE IMPACTO', 'ESTRUCTURAL',
                     'DISEÑO FINAL DE INGENIERIA', 'DISEÑO FINAL DE ARQUITECTURA', 'COMPLEMENTARIOS (CUYA FACTIBILIDAD HAYA SIDO DEMOSTRADA)',];
@@ -99,7 +113,9 @@ function getAllpreinvDocument(req, res) {
                     let res = yield preinvDocument_entity_1.preinvDocument.create(enti);
                     return res;
                 })));
-                data = yield preinvDocument_entity_1.preinvDocument.findAll();
+                data = yield preinvDocument_entity_1.preinvDocument.findAll({
+                    order: [['name', 'ASC']]
+                });
                 return res.status(200).send(data);
             }
             return res.status(200).send(data);
@@ -113,7 +129,9 @@ exports.getAllpreinvDocument = getAllpreinvDocument;
 function getAllmodalityFinancing(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let data = yield modalityFinancing_entity_1.modalityFinancing.findAll();
+            let data = yield modalityFinancing_entity_1.modalityFinancing.findAll({
+                order: [['name', 'ASC']]
+            });
             if (data.length <= 0) {
                 let ents = ['APORTACIONES DEL ESTADO', 'PRESTAMO', 'TRANSFERENCIA NO REEMBOLSABLE', 'OTROS MECANISMOS DE FINANCIAMIENTO',];
                 let resEnt = yield Promise.all(ents.map((ent) => __awaiter(this, void 0, void 0, function* () {
@@ -121,7 +139,9 @@ function getAllmodalityFinancing(req, res) {
                     let res = yield modalityFinancing_entity_1.modalityFinancing.create(enti);
                     return res;
                 })));
-                data = yield modalityFinancing_entity_1.modalityFinancing.findAll();
+                data = yield modalityFinancing_entity_1.modalityFinancing.findAll({
+                    order: [['name', 'ASC']]
+                });
                 return res.status(200).send(data);
             }
             return res.status(200).send(data);
