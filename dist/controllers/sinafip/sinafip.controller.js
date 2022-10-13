@@ -121,7 +121,81 @@ function getOneRequest(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { id } = req.params;
-            const request = yield sinafip_1.requestEntity.findOne({ where: { id } });
+            const response = yield getSolicitudCompleta(id);
+            return res.status(201).send(response);
+        }
+        catch (error) {
+            return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
+        }
+    });
+}
+exports.getOneRequest = getOneRequest;
+function updateState(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let statusOptions = ['reception', 'analysis', 'denied', 'admitted', 'notAdmitted'];
+            let idSolicitud = req.params.id;
+            let banderaSolicitud = req.params.status;
+            if (idSolicitud) {
+                let getSolicitud = yield sinafip_1.requestEntity.findOne({
+                    where: {
+                        id: idSolicitud
+                    }
+                });
+                if (getSolicitud) {
+                    if (banderaSolicitud) {
+                        let statusFount = statusOptions.find((e) => banderaSolicitud == e);
+                        if (statusFount) {
+                            if (banderaSolicitud == 'reception') {
+                                getSolicitud.status = 'En Recepción';
+                            }
+                            if (banderaSolicitud == 'analysis') {
+                                getSolicitud.status = 'En Análisis';
+                            }
+                            if (banderaSolicitud == 'denied') {
+                                getSolicitud.status = 'Rechazada';
+                            }
+                            if (banderaSolicitud == 'admitted') {
+                                getSolicitud.status = 'Admitida';
+                            }
+                            if (banderaSolicitud == 'notAdmitted') {
+                                getSolicitud.status = 'No Admitida';
+                            }
+                            yield getSolicitud.save();
+                            let solicitud = yield getSolicitudCompleta(getSolicitud.id);
+                            res.status(200).send({
+                                solicitud
+                            });
+                        }
+                        else {
+                            res.status(404).send({
+                                msj: 'El estado que se envío no pertenece a las opciones validas: ' + banderaSolicitud
+                            });
+                        }
+                    }
+                }
+                else {
+                    res.status(500).send({
+                        msj: 'No se encontro la solicitud con ID: ' + idSolicitud
+                    });
+                }
+            }
+            else {
+                res.status(400).send({
+                    msj: 'Es necesario enviar un ID'
+                });
+            }
+        }
+        catch (error) {
+            return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
+        }
+    });
+}
+exports.updateState = updateState;
+function getSolicitudCompleta(idSolicitud) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const request = yield sinafip_1.requestEntity.findOne({ where: { id: idSolicitud } });
             const institution = yield sinafip_1.institutionEntity.findOne({ where: { requestId: request.id } });
             const investment = yield sinafip_1.investmentProjectEntity.findOne({ where: { requestId: request.id } });
             const studyDescription = yield sinafip_1.studyDescriptionEntity.findOne({ where: { requestId: request.id } });
@@ -151,67 +225,9 @@ function getOneRequest(req, res) {
                         activities: activ
                     }
                 } });
-            return res.status(201).send(response);
+            return response;
         }
         catch (error) {
-            return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
         }
     });
 }
-exports.getOneRequest = getOneRequest;
-function updateState(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            console.log('HOLA', req);
-            let statusOptions = ['reception', 'analysis', 'denied'];
-            let idSolicitud = req.params.id;
-            let banderaSolicitud = req.params.status;
-            if (idSolicitud) {
-                let getSolicitud = yield sinafip_1.requestEntity.findOne({
-                    where: {
-                        id: idSolicitud
-                    }
-                });
-                if (getSolicitud) {
-                    if (banderaSolicitud) {
-                        let statusFount = statusOptions.find((e) => banderaSolicitud == e);
-                        if (statusFount) {
-                            if (banderaSolicitud == 'reception') {
-                                getSolicitud.status = 'En Recepción';
-                            }
-                            if (banderaSolicitud == 'analysis') {
-                                getSolicitud.status = 'En Análisis';
-                            }
-                            if (banderaSolicitud == 'denied') {
-                                getSolicitud.status = 'Rechazada';
-                            }
-                            getSolicitud.save();
-                            res.status(200).send({
-                                solicitud: getSolicitud
-                            });
-                        }
-                        else {
-                            res.status(404).send({
-                                msj: 'El estado que se envío no pertenece a las opciones validas: ' + banderaSolicitud
-                            });
-                        }
-                    }
-                }
-                else {
-                    res.status(500).send({
-                        msj: 'No se encontro la solicitud con ID: ' + idSolicitud
-                    });
-                }
-            }
-            else {
-                res.status(400).send({
-                    msj: 'Es necesario enviar un ID'
-                });
-            }
-        }
-        catch (error) {
-            return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
-        }
-    });
-}
-exports.updateState = updateState;

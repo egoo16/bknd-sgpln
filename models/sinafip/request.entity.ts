@@ -20,7 +20,9 @@ export const  requestEntity = db.define('request',{
         author: {type:Sequelize.STRING},
         advser: {type:Sequelize.STRING},
         reviewd: {type:Sequelize.STRING},
-        created: {type:Sequelize.STRING}
+        created: {type:Sequelize.STRING},
+        hasFinancing: {type:Sequelize.BOOLEAN},
+        financing: {type:Sequelize.STRING}
     },
     {
         underscoded: true,

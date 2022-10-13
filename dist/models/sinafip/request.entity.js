@@ -24,7 +24,9 @@ exports.requestEntity = connection_1.default.define('request', {
     author: { type: sequelize_oracle_1.default.STRING },
     advser: { type: sequelize_oracle_1.default.STRING },
     reviewd: { type: sequelize_oracle_1.default.STRING },
-    created: { type: sequelize_oracle_1.default.STRING }
+    created: { type: sequelize_oracle_1.default.STRING },
+    hasFinancing: { type: sequelize_oracle_1.default.BOOLEAN },
+    financing: { type: sequelize_oracle_1.default.STRING }
 }, {
     underscoded: true,
     paranoid: true,

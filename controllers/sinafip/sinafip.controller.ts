@@ -94,7 +94,7 @@ export async function getAllRequest(req: Request, res: Response) {
             if (requirementsDocumentsGet) {
 
                 const stimatedBudgetGet = await stimatedBudgetEntity.findOne({ where: { docId: requirementsDocumentsGet.id }, });
-                
+
                 const getActivities = await activitiesEntity.findAll({ where: { stimatedId: stimatedBudgetGet.id } })
                 let stimatedBudget = {
                     id: stimatedBudgetGet.id,
@@ -147,7 +147,81 @@ export async function getOneRequest(req: Request, res: Response) {
 
     try {
         const { id } = req.params
-        const request = await requestEntity.findOne({ where: { id } });
+
+        const response = await getSolicitudCompleta(id);
+
+        return res.status(201).send(response);
+
+
+    } catch (error: any) {
+        return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
+    }
+}
+export async function updateState(req: Request, res: Response) {
+    try {
+        let statusOptions = ['reception', 'analysis', 'denied', 'admitted', 'notAdmitted' ];
+        let idSolicitud = req.params.id;
+        let banderaSolicitud = req.params.status;
+        if (idSolicitud) {
+            let getSolicitud = await requestEntity.findOne({
+                where: {
+                    id: idSolicitud
+                }
+            });
+            if (getSolicitud) {
+                if (banderaSolicitud) {
+                    let statusFount = statusOptions.find((e: any) => banderaSolicitud == e);
+                    if (statusFount) {
+                        if (banderaSolicitud == 'reception') {
+                            getSolicitud.status = 'En Recepción';
+                        }
+                        if (banderaSolicitud == 'analysis') {
+                            getSolicitud.status = 'En Análisis';
+                        }
+                        if (banderaSolicitud == 'denied') {
+                            getSolicitud.status = 'Rechazada';
+                        }
+                        if (banderaSolicitud == 'admitted') {
+                            getSolicitud.status = 'Admitida';
+                        }
+                        if (banderaSolicitud == 'notAdmitted') {
+                            getSolicitud.status = 'No Admitida';
+                        }
+                        await getSolicitud.save();
+
+                        let solicitud = await getSolicitudCompleta(getSolicitud.id)
+                        res.status(200).send({
+                            solicitud
+                        });
+                    } else {
+                        res.status(404).send({
+                            msj: 'El estado que se envío no pertenece a las opciones validas: ' + banderaSolicitud
+                        });
+                    }
+                }
+            } else {
+                res.status(500).send({
+                    msj: 'No se encontro la solicitud con ID: ' + idSolicitud
+                });
+            }
+        } else {
+            res.status(400).send({
+                msj: 'Es necesario enviar un ID'
+            });
+        }
+
+
+    } catch (error: any) {
+        return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
+    }
+}
+
+
+
+
+async function getSolicitudCompleta(idSolicitud: string) {
+    try {
+        const request = await requestEntity.findOne({ where: { id: idSolicitud } });
         const institution = await institutionEntity.findOne({ where: { requestId: request.id } });
         const investment = await investmentProjectEntity.findOne({ where: { requestId: request.id } });
         const studyDescription = await studyDescriptionEntity.findOne({ where: { requestId: request.id } });
@@ -182,61 +256,9 @@ export async function getOneRequest(req: Request, res: Response) {
             },
         }
 
-        return res.status(201).send(response);
+        return response;
+    } catch (error) {
 
-
-    } catch (error: any) {
-        return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
     }
-}
-export async function updateState(req: Request, res: Response) {
-    try {
-        console.log('HOLA', req);
-        let statusOptions=['reception','analysis','denied'];
-        let idSolicitud = req.params.id;
-        let banderaSolicitud= req.params.status;
-        if (idSolicitud) {
-            let getSolicitud = await requestEntity.findOne({
-                where: {
-                    id: idSolicitud
-                }
-            });
-            if (getSolicitud) {
-                if (banderaSolicitud) {
-                    let statusFount = statusOptions.find((e: any) => banderaSolicitud == e);
-                    if (statusFount) {
-                        if (banderaSolicitud == 'reception') {
-                            getSolicitud.status = 'En Recepción';
-                        }
-                        if (banderaSolicitud == 'analysis') {
-                            getSolicitud.status = 'En Análisis';
-                        }
-                        if (banderaSolicitud == 'denied') {
-                            getSolicitud.status = 'Rechazada';
-                        }
-                        getSolicitud.save();
-                        res.status(200).send({
-                            solicitud: getSolicitud
-                        });
-                    } else {
-                        res.status(404).send({
-                            msj: 'El estado que se envío no pertenece a las opciones validas: ' + banderaSolicitud
-                        });
-                    }
-                }                
-            } else {
-                res.status(500).send({
-                    msj: 'No se encontro la solicitud con ID: ' + idSolicitud
-                });
-            }
-        } else {
-            res.status(400).send({
-                msj: 'Es necesario enviar un ID'
-            });
-        }
 
-
-    } catch (error: any) {
-        return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
-    }
 }

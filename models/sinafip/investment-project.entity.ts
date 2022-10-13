@@ -9,6 +9,9 @@ export const  investmentProjectEntity = db.define('investmentProjects',{
         allowNull: false,
         defaultValue: Sequelize.UUIDV4
     },
+    coreProblem: {
+        type:Sequelize.STRING,
+    },
     nameProject: {
         type:Sequelize.STRING,
     },

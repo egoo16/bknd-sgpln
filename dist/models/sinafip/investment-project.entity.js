@@ -13,6 +13,9 @@ exports.investmentProjectEntity = connection_1.default.define('investmentProject
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4
     },
+    coreProblem: {
+        type: sequelize_oracle_1.default.STRING,
+    },
     nameProject: {
         type: sequelize_oracle_1.default.STRING,
     },
