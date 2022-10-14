@@ -157,7 +157,7 @@ exports.getOneRequest = getOneRequest;
 function updateState(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let statusOptions = ['reception', 'analysis', 'denied', 'admitted', 'notAdmitted'];
+            let statusOptions = ['reception', 'analysis', 'denied'];
             let idSolicitud = req.params.id;
             let banderaSolicitud = req.params.status;
             if (idSolicitud) {
@@ -171,19 +171,13 @@ function updateState(req, res) {
                         let statusFount = statusOptions.find((e) => banderaSolicitud == e);
                         if (statusFount) {
                             if (banderaSolicitud == 'reception') {
-                                getSolicitud.status = 'En Recepción';
+                                getSolicitud.status = 'EN RECEPCIÓN';
                             }
                             if (banderaSolicitud == 'analysis') {
-                                getSolicitud.status = 'En Análisis';
+                                getSolicitud.status = 'EN ANÁLISIS';
                             }
                             if (banderaSolicitud == 'denied') {
-                                getSolicitud.status = 'Rechazada';
-                            }
-                            if (banderaSolicitud == 'admitted') {
-                                getSolicitud.status = 'Admitida';
-                            }
-                            if (banderaSolicitud == 'notAdmitted') {
-                                getSolicitud.status = 'No Admitida';
+                                getSolicitud.status = 'RECHAZADA';
                             }
                             yield getSolicitud.save();
                             let solicitud = yield getSolicitudCompleta(getSolicitud.id);
