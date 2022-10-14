@@ -11,6 +11,8 @@ import {
 } from '../../models/sinafip';
 import { Request, Response } from 'express';
 import models from "../../db/connection";
+import moment from 'moment';
+import { admissionQuanty } from '../../models/sinafip/admisionQualification';
 
 
 
@@ -20,8 +22,9 @@ export async function createRequestSinafip(req: Request, res: Response) {
         let allActivities: any = []
         let { status, author, institution, investment, studyDescription, delimit, requirementsDocuments } = req.body;
         status = 'CREADA';
+        const created = moment().format('L');
         const { totalStimated, activities } = requirementsDocuments.stimatedBudget
-        const requestCreated = await requestEntity.create({ status, author });
+        const requestCreated = await requestEntity.create({ status, author, created });
         const institutionCreated = await institutionEntity.create({ ...institution, requestId: requestCreated.id });
         const investmentCreated = await investmentProjectEntity.create({ ...investment, requestId: requestCreated.id });
         const studyDescriptionCreated = await studyDescriptionEntity.create({ ...studyDescription, requestId: requestCreated.id });
@@ -88,6 +91,8 @@ export async function getAllRequest(req: Request, res: Response) {
             const institution = await institutionEntity.findOne({ where: { requestId: request.id } });
             const investment = await investmentProjectEntity.findOne({ where: { requestId: request.id } });
             const studyDescription = await studyDescriptionEntity.findOne({ where: { requestId: request.id } });
+            const addmision = await admissionQuanty.findOne({ where: { requestId: request.id } })
+
             const delimit = await delimitEntity.findOne({ where: { requestId: request.id } });
             const requirementsDocumentsGet = await requiredDocumentEntity.findOne({ where: { requestId: request.id } });
 
@@ -121,20 +126,38 @@ export async function getAllRequest(req: Request, res: Response) {
                 reviewd: request.reviewd,
                 created: request.created,
             }
-            return {
-                ...reqStruct,
-                institution,
-                investment,
-                studyDescription,
-                delimit,
-                requirementsDocuments
-            };
+
+
+            if (addmision) {
+                return {
+                    ...reqStruct,
+                    institution,
+                    investment,
+                    studyDescription,
+                    delimit,
+                    requirementsDocuments,
+                    admissionQuanty: addmision
+                };
+            } else {
+                return {
+                    ...reqStruct,
+                    institution,
+                    investment,
+                    studyDescription,
+                    delimit,
+                    requirementsDocuments
+                };
+            }
+
+
         }));
+
+        const finalAllRequest = allRequest.sort((a, b) => a.created - b.created)
 
 
         return res.status(201).send({
             msg: 'Datos Obtenidos',
-            data: allRequest
+            data: finalAllRequest
         })
 
 
@@ -148,9 +171,14 @@ export async function getOneRequest(req: Request, res: Response) {
     try {
         const { id } = req.params
 
-        const response = await getSolicitudCompleta(id);
-
-        return res.status(201).send(response);
+        if (id) {
+            const response = await getSolicitudCompleta(id);
+            return res.status(201).send(response);
+        } else {
+            res.status(500).send({
+                msj: 'No se encontro la solicitud con ID: ' + id
+            });
+        }
 
 
     } catch (error: any) {
@@ -159,7 +187,7 @@ export async function getOneRequest(req: Request, res: Response) {
 }
 export async function updateState(req: Request, res: Response) {
     try {
-        let statusOptions = ['reception', 'analysis', 'denied', 'admitted', 'notAdmitted' ];
+        let statusOptions = ['reception', 'analysis', 'denied', 'admitted', 'notAdmitted'];
         let idSolicitud = req.params.id;
         let banderaSolicitud = req.params.status;
         if (idSolicitud) {
@@ -216,49 +244,93 @@ export async function updateState(req: Request, res: Response) {
     }
 }
 
+export async function createAdmissionQuanty(req: Request, res: Response) {
+    try {
+
+        let idSolicitud = req.params.id;
+        if (idSolicitud) {
+            let getSolicitud = await requestEntity.findOne({
+                where: {
+                    id: idSolicitud
+                }
+            });
+            if (getSolicitud) {
+                let admissionObj = req.body;
+                admissionObj.requestId = idSolicitud;
+                const admissionCreated = await  admissionQuanty.create(admissionObj);
+                const response = await getSolicitudCompleta(idSolicitud);
+                return res.status(201).send(response);
+            } else {
+                res.status(500).send({
+                    msj: 'No se encontro la solicitud con ID: ' + idSolicitud
+                });
+            }
+        } else {
+            res.status(400).send({
+                msj: 'Es necesario enviar un ID'
+            });
+        }
+
+
+        // transaction.commit()
+        // return res.status(201).send(response)
+    } catch (error: any) {
+        //transaction.rollback()
+        return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
+    }
+}
 
 
 
 async function getSolicitudCompleta(idSolicitud: string) {
     try {
         const request = await requestEntity.findOne({ where: { id: idSolicitud } });
-        const institution = await institutionEntity.findOne({ where: { requestId: request.id } });
-        const investment = await investmentProjectEntity.findOne({ where: { requestId: request.id } });
-        const studyDescription = await studyDescriptionEntity.findOne({ where: { requestId: request.id } });
-        const delimit = await delimitEntity.findOne({ where: { requestId: request.id } });
-        const requiredDoc = await requiredDocumentEntity.findOne({ where: { requestId: request.id } });
-        const stimated = await stimatedBudgetEntity.findOne({ where: { docId: requiredDoc.id } })
-        const activ = await activitiesEntity.findAll({ where: { stimatedId: stimated.id } })
-        let reqStruct = {
-            id: request.id,
-            result: request.result,
-            status: request.status,
-            author: request.author,
-            advser: request.advser,
-            reviewd: request.reviewd,
-            created: request.created,
-        }
-        const response = {
-            ...reqStruct,
-            institution,
-            investment,
-            studyDescription,
-            delimit,
-            requiredDocuments: {
-                id: requiredDoc.id,
-                tdr: requiredDoc.tdr,
-                scheduleActiv: requiredDoc.scheduleActiv,
-                stimatedBudget: {
-                    id: stimated.id,
-                    totalStimated: stimated.totalStimated,
-                    activities: activ
-                }
-            },
+        if (request) {
+            const institution = await institutionEntity.findOne({ where: { requestId: request.id } });
+            const investment = await investmentProjectEntity.findOne({ where: { requestId: request.id } });
+            const studyDescription = await studyDescriptionEntity.findOne({ where: { requestId: request.id } });
+            const delimit = await delimitEntity.findOne({ where: { requestId: request.id } });
+            const requiredDoc = await requiredDocumentEntity.findOne({ where: { requestId: request.id } });
+            const addmision = await admissionQuanty.findOne({ where: { requestId: request.id } })
+            const stimated = await stimatedBudgetEntity.findOne({ where: { docId: requiredDoc.id } })
+            const activ = await activitiesEntity.findAll({ where: { stimatedId: stimated.id } })
+            let reqStruct = {
+                id: request.id,
+                result: request.result,
+                status: request.status,
+                author: request.author,
+                advser: request.advser,
+                reviewd: request.reviewd,
+                created: request.created,
+            }
+            const response: any = {
+                ...reqStruct,
+                institution,
+                investment,
+                studyDescription,
+                delimit,
+                requiredDocuments: {
+                    id: requiredDoc.id,
+                    tdr: requiredDoc.tdr,
+                    scheduleActiv: requiredDoc.scheduleActiv,
+                    stimatedBudget: {
+                        id: stimated.id,
+                        totalStimated: stimated.totalStimated,
+                        activities: activ
+                    }
+                },
+            }
+            if (addmision) {
+                response.admissionQuanty = addmision;
+            }
+
+            return response;
+        } else {
+            throw `Solicitud no encontrada`;
         }
 
-        return response;
     } catch (error) {
-
+        throw `Error al obtener solicitud: ${error}`;
     }
 
 }

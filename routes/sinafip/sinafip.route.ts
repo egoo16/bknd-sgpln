@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { getAllEntities, getAllgeneralStudies, getAllmodalityFinancing, getAllpreinvDocument, getAllProjectFunction } from '../../controllers/sinafip/list.controller';
-import {  getAllRequest, getOneRequest, createRequestSinafip, updateState } from '../../controllers/sinafip/sinafip.controller';
+import {  getAllRequest, getOneRequest, createRequestSinafip, updateState, createAdmissionQuanty } from '../../controllers/sinafip/sinafip.controller';
 
 
 const sinafipRouter = Router();
@@ -20,5 +20,6 @@ sinafipRouter.get('/request/:id', getOneRequest)
 // sinafipRouter.delete('/request/delete/:id', deleteOneRequest)
 
 sinafipRouter.put('/request/:status/:id', updateState)
+sinafipRouter.post('/request/admission/:id',createAdmissionQuanty)
 
 export default sinafipRouter

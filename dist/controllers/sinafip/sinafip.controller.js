@@ -8,9 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateState = exports.getOneRequest = exports.getAllRequest = exports.createRequestSinafip = void 0;
+exports.createAdmissionQuanty = exports.updateState = exports.getOneRequest = exports.getAllRequest = exports.createRequestSinafip = void 0;
 const sinafip_1 = require("../../models/sinafip");
+const moment_1 = __importDefault(require("moment"));
+const admisionQualification_1 = require("../../models/sinafip/admisionQualification");
 function createRequestSinafip(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         // let transaction = await models.transaction()
@@ -18,8 +23,9 @@ function createRequestSinafip(req, res) {
             let allActivities = [];
             let { status, author, institution, investment, studyDescription, delimit, requirementsDocuments } = req.body;
             status = 'CREADA';
+            const created = (0, moment_1.default)().format('L');
             const { totalStimated, activities } = requirementsDocuments.stimatedBudget;
-            const requestCreated = yield sinafip_1.requestEntity.create({ status, author });
+            const requestCreated = yield sinafip_1.requestEntity.create({ status, author, created });
             const institutionCreated = yield sinafip_1.institutionEntity.create(Object.assign(Object.assign({}, institution), { requestId: requestCreated.id }));
             const investmentCreated = yield sinafip_1.investmentProjectEntity.create(Object.assign(Object.assign({}, investment), { requestId: requestCreated.id }));
             const studyDescriptionCreated = yield sinafip_1.studyDescriptionEntity.create(Object.assign(Object.assign({}, studyDescription), { requestId: requestCreated.id }));
@@ -72,6 +78,7 @@ function getAllRequest(req, res) {
                 const institution = yield sinafip_1.institutionEntity.findOne({ where: { requestId: request.id } });
                 const investment = yield sinafip_1.investmentProjectEntity.findOne({ where: { requestId: request.id } });
                 const studyDescription = yield sinafip_1.studyDescriptionEntity.findOne({ where: { requestId: request.id } });
+                const addmision = yield admisionQualification_1.admissionQuanty.findOne({ where: { requestId: request.id } });
                 const delimit = yield sinafip_1.delimitEntity.findOne({ where: { requestId: request.id } });
                 const requirementsDocumentsGet = yield sinafip_1.requiredDocumentEntity.findOne({ where: { requestId: request.id } });
                 if (requirementsDocumentsGet) {
@@ -100,15 +107,25 @@ function getAllRequest(req, res) {
                     reviewd: request.reviewd,
                     created: request.created,
                 };
-                return Object.assign(Object.assign({}, reqStruct), { institution,
-                    investment,
-                    studyDescription,
-                    delimit,
-                    requirementsDocuments });
+                if (addmision) {
+                    return Object.assign(Object.assign({}, reqStruct), { institution,
+                        investment,
+                        studyDescription,
+                        delimit,
+                        requirementsDocuments, admissionQuanty: addmision });
+                }
+                else {
+                    return Object.assign(Object.assign({}, reqStruct), { institution,
+                        investment,
+                        studyDescription,
+                        delimit,
+                        requirementsDocuments });
+                }
             })));
+            const finalAllRequest = allRequest.sort((a, b) => a.created - b.created);
             return res.status(201).send({
                 msg: 'Datos Obtenidos',
-                data: allRequest
+                data: finalAllRequest
             });
         }
         catch (error) {
@@ -121,8 +138,15 @@ function getOneRequest(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { id } = req.params;
-            const response = yield getSolicitudCompleta(id);
-            return res.status(201).send(response);
+            if (id) {
+                const response = yield getSolicitudCompleta(id);
+                return res.status(201).send(response);
+            }
+            else {
+                res.status(500).send({
+                    msj: 'No se encontro la solicitud con ID: ' + id
+                });
+            }
         }
         catch (error) {
             return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
@@ -192,42 +216,90 @@ function updateState(req, res) {
     });
 }
 exports.updateState = updateState;
+function createAdmissionQuanty(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let idSolicitud = req.params.id;
+            if (idSolicitud) {
+                let getSolicitud = yield sinafip_1.requestEntity.findOne({
+                    where: {
+                        id: idSolicitud
+                    }
+                });
+                if (getSolicitud) {
+                    let admissionObj = req.body;
+                    admissionObj.requestId = idSolicitud;
+                    const admissionCreated = yield admisionQualification_1.admissionQuanty.create(admissionObj);
+                    const response = yield getSolicitudCompleta(idSolicitud);
+                    return res.status(201).send(response);
+                }
+                else {
+                    res.status(500).send({
+                        msj: 'No se encontro la solicitud con ID: ' + idSolicitud
+                    });
+                }
+            }
+            else {
+                res.status(400).send({
+                    msj: 'Es necesario enviar un ID'
+                });
+            }
+            // transaction.commit()
+            // return res.status(201).send(response)
+        }
+        catch (error) {
+            //transaction.rollback()
+            return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
+        }
+    });
+}
+exports.createAdmissionQuanty = createAdmissionQuanty;
 function getSolicitudCompleta(idSolicitud) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const request = yield sinafip_1.requestEntity.findOne({ where: { id: idSolicitud } });
-            const institution = yield sinafip_1.institutionEntity.findOne({ where: { requestId: request.id } });
-            const investment = yield sinafip_1.investmentProjectEntity.findOne({ where: { requestId: request.id } });
-            const studyDescription = yield sinafip_1.studyDescriptionEntity.findOne({ where: { requestId: request.id } });
-            const delimit = yield sinafip_1.delimitEntity.findOne({ where: { requestId: request.id } });
-            const requiredDoc = yield sinafip_1.requiredDocumentEntity.findOne({ where: { requestId: request.id } });
-            const stimated = yield sinafip_1.stimatedBudgetEntity.findOne({ where: { docId: requiredDoc.id } });
-            const activ = yield sinafip_1.activitiesEntity.findAll({ where: { stimatedId: stimated.id } });
-            let reqStruct = {
-                id: request.id,
-                result: request.result,
-                status: request.status,
-                author: request.author,
-                advser: request.advser,
-                reviewd: request.reviewd,
-                created: request.created,
-            };
-            const response = Object.assign(Object.assign({}, reqStruct), { institution,
-                investment,
-                studyDescription,
-                delimit, requiredDocuments: {
-                    id: requiredDoc.id,
-                    tdr: requiredDoc.tdr,
-                    scheduleActiv: requiredDoc.scheduleActiv,
-                    stimatedBudget: {
-                        id: stimated.id,
-                        totalStimated: stimated.totalStimated,
-                        activities: activ
-                    }
-                } });
-            return response;
+            if (request) {
+                const institution = yield sinafip_1.institutionEntity.findOne({ where: { requestId: request.id } });
+                const investment = yield sinafip_1.investmentProjectEntity.findOne({ where: { requestId: request.id } });
+                const studyDescription = yield sinafip_1.studyDescriptionEntity.findOne({ where: { requestId: request.id } });
+                const delimit = yield sinafip_1.delimitEntity.findOne({ where: { requestId: request.id } });
+                const requiredDoc = yield sinafip_1.requiredDocumentEntity.findOne({ where: { requestId: request.id } });
+                const addmision = yield admisionQualification_1.admissionQuanty.findOne({ where: { requestId: request.id } });
+                const stimated = yield sinafip_1.stimatedBudgetEntity.findOne({ where: { docId: requiredDoc.id } });
+                const activ = yield sinafip_1.activitiesEntity.findAll({ where: { stimatedId: stimated.id } });
+                let reqStruct = {
+                    id: request.id,
+                    result: request.result,
+                    status: request.status,
+                    author: request.author,
+                    advser: request.advser,
+                    reviewd: request.reviewd,
+                    created: request.created,
+                };
+                const response = Object.assign(Object.assign({}, reqStruct), { institution,
+                    investment,
+                    studyDescription,
+                    delimit, requiredDocuments: {
+                        id: requiredDoc.id,
+                        tdr: requiredDoc.tdr,
+                        scheduleActiv: requiredDoc.scheduleActiv,
+                        stimatedBudget: {
+                            id: stimated.id,
+                            totalStimated: stimated.totalStimated,
+                            activities: activ
+                        }
+                    } });
+                if (addmision) {
+                    response.admissionQuanty = addmision;
+                }
+                return response;
+            }
+            else {
+                throw `Solicitud no encontrada`;
+            }
         }
         catch (error) {
+            throw `Error al obtener solicitud: ${error}`;
         }
     });
 }
