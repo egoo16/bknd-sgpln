@@ -22,7 +22,28 @@ export const getGeograficos = async (req: Request, res: Response) => {
                 localidad.municipios = mncpio;
                 data.push(localidad);
             }
-        })
+        });
+
+        // let dato1 = data.indexOf((dato: any) => dato.NOMBRE == 'Centro Recepcion Central');
+        let dato1 = data.findIndex(dato => dato.NOMBRE == 'Centro Recepcion Central');
+        let dato2 = data.findIndex(dato => dato.NOMBRE == 'No Aplica');
+        let dato3 = data.findIndex(dato => dato.NOMBRE == 'Sin clasificar');
+        let dato4 = data.findIndex(dato => dato.NOMBRE == 'MULTIREGIONAL - NACIONAL');
+        console.log("🚀 ~ file: index.ts ~ line 33 ~ getGeograficos ~ dato4", dato1,dato2,dato3,dato4)
+        if (dato1 !== -1) {
+            data.splice(dato1, 1);
+        }
+        if (dato2 !== -1) {
+            data.splice(dato2, 1);
+        }
+        if (dato3 !== -1) {
+            data.splice(dato3, 1);
+        }
+        if (dato4 !== -1) {
+            data.splice(dato4, 1);
+        }
+
+        console.log(data);
 
         res.status(200).json({
             msg: "Datos Obtenidos",

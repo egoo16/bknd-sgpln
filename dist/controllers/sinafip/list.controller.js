@@ -133,13 +133,15 @@ function getAllmodalityFinancing(req, res) {
                 order: [['name', 'ASC']]
             });
             if (data.length <= 0) {
-                let ents = ['APORTACIONES DEL ESTADO', 'PRESTAMO', 'TRANSFERENCIA NO REEMBOLSABLE', 'OTROS MECANISMOS DE FINANCIAMIENTO',
+                let ents = ['APORTACIONES DEL ESTADO',
+                    'OTROS MECANISMOS DE FINANCIAMIENTO',
                     'INGRESOS CORRIENTES',
                     'INGRESOS TRIBUTARIOS IVA PAZ',
                     'INGRESOS ORDINARIOS DE APORTE CONSTITUCIONAL',
                     'INGRESOS PROPIOS',
                     'CRÉDITO EXTERNO – PRESTAMOS EXTERNOS',
                     'DONACIONES EXTERNAS',
+                    'NO SE CUENTA CON FUENTE DE FINANCIAMIENTO',
                 ];
                 let resEnt = yield Promise.all(ents.map((ent) => __awaiter(this, void 0, void 0, function* () {
                     let enti = { name: ent };
