@@ -24,5 +24,11 @@ exports.delimitEntity = connection_1.default.define('delimit', {
     },
     requestId: {
         type: sequelize_oracle_1.default.UUID
-    }
+    },
+    departament: {
+        type: sequelize_oracle_1.default.STRING
+    },
+    municipality: {
+        type: sequelize_oracle_1.default.STRING
+    },
 });

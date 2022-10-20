@@ -20,7 +20,13 @@ export const  delimitEntity = db.define('delimit',{
     },
     requestId:{
         type:Sequelize.UUID
-    }
+    },
+    departament: {
+        type:Sequelize.STRING
+    },
+    municipality: {
+        type:Sequelize.STRING
+    },
     
 
 })
