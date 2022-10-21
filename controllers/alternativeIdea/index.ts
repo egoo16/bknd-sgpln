@@ -14,6 +14,7 @@ import referencePopulation from "../../models/BancoIdeas/referencePopulation";
 import denomination from "../../models/BancoIdeas/denomination";
 import executionTime from "../../models/BancoIdeas/executionTime";
 import generalInformation from "../../models/BancoIdeas/generalInformation";
+import dataGeo from "../../models/BancoIdeas/datageo.model";
 
 
 
@@ -40,7 +41,10 @@ export async function createIdeaAlternativeComplete(req: Request, res: Response)
 export async function addPertinenceQuality(req: Request, res: Response) {
     let transaction = await models.transaction()
     try {
-        let pertinence = await FaddPertinenceQuality(req.body, transaction)
+        console.log(req.body)
+        let matrixPertinence = {...req.body}
+        matrixPertinence.terreno = JSON.stringify(req.body.terreno)
+        let pertinence = await FaddPertinenceQuality(matrixPertinence, transaction)
         transaction.commit()
         return res.status(200).send(pertinence)
     } catch (error: any) {
@@ -168,12 +172,22 @@ export const getPertinencia = async (req: Request, res: Response) => {
         });
 
 
-        // let geograficArea = await geographicArea.findOne({
-        //     where: {
-        //         AlterId: alternative.codigo
-        //     },
-        //     attributes: ['availableTerrain', 'oneAvailableTerrain', 'investPurchase', 'registerGovernmentTerrain', 'statusDescribe'],
-        // });
+        let geograficArea = await geographicArea.findOne({
+            where: {
+                AlterId: alternative.codigo
+            },
+        });
+
+        let terrains;
+
+        if (geograficArea) {
+            terrains = await dataGeo.findAll({
+                where: {
+                    geoAreaId: geograficArea.codigo
+                },
+            });
+        }
+
 
         let projectDes = await projectDescription.findOne({
             where: {
@@ -212,11 +226,15 @@ export const getPertinencia = async (req: Request, res: Response) => {
 
         //TODO: Agregar Criterios
 
-        // let criterio4 = {
-        //     availableTerrain: geograficArea.availableTerrain,
-        //     oneAvailableTerrain: geograficArea.oneAvailableTerrain,
-        //     investPurchase: geograficArea.investPurchase,
-        // };
+        let criterio4 = {
+            availableTerrain: geograficArea.availableTerrain,
+            oneAvailableTerrain: geograficArea.oneAvailableTerrain,
+            investPurchase: geograficArea.investPurchase,
+        };
+
+        let criterio5 = { 
+            terrenos: terrains
+        }
 
         // let criterio5 = {
         //     registerGovernmentTerrain: geograficArea.registerGovernmentTerrain,
@@ -233,8 +251,8 @@ export const getPertinencia = async (req: Request, res: Response) => {
 
         let criterios = {
             // TODO: Agregar Criterios 4 y 5
-            // criterio1, criterio2, criterio3, criterio4, criterio5, criterio6
-            criterio1, criterio2, criterio3, criterio6
+            criterio1, criterio2, criterio3, criterio4, criterio5, criterio6
+            // criterio1, criterio2, criterio3, criterio4, criterio6
         }
 
         res.status(200).json({

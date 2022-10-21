@@ -23,6 +23,7 @@ const qualification = connection_1.default.define("qualification", {
     terrainIdentComment: { type: sequelize_oracle_1.default.STRING },
     legalSituation: { type: sequelize_oracle_1.default.INTEGER },
     legalSituationComment: { type: sequelize_oracle_1.default.STRING },
+    terreno: { type: sequelize_oracle_1.default.STRING(2000) },
     descAnlys: { type: sequelize_oracle_1.default.INTEGER },
     descAnlysComment: { type: sequelize_oracle_1.default.STRING },
     descriptionGeneral: { type: sequelize_oracle_1.default.STRING },

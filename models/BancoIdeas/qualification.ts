@@ -27,6 +27,7 @@ const qualification = db.define(
 
     legalSituation: { type: Sequelize.INTEGER },
     legalSituationComment: { type: Sequelize.STRING },
+    terreno: { type: Sequelize.STRING(2000) },
 
     descAnlys: { type: Sequelize.INTEGER },
     descAnlysComment: { type: Sequelize.STRING },

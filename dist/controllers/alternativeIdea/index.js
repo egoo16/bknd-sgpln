@@ -17,11 +17,13 @@ const connection_1 = __importDefault(require("../../db/connection"));
 const feature_1 = require("./feature");
 const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
 const populationDelimitation_1 = __importDefault(require("../../models/BancoIdeas/populationDelimitation"));
+const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geographicArea"));
 const projectDescription_1 = __importDefault(require("../../models/BancoIdeas/projectDescription"));
 const referencePopulation_1 = __importDefault(require("../../models/BancoIdeas/referencePopulation"));
 const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomination"));
 const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executionTime"));
 const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
+const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
 /**
  * Funcion para  listar las configuraciones globales
  * @param {*} req
@@ -49,7 +51,10 @@ function addPertinenceQuality(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         let transaction = yield connection_1.default.transaction();
         try {
-            let pertinence = yield (0, feature_1.FaddPertinenceQuality)(req.body, transaction);
+            console.log(req.body);
+            let matrixPertinence = Object.assign({}, req.body);
+            matrixPertinence.terreno = JSON.stringify(req.body.terreno);
+            let pertinence = yield (0, feature_1.FaddPertinenceQuality)(matrixPertinence, transaction);
             transaction.commit();
             return res.status(200).send(pertinence);
         }
@@ -169,12 +174,19 @@ const getPertinencia = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 },
             ]
         });
-        // let geograficArea = await geographicArea.findOne({
-        //     where: {
-        //         AlterId: alternative.codigo
-        //     },
-        //     attributes: ['availableTerrain', 'oneAvailableTerrain', 'investPurchase', 'registerGovernmentTerrain', 'statusDescribe'],
-        // });
+        let geograficArea = yield geographicArea_1.default.findOne({
+            where: {
+                AlterId: alternative.codigo
+            },
+        });
+        let terrains;
+        if (geograficArea) {
+            terrains = yield datageo_model_1.default.findAll({
+                where: {
+                    geoAreaId: geograficArea.codigo
+                },
+            });
+        }
         let projectDes = yield projectDescription_1.default.findOne({
             where: {
                 AlterId: alternative.codigo
@@ -207,11 +219,14 @@ const getPertinencia = (req, res) => __awaiter(void 0, void 0, void 0, function*
             denomination: population.denmtion.name,
         };
         //TODO: Agregar Criterios
-        // let criterio4 = {
-        //     availableTerrain: geograficArea.availableTerrain,
-        //     oneAvailableTerrain: geograficArea.oneAvailableTerrain,
-        //     investPurchase: geograficArea.investPurchase,
-        // };
+        let criterio4 = {
+            availableTerrain: geograficArea.availableTerrain,
+            oneAvailableTerrain: geograficArea.oneAvailableTerrain,
+            investPurchase: geograficArea.investPurchase,
+        };
+        let criterio5 = {
+            terrenos: terrains
+        };
         // let criterio5 = {
         //     registerGovernmentTerrain: geograficArea.registerGovernmentTerrain,
         //     statusDescribe: geograficArea.statusDescribe,
@@ -224,8 +239,8 @@ const getPertinencia = (req, res) => __awaiter(void 0, void 0, void 0, function*
         };
         let criterios = {
             // TODO: Agregar Criterios 4 y 5
-            // criterio1, criterio2, criterio3, criterio4, criterio5, criterio6
-            criterio1, criterio2, criterio3, criterio6
+            criterio1, criterio2, criterio3, criterio4, criterio5, criterio6
+            // criterio1, criterio2, criterio3, criterio4, criterio6
         };
         res.status(200).json({
             msg: "Datos Obtenidos",

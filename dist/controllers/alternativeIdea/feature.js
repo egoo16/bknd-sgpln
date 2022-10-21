@@ -641,25 +641,7 @@ function getAlternatives(idIdea) {
                             };
                     }
                     if (quali) {
-                        alternativa.qualification = {
-                            codigo: quali.codigo,
-                            AlterId: quali.AlterId,
-                            descProblem: quali.descProblem,
-                            descProblemComment: quali.descProblemComment,
-                            generalObjct: quali.generalObjct,
-                            generalObjctComment: quali.generalObjctComment,
-                            anlysDelimitation: quali.anlysDelimitation,
-                            anlysDelimitationComment: quali.anlysDelimitationComment,
-                            terrainIdent: quali.terrainIdent,
-                            terrainIdentComment: quali.terrainIdentComment,
-                            legalSituation: quali.legalSituation,
-                            legalSituationComment: quali.legalSituationComment,
-                            descAnlys: quali.descAnlys,
-                            descAnlysComment: quali.descAnlysComment,
-                            descriptionGeneral: quali.descriptionGeneral,
-                            total: quali.total,
-                            result: quali.result,
-                        };
+                        alternativa.qualification = quali;
                     }
                     if (preInv) {
                         alternativa.preInvestment = {
@@ -954,25 +936,7 @@ function getAlternative(idAlternative) {
                         };
                 }
                 if (quali) {
-                    alternativa.qualification = {
-                        codigo: quali.codigo,
-                        AlterId: quali.AlterId,
-                        descProblem: quali.descProblem,
-                        descProblemComment: quali.descProblemComment,
-                        generalObjct: quali.generalObjct,
-                        generalObjctComment: quali.generalObjctComment,
-                        anlysDelimitation: quali.anlysDelimitation,
-                        anlysDelimitationComment: quali.anlysDelimitationComment,
-                        terrainIdent: quali.terrainIdent,
-                        terrainIdentComment: quali.terrainIdentComment,
-                        legalSituation: quali.legalSituation,
-                        legalSituationComment: quali.legalSituationComment,
-                        descAnlys: quali.descAnlys,
-                        descAnlysComment: quali.descAnlysComment,
-                        descriptionGeneral: quali.descriptionGeneral,
-                        total: quali.total,
-                        result: quali.result,
-                    };
+                    alternativa.qualification = quali;
                 }
                 if (preInv) {
                     alternativa.preInvestment = {
