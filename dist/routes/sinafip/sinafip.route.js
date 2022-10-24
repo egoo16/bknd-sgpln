@@ -17,4 +17,5 @@ sinafipRouter.get('/request/:id', sinafip_controller_1.getOneRequest);
 // sinafipRouter.delete('/request/delete/:id', deleteOneRequest)
 sinafipRouter.put('/request/:status/:id', sinafip_controller_1.updateState);
 sinafipRouter.post('/request/admission/:id', sinafip_controller_1.createAdmissionQuanty);
+sinafipRouter.post('/request/priorization/:id', sinafip_controller_1.createPriorizationMatrix);
 exports.default = sinafipRouter;
