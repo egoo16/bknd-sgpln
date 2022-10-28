@@ -16,6 +16,8 @@ exports.investmentProjectEntity = connection_1.default.define('investmentProject
     coreProblem: {
         type: sequelize_oracle_1.default.STRING,
     },
+    productId: { type: sequelize_oracle_1.default.STRING },
+    productName: { type: sequelize_oracle_1.default.STRING(600) },
     nameProject: {
         type: sequelize_oracle_1.default.STRING,
     },

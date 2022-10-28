@@ -51,7 +51,6 @@ const getGeograficos = (req, res) => __awaiter(void 0, void 0, void 0, function*
         if (dato4 !== -1) {
             data.splice(dato4, 1);
         }
-        console.log(data);
         res.status(200).json({
             msg: "Datos Obtenidos",
             data,

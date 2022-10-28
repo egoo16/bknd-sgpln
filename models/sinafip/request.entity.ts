@@ -4,6 +4,7 @@ import { admissionQuanty } from "./admisionQualification";
 import { delimitEntity } from "./delimit.entity";
 import { institutionEntity } from "./institution.entity";
 import { investmentProjectEntity } from "./investment-project.entity";
+import { priorizationQuanty } from "./priorizationQualification";
 import { requiredDocumentEntity } from "./requirements-documents.entity";
 import { snp } from "./snp.entity";
 import { studyDescriptionEntity } from "./study-description.entity";
@@ -42,5 +43,6 @@ requestEntity.hasOne(studyDescriptionEntity, { foreingKey: 'requestId' })
 
 requestEntity.hasOne(institutionEntity, { foreingKey: 'requestId' })
 requestEntity.hasOne(admissionQuanty, { foreingKey: 'requestId' })
+requestEntity.hasOne(priorizationQuanty, { foreingKey: 'requestId' })
 
 requestEntity.hasOne(snp, { foreingKey: 'requestId' })

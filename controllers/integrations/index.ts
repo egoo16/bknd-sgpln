@@ -43,8 +43,6 @@ export const getGeograficos = async (req: Request, res: Response) => {
             data.splice(dato4, 1);
         }
 
-        console.log(data);
-
         res.status(200).json({
             msg: "Datos Obtenidos",
             data,

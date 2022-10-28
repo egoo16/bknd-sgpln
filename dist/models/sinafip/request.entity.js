@@ -10,6 +10,7 @@ const admisionQualification_1 = require("./admisionQualification");
 const delimit_entity_1 = require("./delimit.entity");
 const institution_entity_1 = require("./institution.entity");
 const investment_project_entity_1 = require("./investment-project.entity");
+const priorizationQualification_1 = require("./priorizationQualification");
 const requirements_documents_entity_1 = require("./requirements-documents.entity");
 const snp_entity_1 = require("./snp.entity");
 const study_description_entity_1 = require("./study-description.entity");
@@ -39,4 +40,5 @@ exports.requestEntity.hasOne(investment_project_entity_1.investmentProjectEntity
 exports.requestEntity.hasOne(study_description_entity_1.studyDescriptionEntity, { foreingKey: 'requestId' });
 exports.requestEntity.hasOne(institution_entity_1.institutionEntity, { foreingKey: 'requestId' });
 exports.requestEntity.hasOne(admisionQualification_1.admissionQuanty, { foreingKey: 'requestId' });
+exports.requestEntity.hasOne(priorizationQualification_1.priorizationQuanty, { foreingKey: 'requestId' });
 exports.requestEntity.hasOne(snp_entity_1.snp, { foreingKey: 'requestId' });

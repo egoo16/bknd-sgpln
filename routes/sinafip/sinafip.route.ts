@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { getAllEntities, getAllgeneralStudies, getAllmodalityFinancing, getAllpreinvDocument, getAllProjectFunction } from '../../controllers/sinafip/list.controller';
-import { getAllRequest, getOneRequest, createRequestSinafip, updateState, createAdmissionQuanty, createPriorizationMatrix } from '../../controllers/sinafip/sinafip.controller';
+import { getAllRequest, getOneRequest, createRequestSinafip, updateState, createAdmissionQuanty, getDataPriorization } from '../../controllers/sinafip/sinafip.controller';
 
 
 const sinafipRouter = Router();
@@ -21,6 +21,6 @@ sinafipRouter.get('/request/:id', getOneRequest)
 
 sinafipRouter.put('/request/:status/:id', updateState)
 sinafipRouter.post('/request/admission/:id', createAdmissionQuanty)
-sinafipRouter.post('/request/priorization/:id', createPriorizationMatrix)
+sinafipRouter.get('/request/data-priorization/:id', getDataPriorization)
 
 export default sinafipRouter
