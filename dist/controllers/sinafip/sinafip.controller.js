@@ -73,7 +73,7 @@ exports.createRequestSinafip = createRequestSinafip;
 function getAllRequest(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const requests = yield sinafip_1.requestEntity.findAll();
+            const requests = yield sinafip_1.requestEntity.findAll({ order: '"createdAt" DESC' });
             let stimatedBudget = null;
             let requirementsDocuments = null;
             const allRequest = yield Promise.all(requests.map((request) => __awaiter(this, void 0, void 0, function* () {

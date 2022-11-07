@@ -433,6 +433,7 @@ function getAlternatives(idIdea) {
                 where: {
                     sectionBIId: idAlternative
                 },
+                order: '"createdAt" DESC',
                 include: [
                     {
                         required: false,

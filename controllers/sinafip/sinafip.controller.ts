@@ -84,8 +84,7 @@ export async function createRequestSinafip(req: Request, res: Response) {
 export async function getAllRequest(req: Request, res: Response) {
 
     try {
-        const requests = await requestEntity.findAll();
-
+        const requests = await requestEntity.findAll({ order: '"createdAt" DESC'});
         let stimatedBudget = null;
         let requirementsDocuments: any = null;
 

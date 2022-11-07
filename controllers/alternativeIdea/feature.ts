@@ -402,6 +402,7 @@ export async function getAlternatives(idIdea: string) {
             where: {
                 sectionBIId: idAlternative
             },
+            order: '"createdAt" DESC',
             include: [
                 {
                     required: false,
