@@ -1,21 +1,14 @@
 import { Router } from 'express'
-import { createProject } from '../../controllers/seguimiento/seguimiento.controller';
+import { addTrack, createProject, getAllProjects, getProjectById } from '../../controllers/seguimiento/seguimiento.controller';
 
 
 const seguimientoRouter = Router();
 
-// // Listados
-// seguimientoRouter.get('/entities', getAllEntities)
-// seguimientoRouter.get('/project-function', getAllProjectFunction)
-// seguimientoRouter.get('/general-studies', getAllgeneralStudies)
-// seguimientoRouter.get('/preinv-document', getAllpreinvDocument)
-// seguimientoRouter.get('/modality-financing', getAllmodalityFinancing)
-
 
 seguimientoRouter.post('/project/new', createProject)
-// seguimientoRouter.get('/request/get-all', getAllRequest)
-// seguimientoRouter.get('/request/:id', getOneRequest)
-// // sinafipRouter.post('/request/create', createRequest)
+seguimientoRouter.get('/project/get-all', getAllProjects)
+seguimientoRouter.get('/project/:id', getProjectById)
+seguimientoRouter.post('/project/track/:id', addTrack)
 // sinafipRouter.delete('/request/delete/:id', deleteOneRequest)
 
 // seguimientoRouter.put('/request/:status/:id', updateState)
