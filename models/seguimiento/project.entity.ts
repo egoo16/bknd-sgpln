@@ -33,27 +33,4 @@ const project = db.define(
 );
 project.hasMany(track, { foreignKey: "projectId" });
 
-// ideaAlternative.hasOne(preliminaryName, {
-//     foreignKey: "AlterId",
-// });
-// ideaAlternative.hasOne(responsibleEntity, {
-//     foreignKey: "AlterId",
-// });
-// ideaAlternative.hasOne(populationDelimitation, {
-//     foreignKey: "AlterId",
-// });
-// ideaAlternative.hasOne(geographicArea, {
-//     foreignKey: "AlterId",
-// });
-// ideaAlternative.hasOne(projectDescription, {
-//     foreignKey: "AlterId",
-// });
-// ideaAlternative.hasOne(qualification, { foreignKey: "AlterId" });
-// ideaAlternative.hasOne(preInvestment, { foreignKey: "AlterId" });
-
-// ideaAlternative.belongsTo(generalInformation, {
-//     foreignKey: "sectionBIId",
-//     sourceKey: "codigo",
-// });
-
 export default project;

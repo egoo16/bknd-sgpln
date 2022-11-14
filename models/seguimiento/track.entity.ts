@@ -1,5 +1,7 @@
 import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
+import advisoryDoc from "./advisoryDoc";
+import advisoryEpi from "./advisoryEpi";
 
 
 const track = db.define(
@@ -19,5 +21,9 @@ const track = db.define(
         freezeTableName: true,
     }
 );
+
+track.hasOne(advisoryEpi, { foreingKey: 'trackId' })
+track.hasOne(advisoryDoc, { foreingKey: 'trackId' })
+
 
 export default track;
