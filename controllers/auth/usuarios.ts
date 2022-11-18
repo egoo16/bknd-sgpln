@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Usuario from "../models/usuario";
+import Usuario from "../../models/usuario";
 const bcrypt = require('bcrypt');
 
 
@@ -22,29 +22,7 @@ export const getUsuario = async (req: Request, res: Response) => {
   });
 };
 
-export const postUsuario = (req: Request, res: Response) => {
-  try {
-    if (req.body) {
-      const { body } = req;
-      let usuario = {
-        username: body.username,
-        password: bcrypt.hashSync(body.password, 10),
-        name: body.name,
-        id_Institution: '1',
-        name_Institution: 'INSTITUCION TEST'
-      }
-  
-      res.json({
-        msg: "postUsuario",
-        body,
-      });
-    }
 
-  } catch (error) {
-
-  }
-
-};
 
 export const putUsuario = (req: Request, res: Response) => {
   const { id } = req.params;

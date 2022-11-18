@@ -1,19 +1,19 @@
 import { Router } from "express";
+import { postUsuario } from "../controllers/auth/login";
 import {
   deleteUsuario,
   getUsuario,
   getUsuarios,
-  postUsuario,
   putUsuario,
-} from "../controllers/usuarios";
+} from "../controllers/auth/usuarios";
 import { verificaToken } from "../middlewares/authentication";
 
 const usuarioRouter = Router();
 
-usuarioRouter.get("/", getUsuarios);
-usuarioRouter.get("/:id",verificaToken, getUsuario);
+// usuarioRouter.get("/", getUsuarios);
+// usuarioRouter.get("/:id",verificaToken, getUsuario);
 usuarioRouter.post("/", postUsuario);
-usuarioRouter.put("/", putUsuario);
-usuarioRouter.delete("/", deleteUsuario);
+// usuarioRouter.put("/", putUsuario);
+// usuarioRouter.delete("/", deleteUsuario);
 
 export default usuarioRouter;

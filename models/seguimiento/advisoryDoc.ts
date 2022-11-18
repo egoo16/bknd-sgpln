@@ -1,6 +1,6 @@
 import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
-import comments from "./comments";
+import comment from "./comment";
 
 
 const advisoryDoc = db.define(
@@ -28,6 +28,6 @@ const advisoryDoc = db.define(
     }
 );
 
-advisoryDoc.hasMany(comments, { foreignKey: "advisoryDocId", });
+advisoryDoc.hasMany(comment, { foreignKey: "advisoryDocId", });
 
 export default advisoryDoc;

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUsuario = void 0;
+exports.postUsuario = exports.loginUsuario = void 0;
 const usuario_1 = __importDefault(require("../../models/usuario"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const environment_1 = require("../../global/environment");
@@ -31,7 +31,7 @@ const loginUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     name_inst: 'MINISTERIO DE SALUD PUBLICA Y ASISTENCIA SOCIAL',
                     role: 'USER_ROLE',
                 };
-                let userTestCreate = yield usuario_1.default.create(userTest);
+                let userTestCreate = yield createUser(userTest);
                 userTest = {
                     username: 'admin',
                     password: bcrypt.hashSync('123456', 10),
@@ -40,7 +40,16 @@ const loginUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     name_inst: 'INSTITUCION TEST',
                     role: 'ADMIN_ROLE',
                 };
-                userTestCreate = yield usuario_1.default.create(userTest);
+                userTestCreate = yield createUser(userTest);
+                userTest = {
+                    username: 'digitador',
+                    password: bcrypt.hashSync('123456', 10),
+                    name: 'Usuario Administrador de Prueba',
+                    id_inst: '1',
+                    name_inst: 'INSTITUCION TEST',
+                    role: 'DIGITADOR_ROLE',
+                };
+                userTestCreate = yield createUser(userTest);
             }
             const usuario = yield usuario_1.default.findOne({
                 where: { username: body.username },
@@ -77,3 +86,44 @@ const loginUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.loginUsuario = loginUsuario;
+const postUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (req.body) {
+            const { body } = req;
+            let usuario = {
+                name: body.name,
+                username: body.username,
+                password: bcrypt.hashSync(body.password, 10),
+                role: body.role,
+                id_inst: body.idInst,
+                name_inst: body.nameInst,
+                position: body.position
+            };
+            let userCreated = yield createUser(usuario);
+            return res.status(201).send({
+                msg: 'Usuario Creado',
+                data: userCreated
+            });
+        }
+    }
+    catch (error) {
+        return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
+    }
+});
+exports.postUsuario = postUsuario;
+function createUser(user) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            if (user) {
+                let userCreated = yield usuario_1.default.create(user);
+                return userCreated;
+            }
+            else {
+                throw `Error Crear Usuario: ${user.username}`;
+            }
+        }
+        catch (error) {
+            throw `Error Crear User: ${error.message}`;
+        }
+    });
+}

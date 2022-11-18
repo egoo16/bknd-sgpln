@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
+const advisoryDoc_1 = __importDefault(require("./advisoryDoc"));
+const advisoryEpi_1 = __importDefault(require("./advisoryEpi"));
 const track = connection_1.default.define("track", {
     id: { type: sequelize_oracle_1.default.UUID, primaryKey: true, allowNull: false, defaultValue: sequelize_oracle_1.default.UUIDV4, },
     iapa: { type: sequelize_oracle_1.default.INTEGER },
@@ -18,4 +20,6 @@ const track = connection_1.default.define("track", {
     paranoid: true,
     freezeTableName: true,
 });
+track.hasOne(advisoryEpi_1.default, { foreingKey: 'trackId' });
+track.hasOne(advisoryDoc_1.default, { foreingKey: 'trackId' });
 exports.default = track;

@@ -35,6 +35,9 @@ const Usuario = db.define(
     name_inst: {
       type: Sequelize.STRING,
     },
+    position: {
+      type: Sequelize.STRING,
+    },
   },
   {
     underscoded: true,

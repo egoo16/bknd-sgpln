@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import moment from 'moment';
 import project from '../../models/seguimiento/project.entity';
 import track from '../../models/seguimiento/track.entity';
+import advisoryEpi from '../../models/seguimiento/advisoryEpi';
+import advisoryDoc from '../../models/seguimiento/advisoryDoc';
 
 export async function createProject(req: Request, res: Response) {
     try {
@@ -30,8 +32,10 @@ export async function createProject(req: Request, res: Response) {
         const tracking = req.body.tracking;
         if (tracking?.length > 0) {
             const resTracking = await Promise.all(tracking.map(async (prog: any) => {
-                const res = await track.create({ ...prog, projectId: projectCreated.id });
+
+                const res = await createTrack(prog, projectCreated.id);
                 return res;
+
             }));
 
             allTracks = [...resTracking]
@@ -64,7 +68,7 @@ export async function addTrack(req: Request, res: Response) {
         const idProject = req.params.id
         const trackModel = req.body;
 
-        const trackCreated = await track.create({ ...trackModel, projectId: idProject });
+        let trackCreated = await createTrack(trackModel, idProject);
 
         const response = await getProjectCompleto(idProject)
         return res.status(201).send(response)
@@ -73,6 +77,21 @@ export async function addTrack(req: Request, res: Response) {
     } catch (error: any) {
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
     }
+}
+
+async function createTrack(trackModel: any, projectId: string) {
+
+    const trackCreated = await track.create({ ...trackModel, projectId });
+    if (trackModel.advisoryEpi) {
+        let advEpi = trackModel.advisoryEpi;
+        let advEpiCreated = await advisoryEpi.create({ ...advEpi, trackId: trackCreated.id });
+    }
+    if (trackModel.advisoryDoc) {
+        let advDoc = trackModel.advisoryDoc;
+        let advEpiCreated = await advisoryDoc.create({ ...advDoc, trackId: trackCreated.id });
+    }
+    return trackCreated;
+
 }
 
 export async function getProjectById(req: Request, res: Response) {
@@ -106,6 +125,8 @@ export async function getAllProjects(req: Request, res: Response) {
             }))
 
             return res.status(201).send({ projects: projectsResponse });
+        } else {
+            return res.status(201).send({ projects: [] })
         }
 
 
@@ -124,9 +145,55 @@ async function getProjectCompleto(idProject: string) {
                     required: false,
                     model: track
                 },
-            ]
+            ],
+            order: '"createdAt" DESC'
         });
+        console.log(projectFind.tracks.length);
         if (projectFind) {
+            let allData = []
+            if (projectFind?.tracks?.length > 0) {
+
+                allData = await Promise.all(projectFind?.tracks.map(async (trackI: any) => {
+                    let advEpiFind = await advisoryEpi.findOne({ where: { trackId: trackI.id } })
+                    if (advEpiFind) {
+                        let trackResult = {
+                            id: trackI.id,
+                            iapa: trackI.iapa,
+                            iapb: trackI.iapb,
+                            iapc: trackI.iapc,
+                            activity: trackI.activity,
+                            reportDate: trackI.reportDate,
+                            projectId: trackI.projectId,
+                            createdAt: trackI.createdAt,
+                            updatedAt: trackI.updatedAt,
+                            deletedAt: trackI.deletedAt,
+                            advisoryEpi: advEpiFind
+                        }
+                        return trackResult;
+                    }
+                    let advDocFind = await advisoryDoc.findOne({ where: { trackId: trackI.id } });
+                    if (advDocFind) {
+                        let trackResult = {
+                            id: trackI.id,
+                            iapa: trackI.iapa,
+                            iapb: trackI.iapb,
+                            iapc: trackI.iapc,
+                            activity: trackI.activity,
+                            reportDate: trackI.reportDate,
+                            projectId: trackI.projectId,
+                            createdAt: trackI.createdAt,
+                            updatedAt: trackI.updatedAt,
+                            deletedAt: trackI.deletedAt,
+                            advisoryEpi: advDocFind
+                        }
+                        return trackResult;
+                    }
+                    if (!advEpiFind && !advDocFind) {
+                        return trackI;
+                    }
+                }));
+            }
+
             const allTracks = await track.findAll({
                 where: { id: projectFind.id },
                 order: '"createdAt" DESC'
@@ -147,7 +214,7 @@ async function getProjectCompleto(idProject: string) {
                 agripManage: projectFind.agripManage,
                 snipCode: projectFind.snipCode,
                 observations: projectFind.observations,
-                tracking: projectFind.tracks
+                tracking: allData
             }
 
             const response = {

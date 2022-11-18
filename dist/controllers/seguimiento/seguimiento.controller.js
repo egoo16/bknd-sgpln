@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllProjects = exports.getProjectById = exports.addTrack = exports.createProject = void 0;
 const project_entity_1 = __importDefault(require("../../models/seguimiento/project.entity"));
 const track_entity_1 = __importDefault(require("../../models/seguimiento/track.entity"));
+const advisoryEpi_1 = __importDefault(require("../../models/seguimiento/advisoryEpi"));
+const advisoryDoc_1 = __importDefault(require("../../models/seguimiento/advisoryDoc"));
 function createProject(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -40,7 +42,7 @@ function createProject(req, res) {
             const tracking = req.body.tracking;
             if ((tracking === null || tracking === void 0 ? void 0 : tracking.length) > 0) {
                 const resTracking = yield Promise.all(tracking.map((prog) => __awaiter(this, void 0, void 0, function* () {
-                    const res = yield track_entity_1.default.create(Object.assign(Object.assign({}, prog), { projectId: projectCreated.id }));
+                    const res = yield createTrack(prog, projectCreated.id);
                     return res;
                 })));
                 allTracks = [...resTracking];
@@ -67,7 +69,7 @@ function addTrack(req, res) {
         try {
             const idProject = req.params.id;
             const trackModel = req.body;
-            const trackCreated = yield track_entity_1.default.create(Object.assign(Object.assign({}, trackModel), { projectId: idProject }));
+            let trackCreated = yield createTrack(trackModel, idProject);
             const response = yield getProjectCompleto(idProject);
             return res.status(201).send(response);
         }
@@ -77,6 +79,20 @@ function addTrack(req, res) {
     });
 }
 exports.addTrack = addTrack;
+function createTrack(trackModel, projectId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const trackCreated = yield track_entity_1.default.create(Object.assign(Object.assign({}, trackModel), { projectId }));
+        if (trackModel.advisoryEpi) {
+            let advEpi = trackModel.advisoryEpi;
+            let advEpiCreated = yield advisoryEpi_1.default.create(Object.assign(Object.assign({}, advEpi), { trackId: trackCreated.id }));
+        }
+        if (trackModel.advisoryDoc) {
+            let advDoc = trackModel.advisoryDoc;
+            let advEpiCreated = yield advisoryDoc_1.default.create(Object.assign(Object.assign({}, advDoc), { trackId: trackCreated.id }));
+        }
+        return trackCreated;
+    });
+}
 function getProjectById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -109,6 +125,9 @@ function getAllProjects(req, res) {
                 })));
                 return res.status(201).send({ projects: projectsResponse });
             }
+            else {
+                return res.status(201).send({ projects: [] });
+            }
         }
         catch (error) {
             return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
@@ -117,6 +136,7 @@ function getAllProjects(req, res) {
 }
 exports.getAllProjects = getAllProjects;
 function getProjectCompleto(idProject) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const projectFind = yield project_entity_1.default.findOne({
@@ -126,9 +146,53 @@ function getProjectCompleto(idProject) {
                         required: false,
                         model: track_entity_1.default
                     },
-                ]
+                ],
+                order: '"createdAt" DESC'
             });
+            console.log(projectFind.tracks.length);
             if (projectFind) {
+                let allData = [];
+                if (((_a = projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+                    allData = yield Promise.all(projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks.map((trackI) => __awaiter(this, void 0, void 0, function* () {
+                        let advEpiFind = yield advisoryEpi_1.default.findOne({ where: { trackId: trackI.id } });
+                        if (advEpiFind) {
+                            let trackResult = {
+                                id: trackI.id,
+                                iapa: trackI.iapa,
+                                iapb: trackI.iapb,
+                                iapc: trackI.iapc,
+                                activity: trackI.activity,
+                                reportDate: trackI.reportDate,
+                                projectId: trackI.projectId,
+                                createdAt: trackI.createdAt,
+                                updatedAt: trackI.updatedAt,
+                                deletedAt: trackI.deletedAt,
+                                advisoryEpi: advEpiFind
+                            };
+                            return trackResult;
+                        }
+                        let advDocFind = yield advisoryDoc_1.default.findOne({ where: { trackId: trackI.id } });
+                        if (advDocFind) {
+                            let trackResult = {
+                                id: trackI.id,
+                                iapa: trackI.iapa,
+                                iapb: trackI.iapb,
+                                iapc: trackI.iapc,
+                                activity: trackI.activity,
+                                reportDate: trackI.reportDate,
+                                projectId: trackI.projectId,
+                                createdAt: trackI.createdAt,
+                                updatedAt: trackI.updatedAt,
+                                deletedAt: trackI.deletedAt,
+                                advisoryEpi: advDocFind
+                            };
+                            return trackResult;
+                        }
+                        if (!advEpiFind && !advDocFind) {
+                            return trackI;
+                        }
+                    })));
+                }
                 const allTracks = yield track_entity_1.default.findAll({
                     where: { id: projectFind.id },
                     order: '"createdAt" DESC'
@@ -148,7 +212,7 @@ function getProjectCompleto(idProject) {
                     agripManage: projectFind.agripManage,
                     snipCode: projectFind.snipCode,
                     observations: projectFind.observations,
-                    tracking: projectFind.tracks
+                    tracking: allData
                 };
                 const response = {
                     project: Object.assign({}, proj)

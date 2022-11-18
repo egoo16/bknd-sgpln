@@ -36,6 +36,9 @@ const Usuario = connection_1.default.define("Usuario", {
     name_inst: {
         type: sequelize_oracle_1.default.STRING,
     },
+    position: {
+        type: sequelize_oracle_1.default.STRING,
+    },
 }, {
     underscoded: true,
     paranoid: true,

@@ -177,7 +177,6 @@ export async function getAllRequest(req: Request, res: Response) {
             data: finalAllRequest
         })
 
-
     } catch (error: any) {
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
     }

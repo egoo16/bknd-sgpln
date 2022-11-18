@@ -1,10 +1,8 @@
 import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
-import advisoryDoc from "./advisoryDoc";
-import advisoryEpi from "./advisoryEpi";
 
-const comments = db.define(
-    "comments",
+const comment = db.define(
+    "comment",
     {
         id: { type: Sequelize.UUID, primaryKey: true, allowNull: false, defaultValue: Sequelize.UUIDV4, },
         advisoryDocId: { type: Sequelize.UUID },
@@ -18,4 +16,4 @@ const comments = db.define(
     }
 );
 
-export default comments;
+export default comment;
