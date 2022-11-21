@@ -148,10 +148,11 @@ async function getProjectCompleto(idProject: string) {
             ],
             order: '"createdAt" DESC'
         });
-        console.log(projectFind.tracks.length);
+        console.log(projectFind?.tracks?.length);
+        console.log(projectFind)
         if (projectFind) {
             let allData = []
-            if (projectFind?.tracks?.length > 0) {
+            if (projectFind?.tracks?.length > 0 || projectFind?.tracks?.length) {
 
                 allData = await Promise.all(projectFind?.tracks.map(async (trackI: any) => {
                     let advEpiFind = await advisoryEpi.findOne({ where: { trackId: trackI.id } })
@@ -192,38 +193,67 @@ async function getProjectCompleto(idProject: string) {
                         return trackI;
                     }
                 }));
-            }
 
-            const allTracks = await track.findAll({
-                where: { id: projectFind.id },
-                order: '"createdAt" DESC'
-            })
+                // const allTracks = await track.findAll({
+                //     where: { id: projectFind.id },
+                //     order: '"createdAt" DESC'
+                // })
 
-            let proj = {
-                id: projectFind.id,
-                author: projectFind.author,
-                correlative: projectFind.correlative,
-                process: projectFind.process,
-                sector: projectFind.sector,
-                depto: projectFind.depto,
-                munic: projectFind.munic,
-                nameProject: projectFind.nameProject,
-                ministry: projectFind.ministry,
-                isMinistry: projectFind.isMinistry,
-                legalLand: projectFind.legalLand,
-                agripManage: projectFind.agripManage,
-                snipCode: projectFind.snipCode,
-                observations: projectFind.observations,
-                tracking: allData
-            }
-
-            const response = {
-                project: {
-                    ...proj,
+                let proj = {
+                    id: projectFind.id,
+                    author: projectFind.author,
+                    correlative: projectFind.correlative,
+                    process: projectFind.process,
+                    sector: projectFind.sector,
+                    depto: projectFind.depto,
+                    munic: projectFind.munic,
+                    nameProject: projectFind.nameProject,
+                    ministry: projectFind.ministry,
+                    isMinistry: projectFind.isMinistry,
+                    legalLand: projectFind.legalLand,
+                    agripManage: projectFind.agripManage,
+                    snipCode: projectFind.snipCode,
+                    observations: projectFind.observations,
+                    tracking: allData
                 }
+
+                const response = {
+                    project: {
+                        ...proj,
+                    }
+                }
+                return response
+            } else {
+                console.log('Texto de prueba')
+
+                let proj = {
+                    id: projectFind.id,
+                    author: projectFind.author,
+                    correlative: projectFind.correlative,
+                    process: projectFind.process,
+                    sector: projectFind.sector,
+                    depto: projectFind.depto,
+                    munic: projectFind.munic,
+                    nameProject: projectFind.nameProject,
+                    ministry: projectFind.ministry,
+                    isMinistry: projectFind.isMinistry,
+                    legalLand: projectFind.legalLand,
+                    agripManage: projectFind.agripManage,
+                    snipCode: projectFind.snipCode,
+                    observations: projectFind.observations,
+                    tracking: []
+                }
+
+                const response = {
+                    project: {
+                        ...proj,
+                    }
+                }
+                return response
             }
-            return response
+
         } else {
+
             throw `Proyecto no encontrado`;
         }
 

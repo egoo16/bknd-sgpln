@@ -136,7 +136,7 @@ function getAllProjects(req, res) {
 }
 exports.getAllProjects = getAllProjects;
 function getProjectCompleto(idProject) {
-    var _a;
+    var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const projectFind = yield project_entity_1.default.findOne({
@@ -149,10 +149,11 @@ function getProjectCompleto(idProject) {
                 ],
                 order: '"createdAt" DESC'
             });
-            console.log(projectFind.tracks.length);
+            console.log((_a = projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks) === null || _a === void 0 ? void 0 : _a.length);
+            console.log(projectFind);
             if (projectFind) {
                 let allData = [];
-                if (((_a = projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+                if (((_b = projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks) === null || _b === void 0 ? void 0 : _b.length) > 0 || ((_c = projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks) === null || _c === void 0 ? void 0 : _c.length)) {
                     allData = yield Promise.all(projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks.map((trackI) => __awaiter(this, void 0, void 0, function* () {
                         let advEpiFind = yield advisoryEpi_1.default.findOne({ where: { trackId: trackI.id } });
                         if (advEpiFind) {
@@ -192,32 +193,56 @@ function getProjectCompleto(idProject) {
                             return trackI;
                         }
                     })));
+                    // const allTracks = await track.findAll({
+                    //     where: { id: projectFind.id },
+                    //     order: '"createdAt" DESC'
+                    // })
+                    let proj = {
+                        id: projectFind.id,
+                        author: projectFind.author,
+                        correlative: projectFind.correlative,
+                        process: projectFind.process,
+                        sector: projectFind.sector,
+                        depto: projectFind.depto,
+                        munic: projectFind.munic,
+                        nameProject: projectFind.nameProject,
+                        ministry: projectFind.ministry,
+                        isMinistry: projectFind.isMinistry,
+                        legalLand: projectFind.legalLand,
+                        agripManage: projectFind.agripManage,
+                        snipCode: projectFind.snipCode,
+                        observations: projectFind.observations,
+                        tracking: allData
+                    };
+                    const response = {
+                        project: Object.assign({}, proj)
+                    };
+                    return response;
                 }
-                const allTracks = yield track_entity_1.default.findAll({
-                    where: { id: projectFind.id },
-                    order: '"createdAt" DESC'
-                });
-                let proj = {
-                    id: projectFind.id,
-                    author: projectFind.author,
-                    correlative: projectFind.correlative,
-                    process: projectFind.process,
-                    sector: projectFind.sector,
-                    depto: projectFind.depto,
-                    munic: projectFind.munic,
-                    nameProject: projectFind.nameProject,
-                    ministry: projectFind.ministry,
-                    isMinistry: projectFind.isMinistry,
-                    legalLand: projectFind.legalLand,
-                    agripManage: projectFind.agripManage,
-                    snipCode: projectFind.snipCode,
-                    observations: projectFind.observations,
-                    tracking: allData
-                };
-                const response = {
-                    project: Object.assign({}, proj)
-                };
-                return response;
+                else {
+                    console.log('Texto de prueba');
+                    let proj = {
+                        id: projectFind.id,
+                        author: projectFind.author,
+                        correlative: projectFind.correlative,
+                        process: projectFind.process,
+                        sector: projectFind.sector,
+                        depto: projectFind.depto,
+                        munic: projectFind.munic,
+                        nameProject: projectFind.nameProject,
+                        ministry: projectFind.ministry,
+                        isMinistry: projectFind.isMinistry,
+                        legalLand: projectFind.legalLand,
+                        agripManage: projectFind.agripManage,
+                        snipCode: projectFind.snipCode,
+                        observations: projectFind.observations,
+                        tracking: []
+                    };
+                    const response = {
+                        project: Object.assign({}, proj)
+                    };
+                    return response;
+                }
             }
             else {
                 throw `Proyecto no encontrado`;
