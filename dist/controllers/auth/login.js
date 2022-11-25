@@ -95,11 +95,12 @@ const postUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 username: body.username,
                 password: bcrypt.hashSync(body.password, 10),
                 role: body.role,
-                id_inst: body.idInst,
-                name_inst: body.nameInst,
+                id_inst: body.id_inst,
+                name_inst: body.name_inst,
                 position: body.position
             };
-            let userCreated = yield createUser(usuario);
+            let userCreated = yield createUser(Object.assign({}, usuario));
+            userCreated.password = 'like';
             return res.status(201).send({
                 msg: 'Usuario Creado',
                 data: userCreated
@@ -115,7 +116,7 @@ function createUser(user) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             if (user) {
-                let userCreated = yield usuario_1.default.create(user);
+                let userCreated = yield usuario_1.default.create(Object.assign({}, user));
                 return userCreated;
             }
             else {

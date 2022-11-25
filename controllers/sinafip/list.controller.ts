@@ -138,6 +138,7 @@ export async function getAllmodalityFinancing(req: Request, res: Response) {
         'INGRESOS PROPIOS',
         'CRÉDITO EXTERNO – PRESTAMOS EXTERNOS',
         'DONACIONES EXTERNAS',
+        'PRESTAMO TRASFERENCIA NO REEMBOLSABLE',
         'NO SE CUENTA CON FUENTE DE FINANCIAMIENTO',
       ];
 

@@ -141,6 +141,7 @@ function getAllmodalityFinancing(req, res) {
                     'INGRESOS PROPIOS',
                     'CRÉDITO EXTERNO – PRESTAMOS EXTERNOS',
                     'DONACIONES EXTERNAS',
+                    'PRESTAMO TRASFERENCIA NO REEMBOLSABLE',
                     'NO SE CUENTA CON FUENTE DE FINANCIAMIENTO',
                 ];
                 let resEnt = yield Promise.all(ents.map((ent) => __awaiter(this, void 0, void 0, function* () {

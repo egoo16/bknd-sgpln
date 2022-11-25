@@ -91,12 +91,13 @@ export const postUsuario = async (req: Request, res: Response) => {
                 username: body.username,
                 password: bcrypt.hashSync(body.password, 10),
                 role: body.role,
-                id_inst: body.idInst,
-                name_inst: body.nameInst,
+                id_inst: body.id_inst,
+                name_inst: body.name_inst,
                 position: body.position
             }
 
-            let userCreated = await createUser(usuario);
+            let userCreated = await createUser({...usuario});
+            userCreated.password = 'like'
 
             return res.status(201).send({
                 msg: 'Usuario Creado',
@@ -114,7 +115,7 @@ export const postUsuario = async (req: Request, res: Response) => {
 async function createUser(user: any) {
     try {
         if (user) {
-            let userCreated = await Usuario.create(user);
+            let userCreated = await Usuario.create({...user});
             return userCreated;
         }
         else {
