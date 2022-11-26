@@ -116,18 +116,38 @@ export async function getProjectById(req: Request, res: Response) {
 
 export async function getAllProjects(req: Request, res: Response) {
     try {
+        let where : any = {};
+        let filtros = req.query
         let projectsResponse: any[] = [];
-        const projects = await project.findAll({ order: '"createdAt" DESC' });
-        if (projects.length > 0) {
-            const resProm = await Promise.all(projects.map(async (project: any) => {
-                const response = await getProjectCompleto(project.id);
-                projectsResponse.push(response);
-            }))
 
-            return res.status(201).send({ projects: projectsResponse });
+        if (filtros){
+            if (filtros.isMinistry) { where.isMinistry = filtros.isMinistry}
+            const projects = await project.findAll({where, order: '"createdAt" DESC' });
+            if (projects.length > 0) {
+                const resProm = await Promise.all(projects.map(async (project: any) => {
+                    const response = await getProjectCompleto(project.id);
+                    projectsResponse.push(response);
+                }))
+    
+                return res.status(201).send({ projects: projectsResponse });
+            } else {
+                return res.status(201).send({ projects: [] })
+            }
         } else {
-            return res.status(201).send({ projects: [] })
+
+            const projects = await project.findAll({ order: '"createdAt" DESC' });
+            if (projects.length > 0) {
+                const resProm = await Promise.all(projects.map(async (project: any) => {
+                    const response = await getProjectCompleto(project.id);
+                    projectsResponse.push(response);
+                }))
+    
+                return res.status(201).send({ projects: projectsResponse });
+            } else {
+                return res.status(201).send({ projects: [] })
+            }
         }
+
 
 
     } catch (error: any) {
@@ -218,9 +238,7 @@ async function getProjectCompleto(idProject: string) {
                 }
 
                 const response = {
-                    project: {
                         ...proj,
-                    }
                 }
                 return response
             } else {
@@ -245,9 +263,7 @@ async function getProjectCompleto(idProject: string) {
                 }
 
                 const response = {
-                    project: {
                         ...proj,
-                    }
                 }
                 return response
             }

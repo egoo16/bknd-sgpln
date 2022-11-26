@@ -116,17 +116,37 @@ exports.getProjectById = getProjectById;
 function getAllProjects(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            let where = {};
+            let filtros = req.query;
             let projectsResponse = [];
-            const projects = yield project_entity_1.default.findAll({ order: '"createdAt" DESC' });
-            if (projects.length > 0) {
-                const resProm = yield Promise.all(projects.map((project) => __awaiter(this, void 0, void 0, function* () {
-                    const response = yield getProjectCompleto(project.id);
-                    projectsResponse.push(response);
-                })));
-                return res.status(201).send({ projects: projectsResponse });
+            if (filtros) {
+                if (filtros.isMinistry) {
+                    where.isMinistry = filtros.isMinistry;
+                }
+                const projects = yield project_entity_1.default.findAll({ where, order: '"createdAt" DESC' });
+                if (projects.length > 0) {
+                    const resProm = yield Promise.all(projects.map((project) => __awaiter(this, void 0, void 0, function* () {
+                        const response = yield getProjectCompleto(project.id);
+                        projectsResponse.push(response);
+                    })));
+                    return res.status(201).send({ projects: projectsResponse });
+                }
+                else {
+                    return res.status(201).send({ projects: [] });
+                }
             }
             else {
-                return res.status(201).send({ projects: [] });
+                const projects = yield project_entity_1.default.findAll({ order: '"createdAt" DESC' });
+                if (projects.length > 0) {
+                    const resProm = yield Promise.all(projects.map((project) => __awaiter(this, void 0, void 0, function* () {
+                        const response = yield getProjectCompleto(project.id);
+                        projectsResponse.push(response);
+                    })));
+                    return res.status(201).send({ projects: projectsResponse });
+                }
+                else {
+                    return res.status(201).send({ projects: [] });
+                }
             }
         }
         catch (error) {
@@ -214,9 +234,7 @@ function getProjectCompleto(idProject) {
                         observations: projectFind.observations,
                         tracking: allData
                     };
-                    const response = {
-                        project: Object.assign({}, proj)
-                    };
+                    const response = Object.assign({}, proj);
                     return response;
                 }
                 else {
@@ -238,9 +256,7 @@ function getProjectCompleto(idProject) {
                         observations: projectFind.observations,
                         tracking: []
                     };
-                    const response = {
-                        project: Object.assign({}, proj)
-                    };
+                    const response = Object.assign({}, proj);
                     return response;
                 }
             }
