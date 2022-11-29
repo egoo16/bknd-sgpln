@@ -121,7 +121,8 @@ function getAllProjects(req, res) {
             let projectsResponse = [];
             if (filtros) {
                 if (filtros.isMinistry) {
-                    where.isMinistry = filtros.isMinistry;
+                    let ministry = (filtros.isMinistry === 'true');
+                    where.isMinistry = ministry;
                 }
                 const projects = yield project_entity_1.default.findAll({ where, order: '"createdAt" DESC' });
                 if (projects.length > 0) {
@@ -170,7 +171,6 @@ function getProjectCompleto(idProject) {
                 order: '"createdAt" DESC'
             });
             console.log((_a = projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks) === null || _a === void 0 ? void 0 : _a.length);
-            console.log(projectFind);
             if (projectFind) {
                 let allData = [];
                 if (((_b = projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks) === null || _b === void 0 ? void 0 : _b.length) > 0 || ((_c = projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks) === null || _c === void 0 ? void 0 : _c.length)) {
@@ -238,7 +238,6 @@ function getProjectCompleto(idProject) {
                     return response;
                 }
                 else {
-                    console.log('Texto de prueba');
                     let proj = {
                         id: projectFind.id,
                         author: projectFind.author,

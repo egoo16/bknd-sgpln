@@ -117,11 +117,15 @@ export async function getProjectById(req: Request, res: Response) {
 export async function getAllProjects(req: Request, res: Response) {
     try {
         let where : any = {};
-        let filtros = req.query
+        let filtros: any = req.query
         let projectsResponse: any[] = [];
 
         if (filtros){
-            if (filtros.isMinistry) { where.isMinistry = filtros.isMinistry}
+            if (filtros.isMinistry) { 
+                let ministry = (filtros.isMinistry === 'true');
+                    where.isMinistry = ministry;
+            }
+
             const projects = await project.findAll({where, order: '"createdAt" DESC' });
             if (projects.length > 0) {
                 const resProm = await Promise.all(projects.map(async (project: any) => {
@@ -169,7 +173,6 @@ async function getProjectCompleto(idProject: string) {
             order: '"createdAt" DESC'
         });
         console.log(projectFind?.tracks?.length);
-        console.log(projectFind)
         if (projectFind) {
             let allData = []
             if (projectFind?.tracks?.length > 0 || projectFind?.tracks?.length) {
@@ -242,7 +245,6 @@ async function getProjectCompleto(idProject: string) {
                 }
                 return response
             } else {
-                console.log('Texto de prueba')
 
                 let proj = {
                     id: projectFind.id,
