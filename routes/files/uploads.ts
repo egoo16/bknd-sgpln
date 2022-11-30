@@ -4,6 +4,7 @@ import fs from 'fs';
 import dataGeo from '../../models/BancoIdeas/datageo.model';
 import { ORIGINPATH } from "../../config/config";
 import { institutionEntity, requiredDocumentEntity } from '../../models/sinafip';
+import advisoryEpi from '../../models/seguimiento/advisoryEpi';
 
 
 const UPLOAD_ROUTER = Router();
@@ -16,7 +17,7 @@ UPLOAD_ROUTER.put('/:type/:id', (req: any, res: Response) => {
     const id = req.params.id;
 
     // Tipos de colecciones
-    const VALID_TYPES = ['terrain', 'projectDocument', 'tdr', 'schedule'];
+    const VALID_TYPES = ['terrain', 'projectDocument', 'tdr', 'schedule', 'advEpi'];
 
     if (VALID_TYPES.indexOf(type) < 0) {
         return res.status(400).json({
@@ -322,6 +323,64 @@ const uploadByType = (type: string, id: string, newNameFile: string, res: Respon
                 return res.status(500).json({
                     ok: false,
                     mensaje: 'Error when searching for required document scheduleActiv',
+                    errors: err
+                });
+            }
+        }),
+        'advEpi': () => advisoryEpi.findOne({
+            where: {
+                id
+            }
+        }).then(async (data: any) => {
+
+            if (!data) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'The required document advisory Doc with id' + id + ' does not exist',
+                    errors: {
+                        message: 'There is no required document advisory Doc with that ID'
+                    }
+                });
+            }
+
+            // Si existe un archivo almacenado anteriormente
+            const oldPath = `./uploads/${type}/` + data.doc;
+
+            if (fs.existsSync(oldPath)) {
+                // Borramos el archivo antiguo
+                fs.unlink(oldPath, err => {
+                    if (err) {
+                        return res.status(500).json({
+                            ok: false,
+                            mensaje: 'Error deleting old image',
+                            errors: err
+                        });
+                    }
+                });
+            }
+
+            data.doc = `http://${ORIGINPATH}/api/readFile/${type}/${newNameFile}`;
+
+            data.save().then((dataSaved: any) => {
+                res.status(200).json({
+                    ok: true,
+                    dataSaved
+                });
+            }).catch((err: any) => {
+                if (err) {
+                    return res.status(400).json({
+                        ok: false,
+                        mensaje: 'Error saving image',
+                        errors: err
+                    });
+                }
+
+            });
+        }).catch((err: any) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error when searching for required document doc to Advisory Document',
                     errors: err
                 });
             }

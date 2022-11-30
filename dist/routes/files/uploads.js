@@ -18,6 +18,7 @@ const fs_1 = __importDefault(require("fs"));
 const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
 const config_1 = require("../../config/config");
 const sinafip_1 = require("../../models/sinafip");
+const advisoryEpi_1 = __importDefault(require("../../models/seguimiento/advisoryEpi"));
 const UPLOAD_ROUTER = (0, express_1.Router)();
 // default options
 UPLOAD_ROUTER.use((0, express_fileupload_1.default)());
@@ -25,7 +26,7 @@ UPLOAD_ROUTER.put('/:type/:id', (req, res) => {
     const type = req.params.type;
     const id = req.params.id;
     // Tipos de colecciones
-    const VALID_TYPES = ['terrain', 'projectDocument', 'tdr', 'schedule'];
+    const VALID_TYPES = ['terrain', 'projectDocument', 'tdr', 'schedule', 'advEpi'];
     if (VALID_TYPES.indexOf(type) < 0) {
         return res.status(400).json({
             ok: false,
@@ -295,6 +296,58 @@ const uploadByType = (type, id, newNameFile, res) => {
                 return res.status(500).json({
                     ok: false,
                     mensaje: 'Error when searching for required document scheduleActiv',
+                    errors: err
+                });
+            }
+        }),
+        'advEpi': () => advisoryEpi_1.default.findOne({
+            where: {
+                id
+            }
+        }).then((data) => __awaiter(void 0, void 0, void 0, function* () {
+            if (!data) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'The required document advisory Doc with id' + id + ' does not exist',
+                    errors: {
+                        message: 'There is no required document advisory Doc with that ID'
+                    }
+                });
+            }
+            // Si existe un archivo almacenado anteriormente
+            const oldPath = `./uploads/${type}/` + data.doc;
+            if (fs_1.default.existsSync(oldPath)) {
+                // Borramos el archivo antiguo
+                fs_1.default.unlink(oldPath, err => {
+                    if (err) {
+                        return res.status(500).json({
+                            ok: false,
+                            mensaje: 'Error deleting old image',
+                            errors: err
+                        });
+                    }
+                });
+            }
+            data.doc = `http://${config_1.ORIGINPATH}/api/readFile/${type}/${newNameFile}`;
+            data.save().then((dataSaved) => {
+                res.status(200).json({
+                    ok: true,
+                    dataSaved
+                });
+            }).catch((err) => {
+                if (err) {
+                    return res.status(400).json({
+                        ok: false,
+                        mensaje: 'Error saving image',
+                        errors: err
+                    });
+                }
+            });
+        })).catch((err) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error when searching for required document doc to Advisory Document',
                     errors: err
                 });
             }

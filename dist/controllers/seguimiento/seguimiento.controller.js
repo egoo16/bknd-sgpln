@@ -17,6 +17,7 @@ const project_entity_1 = __importDefault(require("../../models/seguimiento/proje
 const track_entity_1 = __importDefault(require("../../models/seguimiento/track.entity"));
 const advisoryEpi_1 = __importDefault(require("../../models/seguimiento/advisoryEpi"));
 const advisoryDoc_1 = __importDefault(require("../../models/seguimiento/advisoryDoc"));
+const comment_1 = __importDefault(require("../../models/seguimiento/comment"));
 function createProject(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -130,6 +131,7 @@ function getAllProjects(req, res) {
                         const response = yield getProjectCompleto(project.id);
                         projectsResponse.push(response);
                     })));
+                    projectsResponse.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                     return res.status(201).send({ projects: projectsResponse });
                 }
                 else {
@@ -194,6 +196,29 @@ function getProjectCompleto(idProject) {
                         }
                         let advDocFind = yield advisoryDoc_1.default.findOne({ where: { trackId: trackI.id } });
                         if (advDocFind) {
+                            let cmnts = [];
+                            cmnts = yield comment_1.default.findAll({
+                                where: {
+                                    advisoryDocId: advDocFind.id,
+                                }
+                            });
+                            const advDocModel = {
+                                id: advDocFind.id,
+                                trackId: advDocFind.trackId,
+                                goal: advDocFind.goal,
+                                action: advDocFind.action,
+                                entity: advDocFind.entity,
+                                advTheme: advDocFind.advTheme,
+                                snipCode: advDocFind.snipCode,
+                                projectName: advDocFind.projectName,
+                                participant: advDocFind.participant,
+                                analysisDate: advDocFind.analysisDate,
+                                advDate: advDocFind.advDate,
+                                assistant: advDocFind.assistant,
+                                conclusions: advDocFind.conclusions,
+                                recomend: advDocFind.recomend,
+                                comments: cmnts
+                            };
                             let trackResult = {
                                 id: trackI.id,
                                 iapa: trackI.iapa,
@@ -205,7 +230,7 @@ function getProjectCompleto(idProject) {
                                 createdAt: trackI.createdAt,
                                 updatedAt: trackI.updatedAt,
                                 deletedAt: trackI.deletedAt,
-                                advisoryEpi: advDocFind
+                                advisoryDoc: advDocModel
                             };
                             return trackResult;
                         }
@@ -232,6 +257,9 @@ function getProjectCompleto(idProject) {
                         agripManage: projectFind.agripManage,
                         snipCode: projectFind.snipCode,
                         observations: projectFind.observations,
+                        createdAt: projectFind.createdAt,
+                        updatedAt: projectFind.updatedAt,
+                        deletedAt: projectFind.deletedAt,
                         tracking: allData
                     };
                     const response = Object.assign({}, proj);

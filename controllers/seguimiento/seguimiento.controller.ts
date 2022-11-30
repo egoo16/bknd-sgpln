@@ -4,6 +4,7 @@ import project from '../../models/seguimiento/project.entity';
 import track from '../../models/seguimiento/track.entity';
 import advisoryEpi from '../../models/seguimiento/advisoryEpi';
 import advisoryDoc from '../../models/seguimiento/advisoryDoc';
+import comment from '../../models/seguimiento/comment';
 
 export async function createProject(req: Request, res: Response) {
     try {
@@ -116,23 +117,24 @@ export async function getProjectById(req: Request, res: Response) {
 
 export async function getAllProjects(req: Request, res: Response) {
     try {
-        let where : any = {};
+        let where: any = {};
         let filtros: any = req.query
         let projectsResponse: any[] = [];
 
-        if (filtros){
-            if (filtros.isMinistry) { 
+        if (filtros) {
+            if (filtros.isMinistry) {
                 let ministry = (filtros.isMinistry === 'true');
-                    where.isMinistry = ministry;
+                where.isMinistry = ministry;
             }
 
-            const projects = await project.findAll({where, order: '"createdAt" DESC' });
+            const projects = await project.findAll({ where, order: '"createdAt" DESC' });
             if (projects.length > 0) {
                 const resProm = await Promise.all(projects.map(async (project: any) => {
                     const response = await getProjectCompleto(project.id);
                     projectsResponse.push(response);
                 }))
-    
+
+                projectsResponse.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                 return res.status(201).send({ projects: projectsResponse });
             } else {
                 return res.status(201).send({ projects: [] })
@@ -145,7 +147,7 @@ export async function getAllProjects(req: Request, res: Response) {
                     const response = await getProjectCompleto(project.id);
                     projectsResponse.push(response);
                 }))
-    
+
                 return res.status(201).send({ projects: projectsResponse });
             } else {
                 return res.status(201).send({ projects: [] })
@@ -197,6 +199,29 @@ async function getProjectCompleto(idProject: string) {
                     }
                     let advDocFind = await advisoryDoc.findOne({ where: { trackId: trackI.id } });
                     if (advDocFind) {
+                        let cmnts = [];
+                        cmnts = await comment.findAll({
+                            where: {
+                                advisoryDocId: advDocFind.id,
+                            }
+                        });
+                        const advDocModel = {
+                            id: advDocFind.id,
+                            trackId: advDocFind.trackId,
+                            goal: advDocFind.goal,
+                            action: advDocFind.action,
+                            entity: advDocFind.entity,
+                            advTheme: advDocFind.advTheme,
+                            snipCode: advDocFind.snipCode,
+                            projectName: advDocFind.projectName,
+                            participant: advDocFind.participant,
+                            analysisDate: advDocFind.analysisDate,
+                            advDate: advDocFind.advDate,
+                            assistant: advDocFind.assistant,
+                            conclusions: advDocFind.conclusions,
+                            recomend: advDocFind.recomend,
+                            comments: cmnts
+                        }
                         let trackResult = {
                             id: trackI.id,
                             iapa: trackI.iapa,
@@ -208,7 +233,7 @@ async function getProjectCompleto(idProject: string) {
                             createdAt: trackI.createdAt,
                             updatedAt: trackI.updatedAt,
                             deletedAt: trackI.deletedAt,
-                            advisoryEpi: advDocFind
+                            advisoryDoc: advDocModel
                         }
                         return trackResult;
                     }
@@ -237,11 +262,14 @@ async function getProjectCompleto(idProject: string) {
                     agripManage: projectFind.agripManage,
                     snipCode: projectFind.snipCode,
                     observations: projectFind.observations,
+                    createdAt: projectFind.createdAt,
+                    updatedAt: projectFind.updatedAt,
+                    deletedAt: projectFind.deletedAt,
                     tracking: allData
                 }
 
                 const response = {
-                        ...proj,
+                    ...proj,
                 }
                 return response
             } else {
@@ -265,7 +293,7 @@ async function getProjectCompleto(idProject: string) {
                 }
 
                 const response = {
-                        ...proj,
+                    ...proj,
                 }
                 return response
             }

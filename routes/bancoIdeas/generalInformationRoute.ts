@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { getGeneralInformation, postGeneralInformation, returnIdea, sendIdea } from "../../controllers/generalInformation";
+import { verificaToken } from "../../middlewares/authentication";
 
 const generalRouter = Router();
 
