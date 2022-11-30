@@ -89,7 +89,14 @@ async function createTrack(trackModel: any, projectId: string) {
     }
     if (trackModel.advisoryDoc) {
         let advDoc = trackModel.advisoryDoc;
+        let cments = []
+        cments = trackModel.advisoryDoc.comments;
         let advEpiCreated = await advisoryDoc.create({ ...advDoc, trackId: trackCreated.id });
+        if (cments.length > 0) {
+            const cmProm = await Promise.all(cments.map(async (cmt: any) => {
+                const response = await comment.create({ ...cmt, advisoryDocId: advEpiCreated.id });
+            }))
+        }
     }
     return trackCreated;
 
@@ -153,8 +160,6 @@ export async function getAllProjects(req: Request, res: Response) {
                 return res.status(201).send({ projects: [] })
             }
         }
-
-
 
     } catch (error: any) {
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })

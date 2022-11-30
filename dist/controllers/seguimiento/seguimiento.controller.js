@@ -89,7 +89,14 @@ function createTrack(trackModel, projectId) {
         }
         if (trackModel.advisoryDoc) {
             let advDoc = trackModel.advisoryDoc;
+            let cments = [];
+            cments = trackModel.advisoryDoc.comments;
             let advEpiCreated = yield advisoryDoc_1.default.create(Object.assign(Object.assign({}, advDoc), { trackId: trackCreated.id }));
+            if (cments.length > 0) {
+                const cmProm = yield Promise.all(cments.map((cmt) => __awaiter(this, void 0, void 0, function* () {
+                    const response = yield comment_1.default.create(Object.assign(Object.assign({}, cmt), { advisoryDocId: advEpiCreated.id }));
+                })));
+            }
         }
         return trackCreated;
     });
