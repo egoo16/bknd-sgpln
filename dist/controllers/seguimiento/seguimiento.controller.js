@@ -41,6 +41,8 @@ function createProject(req, res) {
                 agripManage: projectCreated.agripManage,
                 snipCode: projectCreated.snipCode,
                 observations: projectCreated.observations,
+                advance: projectCreated.advance,
+                status: projectCreated.status,
             };
             const tracking = req.body.tracking;
             if ((tracking === null || tracking === void 0 ? void 0 : tracking.length) > 0) {
@@ -133,6 +135,9 @@ function getAllProjects(req, res) {
                 if (filtros.isMinistry) {
                     let ministry = (filtros.isMinistry === 'true');
                     where.isMinistry = ministry;
+                }
+                if (filtros.status) {
+                    where.status = filtros.status;
                 }
                 const projects = yield project_entity_1.default.findAll({ where, order: '"createdAt" DESC' });
                 if (projects.length > 0) {
@@ -265,6 +270,8 @@ function getProjectCompleto(idProject) {
                         legalLand: projectFind.legalLand,
                         agripManage: projectFind.agripManage,
                         snipCode: projectFind.snipCode,
+                        advance: projectFind.advance,
+                        status: projectFind.status,
                         observations: projectFind.observations,
                         createdAt: projectFind.createdAt,
                         updatedAt: projectFind.updatedAt,
@@ -289,7 +296,12 @@ function getProjectCompleto(idProject) {
                         legalLand: projectFind.legalLand,
                         agripManage: projectFind.agripManage,
                         snipCode: projectFind.snipCode,
+                        advance: projectFind.advance,
+                        status: projectFind.status,
                         observations: projectFind.observations,
+                        createdAt: projectFind.createdAt,
+                        updatedAt: projectFind.updatedAt,
+                        deletedAt: projectFind.deletedAt,
                         tracking: []
                     };
                     const response = Object.assign({}, proj);

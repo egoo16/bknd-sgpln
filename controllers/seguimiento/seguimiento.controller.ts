@@ -31,6 +31,8 @@ export async function createProject(req: Request, res: Response) {
             agripManage: projectCreated.agripManage,
             snipCode: projectCreated.snipCode,
             observations: projectCreated.observations,
+            advance: projectCreated.advance,
+            status: projectCreated.status,
         }
         const tracking = req.body.tracking;
         if (tracking?.length > 0) {
@@ -134,6 +136,10 @@ export async function getAllProjects(req: Request, res: Response) {
             if (filtros.isMinistry) {
                 let ministry = (filtros.isMinistry === 'true');
                 where.isMinistry = ministry;
+            }
+
+            if (filtros.status){
+                where.status = filtros.status;
             }
 
             const projects = await project.findAll({ where, order: '"createdAt" DESC' });
@@ -268,6 +274,8 @@ async function getProjectCompleto(idProject: string) {
                     legalLand: projectFind.legalLand,
                     agripManage: projectFind.agripManage,
                     snipCode: projectFind.snipCode,
+                    advance: projectFind.advance,
+                    status: projectFind.status,
                     observations: projectFind.observations,
                     createdAt: projectFind.createdAt,
                     updatedAt: projectFind.updatedAt,
@@ -295,7 +303,12 @@ async function getProjectCompleto(idProject: string) {
                     legalLand: projectFind.legalLand,
                     agripManage: projectFind.agripManage,
                     snipCode: projectFind.snipCode,
+                    advance: projectFind.advance,
+                    status: projectFind.status,
                     observations: projectFind.observations,
+                    createdAt: projectFind.createdAt,
+                    updatedAt: projectFind.updatedAt,
+                    deletedAt: projectFind.deletedAt,
                     tracking: []
                 }
 
