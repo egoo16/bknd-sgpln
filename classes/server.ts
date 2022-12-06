@@ -23,7 +23,7 @@ export default class Server {
       });
 
 
-      await project.sync({force: true});
+      // await project.sync({force: true});
       // await referencePopulation.sync({force:true});
       // await populationDelimitation.sync({force:true});
     } catch (error) {
