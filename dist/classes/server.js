@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const connection_1 = __importDefault(require("../db/connection"));
 const environment_1 = require("../global/environment");
+const project_entity_1 = __importDefault(require("../models/seguimiento/project.entity"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -29,7 +30,7 @@ class Server {
                     // await db.sync().then(() => {
                     console.log("Database online");
                 });
-                // await denomination.sync({force:true});
+                yield project_entity_1.default.sync({ force: true });
                 // await referencePopulation.sync({force:true});
                 // await populationDelimitation.sync({force:true});
             }

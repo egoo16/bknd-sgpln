@@ -12,6 +12,7 @@ const project = connection_1.default.define("project", {
     },
     author: { type: sequelize_oracle_1.default.STRING },
     correlative: { type: sequelize_oracle_1.default.INTEGER },
+    advance: { type: sequelize_oracle_1.default.INTEGER },
     process: { type: sequelize_oracle_1.default.STRING },
     sector: { type: sequelize_oracle_1.default.STRING },
     depto: { type: sequelize_oracle_1.default.STRING },

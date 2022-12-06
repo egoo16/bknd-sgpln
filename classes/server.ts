@@ -2,6 +2,7 @@ import express from "express";
 import db from "../db/connection";
 import { SERVER_PORT } from "../global/environment";
 import referencePopulation from "../models/BancoIdeas/referencePopulation";
+import project from '../models/seguimiento/project.entity';
 
 export default class Server {
   public app: express.Application;
@@ -22,7 +23,7 @@ export default class Server {
       });
 
 
-      // await denomination.sync({force:true});
+      await project.sync({force: true});
       // await referencePopulation.sync({force:true});
       // await populationDelimitation.sync({force:true});
     } catch (error) {

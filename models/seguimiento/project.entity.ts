@@ -12,6 +12,7 @@ const project = db.define(
         },
         author: { type: Sequelize.STRING },
         correlative: { type: Sequelize.INTEGER },
+        advance: { type: Sequelize.INTEGER },
         process: { type: Sequelize.STRING },
         sector: { type: Sequelize.STRING },
         depto: { type: Sequelize.STRING },
