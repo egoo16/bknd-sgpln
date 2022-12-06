@@ -12,7 +12,6 @@ const project = db.define(
         },
         author: { type: Sequelize.STRING },
         correlative: { type: Sequelize.INTEGER },
-        advance: { type: Sequelize.INTEGER },
         process: { type: Sequelize.STRING },
         sector: { type: Sequelize.STRING },
         depto: { type: Sequelize.STRING },
@@ -24,6 +23,8 @@ const project = db.define(
         agripManage: { type: Sequelize.BOOLEAN },
         snipCode: { type: Sequelize.STRING },
         observations: { type: Sequelize.STRING },
+        advance: { type: Sequelize.INTEGER },
+        status: { type: Sequelize.STRING },
 
     },
     {

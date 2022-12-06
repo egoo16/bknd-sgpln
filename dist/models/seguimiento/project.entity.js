@@ -12,7 +12,6 @@ const project = connection_1.default.define("project", {
     },
     author: { type: sequelize_oracle_1.default.STRING },
     correlative: { type: sequelize_oracle_1.default.INTEGER },
-    advance: { type: sequelize_oracle_1.default.INTEGER },
     process: { type: sequelize_oracle_1.default.STRING },
     sector: { type: sequelize_oracle_1.default.STRING },
     depto: { type: sequelize_oracle_1.default.STRING },
@@ -24,6 +23,8 @@ const project = connection_1.default.define("project", {
     agripManage: { type: sequelize_oracle_1.default.BOOLEAN },
     snipCode: { type: sequelize_oracle_1.default.STRING },
     observations: { type: sequelize_oracle_1.default.STRING },
+    advance: { type: sequelize_oracle_1.default.INTEGER },
+    status: { type: sequelize_oracle_1.default.STRING },
 }, {
     underscoded: true,
     paranoid: true,

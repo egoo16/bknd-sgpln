@@ -21,7 +21,9 @@ const comment_1 = __importDefault(require("../../models/seguimiento/comment"));
 function createProject(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const projectModel = req.body;
+            let projectModel = req.body;
+            projectModel.advance = 0;
+            projectModel.status = 'REGISTER';
             let allTracks = [];
             const projectCreated = yield project_entity_1.default.create(Object.assign({}, projectModel));
             let proj = {

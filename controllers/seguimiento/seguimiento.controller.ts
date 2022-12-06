@@ -9,7 +9,9 @@ import comment from '../../models/seguimiento/comment';
 export async function createProject(req: Request, res: Response) {
     try {
 
-        const projectModel = req.body;
+        let projectModel = req.body;
+        projectModel.advance = 0;
+        projectModel.status = 'REGISTER';
         let allTracks: any = [];
 
 
