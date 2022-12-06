@@ -2,19 +2,23 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { SEED } from "../global/environment";
 
-export const verificaToken = (req: Request, res: Response, next: NextFunction) => {
+export const verificaToken = (req: any, res: Response, next: NextFunction) => {
   try {
-    const token = String(req.query.token);
-    if (token) {
-      const verify: any = jwt.verify(token, SEED);
+    const token: any = req.headers.token;
 
-      if (!verify) {
-        return res.status(401).json({ ok: false, error: "Invalid token" });
+    jwt.verify(token, SEED, (err: any, decoded: any) => {
+      if (err) {
+        return res.status(401).json({
+          ok: false,
+          mensaje: 'Token Incorrecto',
+          errors: err,
+        });
       }
-      req.body.usuario = verify.usuario;
-      next()
-    //   res.status(200).json({ ok: true, verify})
-    }
+  
+      req.user = decoded.user;
+  
+      next();
+    });
   } catch (error) {
     return res.status(500).json({ ok: false, mensaje: "Invalid token", error });
   }

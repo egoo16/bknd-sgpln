@@ -4,6 +4,30 @@ import jwt from "jsonwebtoken";
 import { SEED } from '../../global/environment';
 const bcrypt = require('bcrypt');
 
+export const renovarToken = async (req: any, res: Response) => {
+    try {
+        const token = jwt.sign(
+            {
+                user: req.user,
+            },
+            SEED,
+            {
+                expiresIn: 14400,
+            }
+        );
+
+        res.status(200).json({
+            ok: true,
+            user: req.user,
+            token: token,
+            id: req.user.id,
+        });
+    } catch (error) {
+
+    }
+
+}
+
 export const loginUsuario = async (req: Request, res: Response) => {
     try {
         const body = req.body;
@@ -57,7 +81,7 @@ export const loginUsuario = async (req: Request, res: Response) => {
                     usuario.password = ":D";
                     //Creacion del Token
 
-                    const token = jwt.sign({ usuario }, SEED, {
+                    const token = jwt.sign({ user: usuario }, SEED, {
                         expiresIn: 14400,
                     }); //4 horas de expiracion
 
@@ -96,7 +120,7 @@ export const postUsuario = async (req: Request, res: Response) => {
                 position: body.position
             }
 
-            let userCreated = await createUser({...usuario});
+            let userCreated = await createUser({ ...usuario });
             userCreated.password = 'like'
 
             return res.status(201).send({
@@ -115,7 +139,7 @@ export const postUsuario = async (req: Request, res: Response) => {
 async function createUser(user: any) {
     try {
         if (user) {
-            let userCreated = await Usuario.create({...user});
+            let userCreated = await Usuario.create({ ...user });
             return userCreated;
         }
         else {
