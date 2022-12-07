@@ -86,9 +86,27 @@ export async function addTrack(req: Request, res: Response) {
 
 async function createTrack(trackModel: any, projectId: string) {
 
+    let projectUd = await project.findOne({
+        where: {
+            id: projectId
+        }
+    })
+    if (projectUd) {
+        const a = parseInt(trackModel.iapa);
+        const b = parseInt(trackModel.iapb);
+        const c = parseInt(trackModel.iapc);
+        const totalProgress = a + b + c;
+        projectUd.advance = totalProgress;
+        await projectUd.save()
+
+    } else {
+        throw new Error("No se Encontro el proyecto ");
+    }
+
     const trackCreated = await track.create({ ...trackModel, projectId });
     if (trackModel.advisoryEpi) {
         let advEpi = trackModel.advisoryEpi;
+        advEpi.doc = '';
         let advEpiCreated = await advisoryEpi.create({ ...advEpi, trackId: trackCreated.id });
     }
     if (trackModel.advisoryDoc) {
@@ -98,7 +116,8 @@ async function createTrack(trackModel: any, projectId: string) {
         let advEpiCreated = await advisoryDoc.create({ ...advDoc, trackId: trackCreated.id });
         if (cments.length > 0) {
             const cmProm = await Promise.all(cments.map(async (cmt: any) => {
-                const response = await comment.create({ ...cmt, advisoryDocId: advEpiCreated.id });
+                cmt.advisoryDocId = advEpiCreated.id
+                const response = await comment.create({ ...cmt });
             }))
         }
     }
@@ -138,7 +157,7 @@ export async function getAllProjects(req: Request, res: Response) {
                 where.isMinistry = ministry;
             }
 
-            if (filtros.status){
+            if (filtros.status) {
                 where.status = filtros.status;
             }
 

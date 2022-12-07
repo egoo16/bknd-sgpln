@@ -86,9 +86,26 @@ function addTrack(req, res) {
 exports.addTrack = addTrack;
 function createTrack(trackModel, projectId) {
     return __awaiter(this, void 0, void 0, function* () {
+        let projectUd = yield project_entity_1.default.findOne({
+            where: {
+                id: projectId
+            }
+        });
+        if (projectUd) {
+            const a = parseInt(trackModel.iapa);
+            const b = parseInt(trackModel.iapb);
+            const c = parseInt(trackModel.iapc);
+            const totalProgress = a + b + c;
+            projectUd.advance = totalProgress;
+            yield projectUd.save();
+        }
+        else {
+            throw new Error("No se Encontro el proyecto ");
+        }
         const trackCreated = yield track_entity_1.default.create(Object.assign(Object.assign({}, trackModel), { projectId }));
         if (trackModel.advisoryEpi) {
             let advEpi = trackModel.advisoryEpi;
+            advEpi.doc = '';
             let advEpiCreated = yield advisoryEpi_1.default.create(Object.assign(Object.assign({}, advEpi), { trackId: trackCreated.id }));
         }
         if (trackModel.advisoryDoc) {
@@ -98,7 +115,8 @@ function createTrack(trackModel, projectId) {
             let advEpiCreated = yield advisoryDoc_1.default.create(Object.assign(Object.assign({}, advDoc), { trackId: trackCreated.id }));
             if (cments.length > 0) {
                 const cmProm = yield Promise.all(cments.map((cmt) => __awaiter(this, void 0, void 0, function* () {
-                    const response = yield comment_1.default.create(Object.assign(Object.assign({}, cmt), { advisoryDocId: advEpiCreated.id }));
+                    cmt.advisoryDocId = advEpiCreated.id;
+                    const response = yield comment_1.default.create(Object.assign({}, cmt));
                 })));
             }
         }
