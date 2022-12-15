@@ -2,6 +2,7 @@ import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
 import advisoryDoc from "./advisoryDoc";
 import advisoryEpi from "./advisoryEpi";
+import visitCard from "./visitCard.entity";
 
 
 const track = db.define(
@@ -22,8 +23,9 @@ const track = db.define(
     }
 );
 
-track.hasOne(advisoryEpi, { foreingKey: 'trackId' })
-track.hasOne(advisoryDoc, { foreingKey: 'trackId' })
+track.hasMany(advisoryEpi, { foreingKey: 'trackId' })
+track.hasMany(advisoryDoc, { foreingKey: 'trackId' })
+track.hasOne(visitCard, { foreingKey: 'trackId' })
 
 
 export default track;

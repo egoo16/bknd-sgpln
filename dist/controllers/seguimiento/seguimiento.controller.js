@@ -96,6 +96,9 @@ function createTrack(trackModel, projectId) {
             const b = parseInt(trackModel.iapb);
             const c = parseInt(trackModel.iapc);
             const totalProgress = a + b + c;
+            if (totalProgress == 100) {
+                projectUd.status = 'FINISHED';
+            }
             projectUd.advance = totalProgress;
             yield projectUd.save();
         }
@@ -148,6 +151,7 @@ function getAllProjects(req, res) {
         try {
             let where = {};
             let filtros = req.query;
+            console.log("🚀 ~ file: seguimiento.controller.ts:155 ~ getAllProjects ~ filtros", filtros);
             let projectsResponse = [];
             if (filtros) {
                 if (filtros.isMinistry) {
@@ -156,6 +160,30 @@ function getAllProjects(req, res) {
                 }
                 if (filtros.status) {
                     where.status = filtros.status;
+                }
+                if (filtros.departamento) {
+                    where.depto = filtros.departamento;
+                }
+                if (filtros.municipio) {
+                    where.munic = filtros.municipio;
+                }
+                if (filtros.mes) {
+                    let year = 2022;
+                    let nextYear = 2022;
+                    if (filtros.year) {
+                        year = parseInt(filtros.year);
+                        nextYear = parseInt(filtros.year);
+                    }
+                    else {
+                        year = 2022;
+                    }
+                    let month = parseInt(filtros.mes);
+                    let nextMonth = month + 1;
+                    if (nextMonth > 12) {
+                        nextMonth = 1;
+                        nextYear = year + 1;
+                    }
+                    where.createdAt = { $between: [new Date(`${filtros.mes}-1-${year}`), new Date(`${nextMonth}-1-${nextYear}`)] };
                 }
                 const projects = yield project_entity_1.default.findAll({ where, order: '"createdAt" DESC' });
                 if (projects.length > 0) {

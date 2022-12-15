@@ -96,6 +96,9 @@ async function createTrack(trackModel: any, projectId: string) {
         const b = parseInt(trackModel.iapb);
         const c = parseInt(trackModel.iapc);
         const totalProgress = a + b + c;
+        if (totalProgress == 100) {
+            projectUd.status = 'FINISHED';
+        }
         projectUd.advance = totalProgress;
         await projectUd.save()
 
@@ -149,6 +152,7 @@ export async function getAllProjects(req: Request, res: Response) {
     try {
         let where: any = {};
         let filtros: any = req.query
+        console.log("🚀 ~ file: seguimiento.controller.ts:155 ~ getAllProjects ~ filtros", filtros)
         let projectsResponse: any[] = [];
 
         if (filtros) {
@@ -159,6 +163,31 @@ export async function getAllProjects(req: Request, res: Response) {
 
             if (filtros.status) {
                 where.status = filtros.status;
+            }
+            if (filtros.departamento) {
+                where.depto = filtros.departamento;
+            }
+            if (filtros.municipio) {
+                where.munic = filtros.municipio;
+            }
+            if (filtros.mes) {
+                let year = 2022
+                let nextYear = 2022
+                if (filtros.year) {
+                    year = parseInt(filtros.year)
+                    nextYear = parseInt(filtros.year)
+                } else {
+                    year = 2022
+                }
+                let month = parseInt(filtros.mes)
+                let nextMonth = month + 1;
+                if (nextMonth > 12) {
+                    nextMonth = 1;
+                    nextYear = year + 1;
+                }
+
+
+                where.createdAt = { $between: [new Date(`${filtros.mes}-1-${year}`), new Date(`${nextMonth}-1-${nextYear}`)] };
             }
 
             const projects = await project.findAll({ where, order: '"createdAt" DESC' });
