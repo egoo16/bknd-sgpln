@@ -1,19 +1,7 @@
 'use strict'
 import models from "../../db/connection";
+import { projectDescription, populationDelimitation, ideaAlternative, qualification, generalInformation, preInvestment, preliminaryName, referencePopulation, denomination, executionTime, geographicArea, responsibleEntity } from "../../models/BancoIdeas";
 import dataGeo from "../../models/BancoIdeas/datageo.model";
-import denomination from "../../models/BancoIdeas/denomination";
-import executionTime from "../../models/BancoIdeas/executionTime";
-import generalInformation from "../../models/BancoIdeas/generalInformation";
-import geographicArea from "../../models/BancoIdeas/geographicArea";
-import ideaAlternative from "../../models/BancoIdeas/ideaAlternative";
-import populationDelimitation from "../../models/BancoIdeas/populationDelimitation";
-import preInvestment from "../../models/BancoIdeas/preInvestment";
-import preliminaryName from "../../models/BancoIdeas/preliminaryName";
-import projectDescription from "../../models/BancoIdeas/projectDescription";
-import qualification from "../../models/BancoIdeas/qualification";
-import referencePopulation from "../../models/BancoIdeas/referencePopulation";
-import responsableEntity from "../../models/BancoIdeas/responsibleEntity";
-import responsibleEntity from "../../models/BancoIdeas/responsibleEntity";
 
 
 
@@ -28,28 +16,28 @@ export async function FgetPreinversion(idAlternativa: any) {
         if (costo <= 300000) {
             rangoInversion = 2
             resRangoInversion = '<=300,000'
-        }else if (costo >= 300001 && costo <= 500000) {
+        } else if (costo >= 300001 && costo <= 500000) {
             rangoInversion = 5
             resRangoInversion = '>300,001<=500,000'
-        }else if (costo >= 500001 && costo <= 699999) {
+        } else if (costo >= 500001 && costo <= 699999) {
             rangoInversion = 7
             resRangoInversion = '>500,001<=699,999'
         } else if (costo >= 700000 && costo <= 900000) {
             rangoInversion = 10
             resRangoInversion = '>700,000<=900,000'
-        }else if (costo >= 900001 && costo <= 10000000) {
+        } else if (costo >= 900001 && costo <= 10000000) {
             rangoInversion = 12
             resRangoInversion = '>900,001<=10,000,000'
-        }else if (costo >= 10000001 && costo <= 19000000) {
+        } else if (costo >= 10000001 && costo <= 19000000) {
             rangoInversion = 15
             resRangoInversion = '>10,000,001<=19,000,000'
-        }else if (costo >= 19000001 && costo <= 30000000) {
+        } else if (costo >= 19000001 && costo <= 30000000) {
             rangoInversion = 18
             resRangoInversion = '>19,000,001<=30,000,000'
-        }else if (costo >= 30000001 && costo <= 40000000) {
+        } else if (costo >= 30000001 && costo <= 40000000) {
             rangoInversion = 22
             resRangoInversion = '>30,000,001<=40,000,000'
-        }else if (costo >= 40000001 && costo <= 50000000) {
+        } else if (costo >= 40000001 && costo <= 50000000) {
             rangoInversion = 25
             resRangoInversion = '>40,000,001<=50,000,000'
         } else if (costo >= 50000001) {
@@ -69,7 +57,7 @@ export async function FgetPreinversion(idAlternativa: any) {
         } else if (benefits >= 10001 && benefits <= 20000) {
             estBenefits = 18
             resEstBenefits = '>10,001 <= 20,000'
-        }else if (benefits >= 20001 && benefits <= 50000) {
+        } else if (benefits >= 20001 && benefits <= 50000) {
             estBenefits = 24
             resEstBenefits = '>20,001 <= 50,000'
         } else if (benefits >= 50001) {
@@ -149,7 +137,7 @@ export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: 
     }
 }
 
-export async function FaddPertinenceQuality(pertinence: any, transaction: any) {
+export async function FaddPertinenceQuality(pertinence: any, transaction: any, user?: any) {
     try {
 
         let total = pertinence.total;
@@ -181,6 +169,7 @@ export async function FaddPertinenceQuality(pertinence: any, transaction: any) {
             });
 
             alternative.state = 'CALIFICADA';
+            alternative.analizer = user.id;
             alternative.save();
 
             let generalIdea = await generalInformation.findOne({
@@ -193,10 +182,12 @@ export async function FaddPertinenceQuality(pertinence: any, transaction: any) {
 
             if (state == 'PENDIENTE') {
                 generalIdea.result = result;
+                generalIdea.analizer = user.id;
                 generalIdea.save();
             } else if (state == 'NO PERTINENTE') {
                 if (result != 'NO PERTINENTE') {
                     generalIdea.result = result;
+                    generalIdea.analizer = user.id;
                     generalIdea.save();
                 }
             }
@@ -288,7 +279,7 @@ export async function FcreatePreleminaryName(prName: any, idAlternativa: number,
 export async function FcresponsableEntity(resEntity: any, idAlternativa: number, transaction: any) {
     try {
         resEntity.AlterId = idAlternativa
-        let responsableEntityCreated = await responsableEntity.create(resEntity, { transaction })
+        let responsableEntityCreated = await responsibleEntity.create(resEntity, { transaction })
         return { responsableEntityCreated, message: `Entidad responsable ingresada correctamente` };
     } catch (error) {
         transaction.rollback()
@@ -1063,7 +1054,7 @@ export async function fupdateIdeaAlternativeComplete(ideaAlt: any, transaction: 
                 if (alternativeCreated) {
                     alternative = await getAlternative(alternativeCreated.codigo)
                 }
-            }).catch(async (err: any) =>{
+            }).catch(async (err: any) => {
                 await transaction.rollback();
             })
         } else {

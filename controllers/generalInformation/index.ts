@@ -4,14 +4,10 @@ import moment from "moment";
 const Sequelize = require('sequelize-oracle');
 const { Op } = require("sequelize-oracle");
 
-import generalInformation from "../../models/BancoIdeas/generalInformation";
-import stage from "../../models/BancoIdeas/stage";
-import possibleEffects from "../../models/BancoIdeas/possibleEffects";
-import possibleCauses from "../../models/BancoIdeas/possibleCauses";
-import possibleAlternatives from "../../models/BancoIdeas/possibleAlternatives";
 import { FaddPertinenceQuality, FcreateIdeaAlternativeComplete, FgetPreinversion, getAlternatives } from '../alternativeIdea/feature';
+import { stage, generalInformation, possibleEffects, possibleCauses, possibleAlternatives } from "../../models/BancoIdeas";
 
-export const postGeneralInformation = async (req: Request, res: Response) => {
+export const postGeneralInformation = async (req: any, res: Response) => {
     let transaction = await models.transaction();
     try {
         const { body } = req;
@@ -35,6 +31,7 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
         informationModel.state = 'CREADA';
         informationModel.result = 'PENDIENTE';
 
+        informationModel.author = req.user.id;
 
         //#region Correlative
         const correlative = await generalInformation.max("correlation");
@@ -135,7 +132,7 @@ export const postGeneralInformation = async (req: Request, res: Response) => {
     }
 };
 
-export const getGeneralInformation = async (req: Request, res: Response) => {
+export const getGeneralInformation = async (req: any, res: Response) => {
     try {
 
         let where: any = {}
@@ -150,12 +147,17 @@ export const getGeneralInformation = async (req: Request, res: Response) => {
                     $like: `%${filtros.number}%`
                 }
             }
+            if (filtros.author == 'Mis Ideas'){
+                where.author = req.user.id
+            }
             if (filtros.fechaDesde && filtros.fechaHasta) {
                 where.createdAt = {
                     [models.Op.between]: [filtros.fechaDesde, filtros.fechaHasta],
                 }
             }
         }
+
+        where.idEntity = req.user.id_inst;
         console.log(where)
 
         let generalInformations = await generalInformation.findAll({

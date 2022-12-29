@@ -4,8 +4,8 @@ import { verificaToken } from "../../middlewares/authentication";
 
 const generalRouter = Router();
 
-generalRouter.post("/information", postGeneralInformation);
-generalRouter.get("/information", getGeneralInformation);
+generalRouter.post("/information", verificaToken, postGeneralInformation);
+generalRouter.get("/information", verificaToken, getGeneralInformation);
 generalRouter.get("/send-idea/:id", sendIdea);
 generalRouter.get("/return-idea/:id", returnIdea);
 

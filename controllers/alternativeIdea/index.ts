@@ -2,20 +2,9 @@
 
 import { Request, Response } from "express";
 import models from "../../db/connection";
-import { FaddPertinenceQuality, FcreateIdeaAlternativeComplete, FgetPreinversion, fupdateIdeaAlternativeComplete, getAlternatives } from './feature';
-
-
-import ideaAlternative from "../../models/BancoIdeas/ideaAlternative";
-
-import populationDelimitation from "../../models/BancoIdeas/populationDelimitation";
-import geographicArea from '../../models/BancoIdeas/geographicArea';
-import projectDescription from '../../models/BancoIdeas/projectDescription';
-import referencePopulation from "../../models/BancoIdeas/referencePopulation";
-import denomination from "../../models/BancoIdeas/denomination";
-import executionTime from "../../models/BancoIdeas/executionTime";
-import generalInformation from "../../models/BancoIdeas/generalInformation";
+import { denomination, referencePopulation, ideaAlternative, populationDelimitation, geographicArea, projectDescription, executionTime, generalInformation } from "../../models/BancoIdeas";
 import dataGeo from "../../models/BancoIdeas/datageo.model";
-
+import { FaddPertinenceQuality, FcreateIdeaAlternativeComplete, FgetPreinversion, fupdateIdeaAlternativeComplete, getAlternatives } from './feature';
 
 
 /**
@@ -38,13 +27,13 @@ export async function createIdeaAlternativeComplete(req: Request, res: Response)
  * Funcion para  listar las configuraciones globales
  * @param {*} req
  */
-export async function addPertinenceQuality(req: Request, res: Response) {
+export async function addPertinenceQuality(req: any, res: Response) {
     let transaction = await models.transaction()
     try {
         console.log(req.body)
         let matrixPertinence = {...req.body}
         matrixPertinence.terreno = JSON.stringify(req.body.terreno)
-        let pertinence = await FaddPertinenceQuality(matrixPertinence, transaction)
+        let pertinence = await FaddPertinenceQuality(matrixPertinence, transaction, req.user)
         transaction.commit()
         return res.status(200).send(pertinence)
     } catch (error: any) {

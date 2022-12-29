@@ -14,16 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateIdeaAlternativeComplete = exports.getPertinencia = exports.getAlternative = exports.getReferencePopulation = exports.getDenomination = exports.getPreinversion = exports.addPertinenceQuality = exports.createIdeaAlternativeComplete = void 0;
 const connection_1 = __importDefault(require("../../db/connection"));
-const feature_1 = require("./feature");
-const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
-const populationDelimitation_1 = __importDefault(require("../../models/BancoIdeas/populationDelimitation"));
-const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geographicArea"));
-const projectDescription_1 = __importDefault(require("../../models/BancoIdeas/projectDescription"));
-const referencePopulation_1 = __importDefault(require("../../models/BancoIdeas/referencePopulation"));
-const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomination"));
-const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executionTime"));
-const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
+const BancoIdeas_1 = require("../../models/BancoIdeas");
 const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
+const feature_1 = require("./feature");
 /**
  * Funcion para  listar las configuraciones globales
  * @param {*} req
@@ -54,7 +47,7 @@ function addPertinenceQuality(req, res) {
             console.log(req.body);
             let matrixPertinence = Object.assign({}, req.body);
             matrixPertinence.terreno = JSON.stringify(req.body.terreno);
-            let pertinence = yield (0, feature_1.FaddPertinenceQuality)(matrixPertinence, transaction);
+            let pertinence = yield (0, feature_1.FaddPertinenceQuality)(matrixPertinence, transaction, req.user);
             transaction.commit();
             return res.status(200).send(pertinence);
         }
@@ -83,16 +76,16 @@ function getPreinversion(req, res) {
 exports.getPreinversion = getPreinversion;
 const getDenomination = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let data = yield denomination_1.default.findAll();
+        let data = yield BancoIdeas_1.denomination.findAll();
         if (data.length <= 0) {
             let den1 = { name: 'Alumnos' };
-            let denCreated = yield denomination_1.default.create(den1);
+            let denCreated = yield BancoIdeas_1.denomination.create(den1);
             den1.name = 'Pacientes';
-            denCreated = yield denomination_1.default.create(den1);
+            denCreated = yield BancoIdeas_1.denomination.create(den1);
             den1.name = 'Agricultores';
-            denCreated = yield denomination_1.default.create(den1);
+            denCreated = yield BancoIdeas_1.denomination.create(den1);
         }
-        data = yield denomination_1.default.findAll();
+        data = yield BancoIdeas_1.denomination.findAll();
         res.status(200).json({
             msg: "Datos Obtenidos",
             data,
@@ -108,18 +101,18 @@ const getDenomination = (req, res) => __awaiter(void 0, void 0, void 0, function
 exports.getDenomination = getDenomination;
 const getReferencePopulation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let data = yield referencePopulation_1.default.findAll();
+        let data = yield BancoIdeas_1.referencePopulation.findAll();
         if (data.length <= 0) {
             let ref = { name: 'Nacional' };
-            let denCreated = yield referencePopulation_1.default.create(ref);
+            let denCreated = yield BancoIdeas_1.referencePopulation.create(ref);
             ref.name = 'Departamental';
-            denCreated = yield referencePopulation_1.default.create(ref);
+            denCreated = yield BancoIdeas_1.referencePopulation.create(ref);
             ref.name = 'Municipal';
-            denCreated = yield referencePopulation_1.default.create(ref);
+            denCreated = yield BancoIdeas_1.referencePopulation.create(ref);
             ref.name = 'Comunal';
-            denCreated = yield referencePopulation_1.default.create(ref);
+            denCreated = yield BancoIdeas_1.referencePopulation.create(ref);
         }
-        data = yield referencePopulation_1.default.findAll();
+        data = yield BancoIdeas_1.referencePopulation.findAll();
         res.status(200).json({
             msg: "Datos Obtenidos",
             data,
@@ -154,27 +147,27 @@ exports.getAlternative = getAlternative;
 const getPertinencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let idAlternative = req.params.id;
-        let alternative = yield ideaAlternative_1.default.findOne({
+        let alternative = yield BancoIdeas_1.ideaAlternative.findOne({
             where: {
                 codigo: idAlternative
             }
         });
-        let population = yield populationDelimitation_1.default.findOne({
+        let population = yield BancoIdeas_1.populationDelimitation.findOne({
             where: {
                 AlterId: alternative.codigo
             },
             include: [
                 {
                     required: false,
-                    model: referencePopulation_1.default
+                    model: BancoIdeas_1.referencePopulation
                 },
                 {
                     required: false,
-                    model: denomination_1.default
+                    model: BancoIdeas_1.denomination
                 },
             ]
         });
-        let geograficArea = yield geographicArea_1.default.findOne({
+        let geograficArea = yield BancoIdeas_1.geographicArea.findOne({
             where: {
                 AlterId: alternative.codigo
             },
@@ -187,18 +180,18 @@ const getPertinencia = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 },
             });
         }
-        let projectDes = yield projectDescription_1.default.findOne({
+        let projectDes = yield BancoIdeas_1.projectDescription.findOne({
             where: {
                 AlterId: alternative.codigo
             },
             include: [
                 {
                     required: false,
-                    model: executionTime_1.default
+                    model: BancoIdeas_1.executionTime
                 },
             ]
         });
-        let generalInformations = yield generalInformation_1.default.findOne({
+        let generalInformations = yield BancoIdeas_1.generalInformation.findOne({
             where: {
                 codigo: alternative.sectionBIId
             },

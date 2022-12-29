@@ -17,19 +17,15 @@ const connection_1 = __importDefault(require("../../db/connection"));
 const moment_1 = __importDefault(require("moment"));
 const Sequelize = require('sequelize-oracle');
 const { Op } = require("sequelize-oracle");
-const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
-const stage_1 = __importDefault(require("../../models/BancoIdeas/stage"));
-const possibleEffects_1 = __importDefault(require("../../models/BancoIdeas/possibleEffects"));
-const possibleCauses_1 = __importDefault(require("../../models/BancoIdeas/possibleCauses"));
-const possibleAlternatives_1 = __importDefault(require("../../models/BancoIdeas/possibleAlternatives"));
 const feature_1 = require("../alternativeIdea/feature");
+const BancoIdeas_1 = require("../../models/BancoIdeas");
 const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let transaction = yield connection_1.default.transaction();
     try {
         const { body } = req;
         const informationModel = body;
         //#region Stage Idea
-        let stageModel = yield stage_1.default.findOne({
+        let stageModel = yield BancoIdeas_1.stage.findOne({
             where: {
                 name: 'Idea'
             }
@@ -39,14 +35,15 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
         }
         else {
             let stageCreate = { name: 'Idea' };
-            let stageCreated = yield stage_1.default.create(stageCreate);
+            let stageCreated = yield BancoIdeas_1.stage.create(stageCreate);
             informationModel.idStage = stageCreated.codigo;
         }
         //#endregion
         informationModel.state = 'CREADA';
         informationModel.result = 'PENDIENTE';
+        informationModel.author = req.user.id;
         //#region Correlative
-        const correlative = yield generalInformation_1.default.max("correlation");
+        const correlative = yield BancoIdeas_1.generalInformation.max("correlation");
         if (correlative) {
             const calculate = parseInt(correlative, 10) + 1;
             if (calculate >= 99998) {
@@ -68,7 +65,7 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
             informationModel.registerCode = crlative;
         }
         //#endregion END Correlative
-        const informationIsert = yield generalInformation_1.default.create(informationModel, {
+        const informationIsert = yield BancoIdeas_1.generalInformation.create(informationModel, {
             transaction,
         });
         //#region Insertando Efectos
@@ -76,7 +73,7 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
         if ((effects === null || effects === void 0 ? void 0 : effects.length) > 0) {
             let resEffects = yield Promise.all(effects.map((effect) => __awaiter(void 0, void 0, void 0, function* () {
                 effect.InformationId = informationIsert.codigo;
-                let res = yield possibleEffects_1.default.create(effect, {
+                let res = yield BancoIdeas_1.possibleEffects.create(effect, {
                     transaction,
                 });
                 return res;
@@ -88,7 +85,7 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
         if ((causes === null || causes === void 0 ? void 0 : causes.length) > 0) {
             let resCauses = yield Promise.all(causes.map((cause) => __awaiter(void 0, void 0, void 0, function* () {
                 cause.InformationId = informationIsert.codigo;
-                let res = yield possibleCauses_1.default.create(cause, {
+                let res = yield BancoIdeas_1.possibleCauses.create(cause, {
                     transaction,
                 });
                 return res;
@@ -100,7 +97,7 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
         if ((alternatives === null || alternatives === void 0 ? void 0 : alternatives.length) > 0) {
             let resAlternatives = yield Promise.all(alternatives.map((alternative) => __awaiter(void 0, void 0, void 0, function* () {
                 alternative.InformationId = informationIsert.codigo;
-                let res = yield possibleAlternatives_1.default.create(alternative, {
+                let res = yield BancoIdeas_1.possibleAlternatives.create(alternative, {
                     transaction,
                 });
                 return res;
@@ -148,14 +145,18 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
                     $like: `%${filtros.number}%`
                 };
             }
+            if (filtros.author == 'Mis Ideas') {
+                where.author = req.user.id;
+            }
             if (filtros.fechaDesde && filtros.fechaHasta) {
                 where.createdAt = {
                     [connection_1.default.Op.between]: [filtros.fechaDesde, filtros.fechaHasta],
                 };
             }
         }
+        where.idEntity = req.user.id_inst;
         console.log(where);
-        let generalInformations = yield generalInformation_1.default.findAll({
+        let generalInformations = yield BancoIdeas_1.generalInformation.findAll({
             where,
             order: [
                 ['correlation', 'ASC']
@@ -163,22 +164,22 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
             include: [
                 {
                     required: false,
-                    model: possibleEffects_1.default,
+                    model: BancoIdeas_1.possibleEffects,
                     // as: 'possibleEffects'
                 },
                 {
                     required: false,
-                    model: possibleCauses_1.default,
+                    model: BancoIdeas_1.possibleCauses,
                     // as: 'possibleCauses'
                 },
                 {
                     required: false,
-                    model: possibleAlternatives_1.default,
+                    model: BancoIdeas_1.possibleAlternatives,
                     // as: 'possibleAlternatives'
                 },
                 {
                     required: false,
-                    model: stage_1.default
+                    model: BancoIdeas_1.stage
                 },
             ]
         });
@@ -255,7 +256,7 @@ function sendIdea(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let idIdea = req.params.id;
-            let generalIdea = yield generalInformation_1.default.findOne({
+            let generalIdea = yield BancoIdeas_1.generalInformation.findOne({
                 where: {
                     codigo: idIdea
                 }
@@ -278,7 +279,7 @@ function returnIdea(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let idIdea = req.params.id;
-            let generalIdea = yield generalInformation_1.default.findOne({
+            let generalIdea = yield BancoIdeas_1.generalInformation.findOne({
                 where: {
                     codigo: idIdea
                 }

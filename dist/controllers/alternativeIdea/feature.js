@@ -13,25 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fupdateIdeaAlternativeComplete = exports.getAlternative = exports.getAlternatives = exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreatePreInvestment = exports.FaddPertinenceQuality = exports.FcreateIdeaAlternativeComplete = exports.FgetPreinversion = void 0;
+const BancoIdeas_1 = require("../../models/BancoIdeas");
 const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
-const denomination_1 = __importDefault(require("../../models/BancoIdeas/denomination"));
-const executionTime_1 = __importDefault(require("../../models/BancoIdeas/executionTime"));
-const generalInformation_1 = __importDefault(require("../../models/BancoIdeas/generalInformation"));
-const geographicArea_1 = __importDefault(require("../../models/BancoIdeas/geographicArea"));
-const ideaAlternative_1 = __importDefault(require("../../models/BancoIdeas/ideaAlternative"));
-const populationDelimitation_1 = __importDefault(require("../../models/BancoIdeas/populationDelimitation"));
-const preInvestment_1 = __importDefault(require("../../models/BancoIdeas/preInvestment"));
-const preliminaryName_1 = __importDefault(require("../../models/BancoIdeas/preliminaryName"));
-const projectDescription_1 = __importDefault(require("../../models/BancoIdeas/projectDescription"));
-const qualification_1 = __importDefault(require("../../models/BancoIdeas/qualification"));
-const referencePopulation_1 = __importDefault(require("../../models/BancoIdeas/referencePopulation"));
-const responsibleEntity_1 = __importDefault(require("../../models/BancoIdeas/responsibleEntity"));
-const responsibleEntity_2 = __importDefault(require("../../models/BancoIdeas/responsibleEntity"));
 function FgetPreinversion(idAlternativa) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const proDes = yield projectDescription_1.default.findOne({ where: { AlterId: idAlternativa } });
-            const popDel = yield populationDelimitation_1.default.findOne({ where: { AlterId: idAlternativa } });
+            const proDes = yield BancoIdeas_1.projectDescription.findOne({ where: { AlterId: idAlternativa } });
+            const popDel = yield BancoIdeas_1.populationDelimitation.findOne({ where: { AlterId: idAlternativa } });
             let costo = proDes.investmentCost;
             let rangoInversion = 0;
             let resRangoInversion = '';
@@ -157,7 +145,7 @@ function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
         try {
             let alternative;
             ideaAlt.state = 'CREADA';
-            let ideaAlternativeCreated = yield ideaAlternative_1.default.create(ideaAlt, { transaction });
+            let ideaAlternativeCreated = yield BancoIdeas_1.ideaAlternative.create(ideaAlt, { transaction });
             let codigoAlternativa = ideaAlternativeCreated.codigo;
             yield FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction);
             yield FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction);
@@ -180,7 +168,7 @@ function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
     });
 }
 exports.FcreateIdeaAlternativeComplete = FcreateIdeaAlternativeComplete;
-function FaddPertinenceQuality(pertinence, transaction) {
+function FaddPertinenceQuality(pertinence, transaction, user) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let total = pertinence.total;
@@ -193,21 +181,22 @@ function FaddPertinenceQuality(pertinence, transaction) {
                 pertinence.result = 'NO PERTINENTE';
                 result = 'NO PERTINENTE';
             }
-            let pertinenceMatrix = yield qualification_1.default.findOne({
+            let pertinenceMatrix = yield BancoIdeas_1.qualification.findOne({
                 where: {
                     AlterId: pertinence.AlterId
                 }
             });
             if (!pertinenceMatrix) {
-                let pertinenceResult = yield qualification_1.default.create(pertinence, { transaction });
-                let alternative = yield ideaAlternative_1.default.findOne({
+                let pertinenceResult = yield BancoIdeas_1.qualification.create(pertinence, { transaction });
+                let alternative = yield BancoIdeas_1.ideaAlternative.findOne({
                     where: {
                         codigo: pertinence.AlterId
                     }
                 });
                 alternative.state = 'CALIFICADA';
+                alternative.analizer = user.id;
                 alternative.save();
-                let generalIdea = yield generalInformation_1.default.findOne({
+                let generalIdea = yield BancoIdeas_1.generalInformation.findOne({
                     where: {
                         codigo: alternative.sectionBIId
                     }
@@ -215,11 +204,13 @@ function FaddPertinenceQuality(pertinence, transaction) {
                 let state = generalIdea.result;
                 if (state == 'PENDIENTE') {
                     generalIdea.result = result;
+                    generalIdea.analizer = user.id;
                     generalIdea.save();
                 }
                 else if (state == 'NO PERTINENTE') {
                     if (result != 'NO PERTINENTE') {
                         generalIdea.result = result;
+                        generalIdea.analizer = user.id;
                         generalIdea.save();
                     }
                 }
@@ -266,14 +257,14 @@ function FcreatePreInvestment(preInversion, idAlternativa) {
                 etapaValor: preInversion.etapa.valor,
                 etapaResultado: preInversion.etapa.resultado
             };
-            let preInvestmentLoad = yield preInvestment_1.default.findOne({
+            let preInvestmentLoad = yield BancoIdeas_1.preInvestment.findOne({
                 where: {
                     AlterId: idAlternativa
                 }
             });
             if (!preInvestmentLoad) {
                 preInversion.AlterId = idAlternativa;
-                let preInvestmentHistoryCreated = yield preInvestment_1.default.create(preInversionCreate);
+                let preInvestmentHistoryCreated = yield BancoIdeas_1.preInvestment.create(preInversionCreate);
                 return { preInvestmentHistoryCreated, message: `Pre inversion historico creado correctamente` };
             }
             else {
@@ -300,7 +291,7 @@ function FcreatePreleminaryName(prName, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             prName.AlterId = idAlternativa;
-            let preliminaryNameCreated = yield preliminaryName_1.default.create(prName, { transaction });
+            let preliminaryNameCreated = yield BancoIdeas_1.preliminaryName.create(prName, { transaction });
             return { preliminaryNameCreated, message: `Nombre preliminar ingresado correctamente` };
         }
         catch (error) {
@@ -315,7 +306,7 @@ function FcresponsableEntity(resEntity, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             resEntity.AlterId = idAlternativa;
-            let responsableEntityCreated = yield responsibleEntity_1.default.create(resEntity, { transaction });
+            let responsableEntityCreated = yield BancoIdeas_1.responsibleEntity.create(resEntity, { transaction });
             return { responsableEntityCreated, message: `Entidad responsable ingresada correctamente` };
         }
         catch (error) {
@@ -335,28 +326,28 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
             // let DenModel = await denomination.findAll();
             // popDemiliation.denId = DenModel[0].codigo;
             let referenceName = popDemiliation.refPopId;
-            let reference = yield referencePopulation_1.default.findOne({
+            let reference = yield BancoIdeas_1.referencePopulation.findOne({
                 where: {
                     name: referenceName
                 }
             });
             if (!reference) {
                 let ref = { name: referenceName };
-                let referenceCreate = yield referencePopulation_1.default.create(ref, { transaction });
+                let referenceCreate = yield BancoIdeas_1.referencePopulation.create(ref, { transaction });
                 popDemiliation.refPopId = referenceCreate.codigo;
             }
             else {
                 popDemiliation.refPopId = reference.codigo;
             }
             let denominationName = popDemiliation.denId;
-            let denmtion = yield denomination_1.default.findOne({
+            let denmtion = yield BancoIdeas_1.denomination.findOne({
                 where: {
                     name: denominationName
                 }
             });
             if (!denmtion) {
                 let denModel = { name: denominationName };
-                let denCreate = yield denomination_1.default.create(denModel, { transaction });
+                let denCreate = yield BancoIdeas_1.denomination.create(denModel, { transaction });
                 popDemiliation.denId = denCreate.codigo;
             }
             else {
@@ -369,7 +360,7 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
                 let resCov = (multCov * 100);
                 popDemiliation.coverage = resCov;
             }
-            let populationDelimitationCreated = yield populationDelimitation_1.default.create(popDemiliation, { transaction });
+            let populationDelimitationCreated = yield BancoIdeas_1.populationDelimitation.create(popDemiliation, { transaction });
             return { populationDelimitationCreated, message: `Delimitación preliminar ingresada correctamente` };
         }
         catch (error) {
@@ -390,9 +381,9 @@ function FcreateProjectDescription(proDescription, idAlternativa, transaction) {
             else if (!proDescription.annual || proDescription.annual == false) {
                 proDescription.annual = 0;
             }
-            let proDesctiptionCreated = yield projectDescription_1.default.create(proDescription, { transaction });
+            let proDesctiptionCreated = yield BancoIdeas_1.projectDescription.create(proDescription, { transaction });
             proDescription.execTime.projDescId = proDesctiptionCreated.codigo;
-            yield executionTime_1.default.create(proDescription.execTime, { transaction });
+            yield BancoIdeas_1.executionTime.create(proDescription.execTime, { transaction });
             return { proDesctiptionCreated, message: `Descripción preliminar de la idea proyecto ingresada correctamente` };
         }
         catch (error) {
@@ -407,7 +398,7 @@ function FcreateGeographicArea(geograpicArea, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             geograpicArea.AlterId = idAlternativa;
-            let geographicAreaCreated = yield geographicArea_1.default.create(geograpicArea, { transaction });
+            let geographicAreaCreated = yield BancoIdeas_1.geographicArea.create(geograpicArea, { transaction });
             if (geograpicArea.dataGeo) {
                 for (let data of geograpicArea.dataGeo) {
                     data.geoAreaId = geographicAreaCreated.codigo;
@@ -429,7 +420,7 @@ function getAlternatives(idIdea) {
         try {
             let idAlternative = idIdea;
             let datosResult = [];
-            let data = yield ideaAlternative_1.default.findAll({
+            let data = yield BancoIdeas_1.ideaAlternative.findAll({
                 where: {
                     sectionBIId: idAlternative
                 },
@@ -437,54 +428,54 @@ function getAlternatives(idIdea) {
                 include: [
                     {
                         required: false,
-                        model: preliminaryName_1.default
+                        model: BancoIdeas_1.preliminaryName
                     },
                     {
                         required: false,
-                        model: responsibleEntity_2.default
+                        model: BancoIdeas_1.responsibleEntity
                     },
                 ]
             });
             if (data || data.length > 0) {
                 let resPopDel = yield Promise.all(data.map((alter) => __awaiter(this, void 0, void 0, function* () {
                     let idAlt = alter.codigo;
-                    let popDelimitation = yield populationDelimitation_1.default.findOne({
+                    let popDelimitation = yield BancoIdeas_1.populationDelimitation.findOne({
                         where: {
                             AlterId: idAlt
                         },
                         include: [
                             {
                                 required: false,
-                                model: referencePopulation_1.default
+                                model: BancoIdeas_1.referencePopulation
                             },
                             {
                                 required: false,
-                                model: denomination_1.default
+                                model: BancoIdeas_1.denomination
                             },
                         ]
                     });
-                    let gArea = yield geographicArea_1.default.findOne({
+                    let gArea = yield BancoIdeas_1.geographicArea.findOne({
                         where: {
                             AlterId: idAlt
                         },
                     });
-                    let pDescription = yield projectDescription_1.default.findOne({
+                    let pDescription = yield BancoIdeas_1.projectDescription.findOne({
                         where: {
                             AlterId: idAlt
                         },
                         include: [
                             {
                                 required: false,
-                                model: executionTime_1.default
+                                model: BancoIdeas_1.executionTime
                             },
                         ]
                     });
-                    let quali = yield qualification_1.default.findOne({
+                    let quali = yield BancoIdeas_1.qualification.findOne({
                         where: {
                             AlterId: idAlt
                         },
                     });
-                    let preInv = yield preInvestment_1.default.findOne({
+                    let preInv = yield BancoIdeas_1.preInvestment.findOne({
                         where: {
                             AlterId: idAlt
                         },
@@ -726,60 +717,60 @@ function getAlternative(idAlternative) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let datosResult;
-            let data = yield ideaAlternative_1.default.findOne({
+            let data = yield BancoIdeas_1.ideaAlternative.findOne({
                 where: {
                     codigo: idAlternative
                 },
                 include: [
                     {
                         required: false,
-                        model: preliminaryName_1.default
+                        model: BancoIdeas_1.preliminaryName
                     },
                     {
                         required: false,
-                        model: responsibleEntity_2.default
+                        model: BancoIdeas_1.responsibleEntity
                     },
                 ]
             });
             if (data) {
                 let idAlt = data.codigo;
-                let popDelimitation = yield populationDelimitation_1.default.findOne({
+                let popDelimitation = yield BancoIdeas_1.populationDelimitation.findOne({
                     where: {
                         AlterId: idAlt
                     },
                     include: [
                         {
                             required: false,
-                            model: referencePopulation_1.default
+                            model: BancoIdeas_1.referencePopulation
                         },
                         {
                             required: false,
-                            model: denomination_1.default
+                            model: BancoIdeas_1.denomination
                         },
                     ]
                 });
-                let gArea = yield geographicArea_1.default.findOne({
+                let gArea = yield BancoIdeas_1.geographicArea.findOne({
                     where: {
                         AlterId: idAlt
                     },
                 });
-                let pDescription = yield projectDescription_1.default.findOne({
+                let pDescription = yield BancoIdeas_1.projectDescription.findOne({
                     where: {
                         AlterId: idAlt
                     },
                     include: [
                         {
                             required: false,
-                            model: executionTime_1.default
+                            model: BancoIdeas_1.executionTime
                         },
                     ]
                 });
-                let quali = yield qualification_1.default.findOne({
+                let quali = yield BancoIdeas_1.qualification.findOne({
                     where: {
                         AlterId: idAlt
                     },
                 });
-                let preInv = yield preInvestment_1.default.findOne({
+                let preInv = yield BancoIdeas_1.preInvestment.findOne({
                     where: {
                         AlterId: idAlt
                     },
@@ -1021,7 +1012,7 @@ function fupdateIdeaAlternativeComplete(ideaAlt, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let alternative;
-            let altActive = yield ideaAlternative_1.default.findOne({
+            let altActive = yield BancoIdeas_1.ideaAlternative.findOne({
                 where: {
                     codigo: ideaAlt.codigo
                 }
@@ -1030,7 +1021,7 @@ function fupdateIdeaAlternativeComplete(ideaAlt, transaction) {
             if (altActive) {
                 ideaAlt.codigo = undefined;
                 ideaAlt.state = 'CREADA';
-                ideaAlternativeCreated = yield ideaAlternative_1.default.create(ideaAlt, { transaction }).then((alternativeCreated) => __awaiter(this, void 0, void 0, function* () {
+                ideaAlternativeCreated = yield BancoIdeas_1.ideaAlternative.create(ideaAlt, { transaction }).then((alternativeCreated) => __awaiter(this, void 0, void 0, function* () {
                     yield altActive.destroy({ transaction });
                     console.log(alternativeCreated);
                     let codigoAlternativa = alternativeCreated.codigo;
