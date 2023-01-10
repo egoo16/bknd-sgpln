@@ -354,6 +354,26 @@ function getProjectCompleto(idProject) {
                             };
                             return trackResult;
                         }
+                        let findVsCard = yield seguimiento_1.visitCard.findOne({ where: { trackId: trackI.id } });
+                        if (findVsCard) {
+                            let cardVisit = yield getVisitCardComplete(findVsCard.id);
+                            if (cardVisit) {
+                                let trackResult = {
+                                    id: trackI.id,
+                                    iapa: trackI.iapa,
+                                    iapb: trackI.iapb,
+                                    iapc: trackI.iapc,
+                                    activity: trackI.activity,
+                                    reportDate: trackI.reportDate,
+                                    projectId: trackI.projectId,
+                                    createdAt: trackI.createdAt,
+                                    updatedAt: trackI.updatedAt,
+                                    deletedAt: trackI.deletedAt,
+                                    visitCard: cardVisit
+                                };
+                                return trackResult;
+                            }
+                        }
                         if (!advEpiFind && !advDocFind) {
                             return trackI;
                         }
@@ -420,6 +440,107 @@ function getProjectCompleto(idProject) {
         }
         catch (error) {
             throw `Error al obtener Proyecto completo: ${error}`;
+        }
+    });
+}
+function getVisitCardComplete(idVisitCard) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let findVisitCard = yield seguimiento_1.visitCard.findOne({ where: { id: idVisitCard } });
+            let accessRoadsResult = [];
+            let meansTransportResult = [];
+            let serviceInfResult = [];
+            let disastersResult = [];
+            let threatTypesResult = [];
+            let imgVisitResult = [];
+            let availableOrgResult = [];
+            accessRoadsResult = yield seguimiento_1.accessRoads.findAll({ where: { visitCardId: findVisitCard.id } });
+            meansTransportResult = yield seguimiento_1.meansTransport.findAll({ where: { visitCardId: findVisitCard.id } });
+            serviceInfResult = yield seguimiento_1.serviceInf.findAll({ where: { visitCardId: findVisitCard.id } });
+            disastersResult = yield seguimiento_1.disasters.findAll({ where: { visitCardId: findVisitCard.id } });
+            threatTypesResult = yield seguimiento_1.threatTypes.findAll({ where: { visitCardId: findVisitCard.id } });
+            imgVisitResult = yield seguimiento_1.imgVisit.findAll({ where: { visitCardId: findVisitCard.id } });
+            availableOrgResult = yield seguimiento_1.availableOrg.findAll({ where: { visitCardId: findVisitCard.id } });
+            if (findVisitCard) {
+                let card = {
+                    id: findVisitCard.id,
+                    trackId: findVisitCard.trackId,
+                    codePreinv: findVisitCard.codePreinv,
+                    visitDate: findVisitCard.visitDate,
+                    deptoDel: findVisitCard.deptoDel,
+                    specialistName: findVisitCard.specialistName,
+                    proposalName: findVisitCard.proposalName,
+                    mountAprox: findVisitCard.mountAprox,
+                    region: findVisitCard.region,
+                    depto: findVisitCard.depto,
+                    municip: findVisitCard.municip,
+                    address: findVisitCard.address,
+                    typeAddress: findVisitCard.typeAddress,
+                    catLocation: findVisitCard.catLocation,
+                    typeClimate: findVisitCard.typeClimate,
+                    avgTemperature: findVisitCard.avgTemperature,
+                    distanceKm: findVisitCard.distanceKm,
+                    nameHeadboard: findVisitCard.nameHeadboard,
+                    isDrinkingWater: findVisitCard.isDrinkingWater,
+                    isDrainageNetwork: findVisitCard.isDrainageNetwork,
+                    isElectricity: findVisitCard.isElectricity,
+                    isPhoneService: findVisitCard.isPhoneService,
+                    isDrinkableWhater: findVisitCard.isDrinkableWhater,
+                    garbageDisposal: findVisitCard.garbageDisposal,
+                    latitud: findVisitCard.latitud,
+                    longitud: findVisitCard.longitud,
+                    gtmx: findVisitCard.gtmx,
+                    gtmy: findVisitCard.gtmy,
+                    elevation: findVisitCard.elevation,
+                    msnm: findVisitCard.msnm,
+                    infRealEstate: findVisitCard.infRealEstate,
+                    groundConditions: findVisitCard.groundConditions,
+                    approximateSlope: findVisitCard.approximateSlope,
+                    soilType: findVisitCard.soilType,
+                    realEstateArea: findVisitCard.realEstateArea,
+                    northMeasure: findVisitCard.northMeasure,
+                    southMeasure: findVisitCard.southMeasure,
+                    eastMeasure: findVisitCard.eastMeasure,
+                    westMeasure: findVisitCard.westMeasure,
+                    northBorder: findVisitCard.northBorder,
+                    southBorder: findVisitCard.southBorder,
+                    eastBorder: findVisitCard.eastBorder,
+                    westBorder: findVisitCard.westBorder,
+                    legalSituation: findVisitCard.legalSituation,
+                    basicServRS: findVisitCard.basicServRS,
+                    isElectricityRS: findVisitCard.isElectricityRS,
+                    isPhoneRS: findVisitCard.isPhoneRS,
+                    isDrainageRS: findVisitCard.isDrainageRS,
+                    isDrinkingWRS: findVisitCard.isDrinkingWRS,
+                    garbageRS: findVisitCard.garbageRS,
+                    isReqFinance: findVisitCard.isReqFinance,
+                    desReqFinance: findVisitCard.desReqFinance,
+                    appStatus: findVisitCard.appStatus,
+                    techNameEpi: findVisitCard.techNameEpi,
+                    techPosEpi: findVisitCard.techPosEpi,
+                    techProfEpi: findVisitCard.techProfEpi,
+                    theirAgree: findVisitCard.theirAgree,
+                    specifyAnswer: findVisitCard.specifyAnswer,
+                    observationsGeneral: findVisitCard.observationsGeneral,
+                    createdAt: findVisitCard.createdAt,
+                    updatedAt: findVisitCard.updatedAt,
+                    deletedAt: findVisitCard.deletedAt,
+                    accessRoads: accessRoadsResult,
+                    meanstransport: meansTransportResult,
+                    serviceInf: serviceInfResult,
+                    disasters: disastersResult,
+                    threatTypes: threatTypesResult,
+                    imgVisit: imgVisitResult,
+                    availableOrg: availableOrgResult,
+                };
+                return card;
+            }
+            else {
+                return null;
+            }
+        }
+        catch (error) {
+            throw `Error al obtener Hoja de Visita completa: ${error}`;
         }
     });
 }
