@@ -1,0 +1,13 @@
+export { default as accessRoads } from './accessRoads.entity';
+export { default as advisoryDoc } from './advisoryDoc';
+export { default as advisoryEpi } from './advisoryEpi';
+export { default as availableOrg } from './availableOrg.entity';
+export { default as comment } from './comment';
+export { default as disasters } from './disasters.entity';
+export { default as imgVisit } from './imgVisit.entity';
+export { default as meansTransport } from './meansTransport.entity';
+export { default as project } from './project.entity';
+export { default as serviceInf } from './serviceInf.entity';
+export { default as threatTypes } from './threatTypes.entity';
+export { default as track } from './track.entity';
+export { default as visitCard } from './visitCard.entity';

@@ -11,6 +11,7 @@ const serviceInf_entity_1 = __importDefault(require("./serviceInf.entity"));
 const disasters_entity_1 = __importDefault(require("./disasters.entity"));
 const threatTypes_entity_1 = __importDefault(require("./threatTypes.entity"));
 const imgVisit_entity_1 = __importDefault(require("./imgVisit.entity"));
+const availableOrg_entity_1 = __importDefault(require("./availableOrg.entity"));
 const visitCard = connection_1.default.define("visitCard", {
     id: { type: sequelize_oracle_1.default.UUID, primaryKey: true, allowNull: false, defaultValue: sequelize_oracle_1.default.UUIDV4, },
     trackId: { type: sequelize_oracle_1.default.UUID },
@@ -68,6 +69,9 @@ const visitCard = connection_1.default.define("visitCard", {
     techNameEpi: { type: sequelize_oracle_1.default.STRING },
     techPosEpi: { type: sequelize_oracle_1.default.STRING },
     techProfEpi: { type: sequelize_oracle_1.default.STRING },
+    theirAgree: { type: sequelize_oracle_1.default.BOOLEAN },
+    specifyAnswer: { type: sequelize_oracle_1.default.STRING },
+    observationsGeneral: { type: sequelize_oracle_1.default.STRING },
 }, {
     underscoded: true,
     paranoid: true,
@@ -79,4 +83,5 @@ visitCard.hasMany(serviceInf_entity_1.default, { foreingKey: 'visitCardId' });
 visitCard.hasMany(disasters_entity_1.default, { foreingKey: 'visitCardId' });
 visitCard.hasMany(threatTypes_entity_1.default, { foreingKey: 'visitCardId' });
 visitCard.hasMany(imgVisit_entity_1.default, { foreingKey: 'visitCardId' });
+visitCard.hasMany(availableOrg_entity_1.default, { foreingKey: 'visitCardId' });
 exports.default = visitCard;

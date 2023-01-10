@@ -4,18 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
-const connection_1 = __importDefault(require("../../../db/connection"));
-const progress = connection_1.default.define("progress", {
+const connection_1 = __importDefault(require("../../db/connection"));
+const availableOrg = connection_1.default.define("availableOrg", {
     id: { type: sequelize_oracle_1.default.UUID, primaryKey: true, allowNull: false, defaultValue: sequelize_oracle_1.default.UUIDV4, },
-    iapa: { type: sequelize_oracle_1.default.INTEGER },
-    iapb: { type: sequelize_oracle_1.default.INTEGER },
-    iapc: { type: sequelize_oracle_1.default.INTEGER },
-    activity: { type: sequelize_oracle_1.default.STRING },
-    reportDate: { type: sequelize_oracle_1.default.STRING },
-    trackId: { type: sequelize_oracle_1.default.UUID },
+    visitCardId: { type: sequelize_oracle_1.default.UUID },
+    name: { type: sequelize_oracle_1.default.STRING },
 }, {
     underscoded: true,
     paranoid: true,
     freezeTableName: true,
 });
-exports.default = progress;
+exports.default = availableOrg;

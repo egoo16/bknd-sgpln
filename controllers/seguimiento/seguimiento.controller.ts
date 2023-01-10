@@ -1,10 +1,7 @@
 import { Request, Response } from 'express';
 import moment from 'moment';
-import project from '../../models/seguimiento/project.entity';
-import track from '../../models/seguimiento/track.entity';
-import advisoryEpi from '../../models/seguimiento/advisoryEpi';
-import advisoryDoc from '../../models/seguimiento/advisoryDoc';
-import comment from '../../models/seguimiento/comment';
+import { accessRoads, advisoryDoc, advisoryEpi, availableOrg, comment, disasters, imgVisit, meansTransport, project, serviceInf, threatTypes, track, visitCard } from '../../models/seguimiento';
+
 
 export async function createProject(req: Request, res: Response) {
     try {
@@ -12,6 +9,7 @@ export async function createProject(req: Request, res: Response) {
         let projectModel = req.body;
         projectModel.advance = 0;
         projectModel.status = 'REGISTER';
+        console.log("🚀 ~ file: seguimiento.controller.ts:20 ~ createProject ~ projectModel", projectModel)
         let allTracks: any = [];
 
 
@@ -124,6 +122,79 @@ async function createTrack(trackModel: any, projectId: string) {
             }))
         }
     }
+    if (trackModel.visitCard) {
+
+        let vsCard = trackModel.visitCard;
+        let vsCardCreated = await visitCard.create({ ...vsCard });
+        // Variables de otras tablas
+        let accessRds = [];
+        let mtransport = [];
+        let srvInf = [];
+        let dsters = [];
+        let thrTypes = [];
+        let imgVst = [];
+        let avlOrg = [];
+
+        // asignacion de variables 
+
+        accessRds = trackModel.visitCard.accessRoads
+        mtransport = trackModel.visitCard.meansTransport
+        srvInf = trackModel.visitCard.serviceInf
+        dsters = trackModel.visitCard.disasters
+        thrTypes = trackModel.visitCard.threatTypes
+        imgVst = trackModel.visitCard.imgVisit
+        avlOrg = trackModel.visitCard.availableOrg
+
+        // Creacion de Registros
+        if (accessRds.length > 0) {
+            const resProm = await Promise.all(accessRds.map(async (obj: any) => {
+                obj.visitCardId = vsCardCreated.id
+                const response = await accessRoads.create({ ...obj });
+            }))
+        }
+
+        if (mtransport.length > 0) {
+            const resProm = await Promise.all(mtransport.map(async (obj: any) => {
+                obj.visitCardId = vsCardCreated.id
+                const response = await meansTransport.create({ ...obj });
+            }))
+        }
+
+        if (srvInf.length > 0) {
+            const resProm = await Promise.all(srvInf.map(async (obj: any) => {
+                obj.visitCardId = vsCardCreated.id
+                const response = await serviceInf.create({ ...obj });
+            }))
+        }
+
+        if (dsters.length > 0) {
+            const resProm = await Promise.all(dsters.map(async (obj: any) => {
+                obj.visitCardId = vsCardCreated.id
+                const response = await disasters.create({ ...obj });
+            }))
+        }
+
+        if (thrTypes.length > 0) {
+            const resProm = await Promise.all(thrTypes.map(async (obj: any) => {
+                obj.visitCardId = vsCardCreated.id
+                const response = await threatTypes.create({ ...obj });
+            }))
+        }
+
+        if (imgVst.length > 0) {
+            const resProm = await Promise.all(imgVst.map(async (obj: any) => {
+                obj.visitCardId = vsCardCreated.id
+                const response = await imgVisit.create({ ...obj });
+            }))
+        }
+        if (avlOrg.length > 0) {
+            const resProm = await Promise.all(avlOrg.map(async (obj: any) => {
+                obj.visitCardId = vsCardCreated.id
+                const response = await availableOrg.create({ ...obj });
+            }))
+        }
+
+    }
     return trackCreated;
 
 }
@@ -160,7 +231,6 @@ export async function getAllProjects(req: Request, res: Response) {
                 let ministry = (filtros.isMinistry === 'true');
                 where.isMinistry = ministry;
             }
-
             if (filtros.status) {
                 where.status = filtros.status;
             }
@@ -188,6 +258,10 @@ export async function getAllProjects(req: Request, res: Response) {
 
 
                 where.createdAt = { $between: [new Date(`${filtros.mes}-1-${year}`), new Date(`${nextMonth}-1-${nextYear}`)] };
+            }
+
+            if (filtros.entidad) {
+                where.ministry = filtros.entidad;
             }
 
             const projects = await project.findAll({ where, order: '"createdAt" DESC' });

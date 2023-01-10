@@ -6,6 +6,7 @@ import serviceInf from './serviceInf.entity';
 import disasters from './disasters.entity';
 import threatTypes from './threatTypes.entity';
 import imgVisit from './imgVisit.entity';
+import availableOrg from "./availableOrg.entity";
 
 
 const visitCard = db.define(
@@ -67,6 +68,9 @@ const visitCard = db.define(
         techNameEpi: { type: Sequelize.STRING },
         techPosEpi: { type: Sequelize.STRING },
         techProfEpi: { type: Sequelize.STRING },
+        theirAgree: { type: Sequelize.BOOLEAN },
+        specifyAnswer: { type: Sequelize.STRING },
+        observationsGeneral: { type: Sequelize.STRING },
     },
     {
         underscoded: true,
@@ -81,5 +85,6 @@ visitCard.hasMany(serviceInf, { foreingKey: 'visitCardId' })
 visitCard.hasMany(disasters, { foreingKey: 'visitCardId' })
 visitCard.hasMany(threatTypes, { foreingKey: 'visitCardId' })
 visitCard.hasMany(imgVisit, { foreingKey: 'visitCardId' })
+visitCard.hasMany(availableOrg, { foreingKey: 'visitCardId' })
 
 export default visitCard;

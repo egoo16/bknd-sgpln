@@ -8,24 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllProjects = exports.getProjectById = exports.addTrack = exports.createProject = void 0;
-const project_entity_1 = __importDefault(require("../../models/seguimiento/project.entity"));
-const track_entity_1 = __importDefault(require("../../models/seguimiento/track.entity"));
-const advisoryEpi_1 = __importDefault(require("../../models/seguimiento/advisoryEpi"));
-const advisoryDoc_1 = __importDefault(require("../../models/seguimiento/advisoryDoc"));
-const comment_1 = __importDefault(require("../../models/seguimiento/comment"));
+const seguimiento_1 = require("../../models/seguimiento");
 function createProject(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let projectModel = req.body;
             projectModel.advance = 0;
             projectModel.status = 'REGISTER';
+            console.log("🚀 ~ file: seguimiento.controller.ts:20 ~ createProject ~ projectModel", projectModel);
             let allTracks = [];
-            const projectCreated = yield project_entity_1.default.create(Object.assign({}, projectModel));
+            const projectCreated = yield seguimiento_1.project.create(Object.assign({}, projectModel));
             let proj = {
                 id: projectCreated.id,
                 author: projectCreated.author,
@@ -86,7 +80,7 @@ function addTrack(req, res) {
 exports.addTrack = addTrack;
 function createTrack(trackModel, projectId) {
     return __awaiter(this, void 0, void 0, function* () {
-        let projectUd = yield project_entity_1.default.findOne({
+        let projectUd = yield seguimiento_1.project.findOne({
             where: {
                 id: projectId
             }
@@ -105,21 +99,84 @@ function createTrack(trackModel, projectId) {
         else {
             throw new Error("No se Encontro el proyecto ");
         }
-        const trackCreated = yield track_entity_1.default.create(Object.assign(Object.assign({}, trackModel), { projectId }));
+        const trackCreated = yield seguimiento_1.track.create(Object.assign(Object.assign({}, trackModel), { projectId }));
         if (trackModel.advisoryEpi) {
             let advEpi = trackModel.advisoryEpi;
             advEpi.doc = '';
-            let advEpiCreated = yield advisoryEpi_1.default.create(Object.assign(Object.assign({}, advEpi), { trackId: trackCreated.id }));
+            let advEpiCreated = yield seguimiento_1.advisoryEpi.create(Object.assign(Object.assign({}, advEpi), { trackId: trackCreated.id }));
         }
         if (trackModel.advisoryDoc) {
             let advDoc = trackModel.advisoryDoc;
             let cments = [];
             cments = trackModel.advisoryDoc.comments;
-            let advEpiCreated = yield advisoryDoc_1.default.create(Object.assign(Object.assign({}, advDoc), { trackId: trackCreated.id }));
+            let advEpiCreated = yield seguimiento_1.advisoryDoc.create(Object.assign(Object.assign({}, advDoc), { trackId: trackCreated.id }));
             if (cments.length > 0) {
                 const cmProm = yield Promise.all(cments.map((cmt) => __awaiter(this, void 0, void 0, function* () {
                     cmt.advisoryDocId = advEpiCreated.id;
-                    const response = yield comment_1.default.create(Object.assign({}, cmt));
+                    const response = yield seguimiento_1.comment.create(Object.assign({}, cmt));
+                })));
+            }
+        }
+        if (trackModel.visitCard) {
+            let vsCard = trackModel.visitCard;
+            let vsCardCreated = yield seguimiento_1.visitCard.create(Object.assign({}, vsCard));
+            // Variables de otras tablas
+            let accessRds = [];
+            let mtransport = [];
+            let srvInf = [];
+            let dsters = [];
+            let thrTypes = [];
+            let imgVst = [];
+            let avlOrg = [];
+            // asignacion de variables 
+            accessRds = trackModel.visitCard.accessRoads;
+            mtransport = trackModel.visitCard.meansTransport;
+            srvInf = trackModel.visitCard.serviceInf;
+            dsters = trackModel.visitCard.disasters;
+            thrTypes = trackModel.visitCard.threatTypes;
+            imgVst = trackModel.visitCard.imgVisit;
+            avlOrg = trackModel.visitCard.availableOrg;
+            // Creacion de Registros
+            if (accessRds.length > 0) {
+                const resProm = yield Promise.all(accessRds.map((obj) => __awaiter(this, void 0, void 0, function* () {
+                    obj.visitCardId = vsCardCreated.id;
+                    const response = yield seguimiento_1.accessRoads.create(Object.assign({}, obj));
+                })));
+            }
+            if (mtransport.length > 0) {
+                const resProm = yield Promise.all(mtransport.map((obj) => __awaiter(this, void 0, void 0, function* () {
+                    obj.visitCardId = vsCardCreated.id;
+                    const response = yield seguimiento_1.meansTransport.create(Object.assign({}, obj));
+                })));
+            }
+            if (srvInf.length > 0) {
+                const resProm = yield Promise.all(srvInf.map((obj) => __awaiter(this, void 0, void 0, function* () {
+                    obj.visitCardId = vsCardCreated.id;
+                    const response = yield seguimiento_1.serviceInf.create(Object.assign({}, obj));
+                })));
+            }
+            if (dsters.length > 0) {
+                const resProm = yield Promise.all(dsters.map((obj) => __awaiter(this, void 0, void 0, function* () {
+                    obj.visitCardId = vsCardCreated.id;
+                    const response = yield seguimiento_1.disasters.create(Object.assign({}, obj));
+                })));
+            }
+            if (thrTypes.length > 0) {
+                const resProm = yield Promise.all(thrTypes.map((obj) => __awaiter(this, void 0, void 0, function* () {
+                    obj.visitCardId = vsCardCreated.id;
+                    const response = yield seguimiento_1.threatTypes.create(Object.assign({}, obj));
+                })));
+            }
+            if (imgVst.length > 0) {
+                const resProm = yield Promise.all(imgVst.map((obj) => __awaiter(this, void 0, void 0, function* () {
+                    obj.visitCardId = vsCardCreated.id;
+                    const response = yield seguimiento_1.imgVisit.create(Object.assign({}, obj));
+                })));
+            }
+            if (avlOrg.length > 0) {
+                const resProm = yield Promise.all(avlOrg.map((obj) => __awaiter(this, void 0, void 0, function* () {
+                    obj.visitCardId = vsCardCreated.id;
+                    const response = yield seguimiento_1.availableOrg.create(Object.assign({}, obj));
                 })));
             }
         }
@@ -185,7 +242,10 @@ function getAllProjects(req, res) {
                     }
                     where.createdAt = { $between: [new Date(`${filtros.mes}-1-${year}`), new Date(`${nextMonth}-1-${nextYear}`)] };
                 }
-                const projects = yield project_entity_1.default.findAll({ where, order: '"createdAt" DESC' });
+                if (filtros.entidad) {
+                    where.ministry = filtros.entidad;
+                }
+                const projects = yield seguimiento_1.project.findAll({ where, order: '"createdAt" DESC' });
                 if (projects.length > 0) {
                     const resProm = yield Promise.all(projects.map((project) => __awaiter(this, void 0, void 0, function* () {
                         const response = yield getProjectCompleto(project.id);
@@ -199,7 +259,7 @@ function getAllProjects(req, res) {
                 }
             }
             else {
-                const projects = yield project_entity_1.default.findAll({ order: '"createdAt" DESC' });
+                const projects = yield seguimiento_1.project.findAll({ order: '"createdAt" DESC' });
                 if (projects.length > 0) {
                     const resProm = yield Promise.all(projects.map((project) => __awaiter(this, void 0, void 0, function* () {
                         const response = yield getProjectCompleto(project.id);
@@ -222,12 +282,12 @@ function getProjectCompleto(idProject) {
     var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const projectFind = yield project_entity_1.default.findOne({
+            const projectFind = yield seguimiento_1.project.findOne({
                 where: { id: idProject },
                 include: [
                     {
                         required: false,
-                        model: track_entity_1.default
+                        model: seguimiento_1.track
                     },
                 ],
                 order: '"createdAt" DESC'
@@ -237,7 +297,7 @@ function getProjectCompleto(idProject) {
                 let allData = [];
                 if (((_b = projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks) === null || _b === void 0 ? void 0 : _b.length) > 0 || ((_c = projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks) === null || _c === void 0 ? void 0 : _c.length)) {
                     allData = yield Promise.all(projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks.map((trackI) => __awaiter(this, void 0, void 0, function* () {
-                        let advEpiFind = yield advisoryEpi_1.default.findOne({ where: { trackId: trackI.id } });
+                        let advEpiFind = yield seguimiento_1.advisoryEpi.findOne({ where: { trackId: trackI.id } });
                         if (advEpiFind) {
                             let trackResult = {
                                 id: trackI.id,
@@ -254,10 +314,10 @@ function getProjectCompleto(idProject) {
                             };
                             return trackResult;
                         }
-                        let advDocFind = yield advisoryDoc_1.default.findOne({ where: { trackId: trackI.id } });
+                        let advDocFind = yield seguimiento_1.advisoryDoc.findOne({ where: { trackId: trackI.id } });
                         if (advDocFind) {
                             let cmnts = [];
-                            cmnts = yield comment_1.default.findAll({
+                            cmnts = yield seguimiento_1.comment.findAll({
                                 where: {
                                     advisoryDocId: advDocFind.id,
                                 }
