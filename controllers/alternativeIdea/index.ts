@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import models from "../../db/connection";
 import { denomination, referencePopulation, ideaAlternative, populationDelimitation, geographicArea, projectDescription, executionTime, generalInformation } from "../../models/BancoIdeas";
 import dataGeo from "../../models/BancoIdeas/datageo.model";
-import { FaddPertinenceQuality, FcreateIdeaAlternativeComplete, FgetPreinversion, fupdateIdeaAlternativeComplete, getAlternatives } from './feature';
+import { FaddPertinenceQuality, FcreateIdeaAlternativeComplete, FgetPreinversion, fupdateIdeaAlternativeComplete, getAlternativeComplete, getAlternatives } from './feature';
 
 
 /**
@@ -264,12 +264,21 @@ export const getPertinencia = async (req: Request, res: Response) => {
 export async function updateIdeaAlternativeComplete(req: Request, res: Response) {
     let transaction;
     try {
-        let ideaAlternative;
+        let ideaAlternative: any;
+        let fullIdeaAlternative;
         transaction = await models.transaction()
 
         ideaAlternative = await fupdateIdeaAlternativeComplete(req.body, transaction)
+
+        console.log("🚀 ~ file: index.ts:272 ~ updateIdeaAlternativeComplete ~ ideaAlternative", ideaAlternative.alternative.codigo)
+        if (ideaAlternative) {
+            fullIdeaAlternative = await getAlternativeComplete(ideaAlternative.alternative.codigo)
+            console.log("🚀 ~ file: index.ts:274 ~ updateIdeaAlternativeComplete ~ fullIdeaAlternative", fullIdeaAlternative)
+            return res.status(200).send(fullIdeaAlternative)
+        } else {
+            return res.status(500).send({ message: `No se pudo a.ctualizar la alternativa` })
+        }
         // await transaction.commit()
-        return res.status(200).send(ideaAlternative)
     } catch (error: any) {
         await transaction.rollback();
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })

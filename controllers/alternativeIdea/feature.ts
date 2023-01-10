@@ -1,6 +1,6 @@
 'use strict'
 import models from "../../db/connection";
-import { projectDescription, populationDelimitation, ideaAlternative, qualification, generalInformation, preInvestment, preliminaryName, referencePopulation, denomination, executionTime, geographicArea, responsibleEntity } from "../../models/BancoIdeas";
+import { projectDescription, populationDelimitation, ideaAlternative, qualification, generalInformation, preInvestment, preliminaryName, referencePopulation, denomination, executionTime, geographicArea, responsibleEntity, possibleAlternatives, possibleCauses, possibleEffects, stage } from "../../models/BancoIdeas";
 import dataGeo from "../../models/BancoIdeas/datageo.model";
 
 
@@ -123,7 +123,7 @@ export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: 
         await FcreateGeographicArea(ideaAlt.geoArea, codigoAlternativa, transaction)
         await FcreateProjectDescription(ideaAlt.projDesc, codigoAlternativa, transaction)
         if (ideaAlternativeCreated) {
-            alternative = await getAlternative(ideaAlternativeCreated.codigo)
+            alternative = await getAlternativeComplete(ideaAlternativeCreated.codigo)
         }
 
         return {
@@ -347,6 +347,7 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
 }
 
 export async function FcreateProjectDescription(proDescription: any, idAlternativa: number, transaction: any) {
+    console.log("🚀 ~ file: feature.ts:350 ~ FcreateProjectDescription ~ proDescription", proDescription)
     try {
         proDescription.AlterId = idAlternativa
         if (proDescription.annual || proDescription.annual == true) { proDescription.annual = 1 }
@@ -707,7 +708,7 @@ export async function getAlternatives(idIdea: string) {
 }
 
 
-export async function getAlternative(idAlternative: string) {
+export async function getAlternativeComplete(idAlternative: string) {
 
     try {
 
@@ -1030,6 +1031,7 @@ export async function getAlternative(idAlternative: string) {
 
 
 export async function fupdateIdeaAlternativeComplete(ideaAlt: any, transaction: any) {
+    console.log("🚀 ~ file: feature.ts:1033 ~ fupdateIdeaAlternativeComplete ~ ideaAlt", ideaAlt)
     try {
         let alternative;
 
@@ -1039,34 +1041,110 @@ export async function fupdateIdeaAlternativeComplete(ideaAlt: any, transaction: 
             }
         });
         let ideaAlternativeCreated;
+        let alternativeCreatedAsync: any;
         if (altActive) {
             ideaAlt.codigo = undefined;
             ideaAlt.state = 'CREADA';
             ideaAlternativeCreated = await ideaAlternative.create(ideaAlt, { transaction }).then(async (alternativeCreated: any) => {
+                alternativeCreatedAsync = {...alternativeCreated}
                 await altActive.destroy({ transaction });
-                console.log(alternativeCreated)
                 let codigoAlternativa = alternativeCreated.codigo
                 await FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction)
                 await FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction)
                 await FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction)
                 await FcreateGeographicArea(ideaAlt.geoArea, codigoAlternativa, transaction)
                 await FcreateProjectDescription(ideaAlt.projDesc, codigoAlternativa, transaction)
-                if (alternativeCreated) {
-                    alternative = await getAlternative(alternativeCreated.codigo)
-                }
+
             }).catch(async (err: any) => {
                 await transaction.rollback();
             })
+            if (alternativeCreatedAsync) {
+                return {
+                    message: `Idea alternativa Actualizada correctamente`,
+                    alternative: alternativeCreatedAsync
+                };            }
         } else {
             throw `Error al actualizar Alternativa, no existe el ID enviado`
         }
 
-        return {
-            message: `Idea alternativa Actualizada correctamente`,
-            alternative
-        };
+
     } catch (error) {
         //devuelve errores al cliente
         throw `Error al Actualizada Idea alternativa: ${error}`;
+    }
+}
+
+
+
+
+
+export async function getIdeaCompleta(codigo: string) {
+    try {
+        const idea = await generalInformation.findOne({
+            where: {
+                codigo,
+            },
+            include: [
+                {
+                    required: false,
+                    model: possibleEffects,
+                },
+                {
+                    required: false,
+                    model: possibleCauses,
+                },
+                {
+                    required: false,
+                    model: possibleAlternatives,
+                },
+                {
+                    required: false,
+                    model: stage
+                },
+            ]
+        });
+
+        const alternativeF = await getAlternatives(idea.codigo);
+        let ideaFind: any = {
+            codigo: idea.codigo,
+            author: idea.author,
+            analizer: idea.analizer,
+            idStage: idea.idStage,
+            productId: idea.productId,
+            productName: idea.productName,
+            date: idea.date,
+            correlation: idea.correlation,
+            registerCode: idea.registerCode,
+            planningInstrument: idea.planningInstrument,
+            description: idea.description,
+            dateOut: idea.dateOut,
+            punctuation: idea.punctuation,
+            state: idea.state,
+            result: idea.result,
+            idEntity: idea.idEntity,
+            nameEntity: idea.nameEntity,
+            responsibleName: idea.responsibleName,
+            email: idea.email,
+            phone: idea.phone,
+            definitionPotentiality: idea.definitionPotentiality,
+            baseLine: idea.baseLine,
+            descriptionCurrentSituation: idea.descriptionCurrentSituation,
+            generalObjective: idea.generalObjective,
+            expectedChange: idea.expectedChange,
+            createdAt: idea.createdAt,
+            updatedAt: idea.updatedAt,
+            deletedAt: idea.deletedAt,
+        }
+        ideaFind.Effects = idea.Effects;
+        ideaFind.Causes = idea.Causes;
+        ideaFind.Alternatives = idea.Alternatives;
+        ideaFind.stage = idea.stage;
+        ideaFind.alternatives = alternativeF;
+
+        return ideaFind;
+
+    }
+    catch (error) {
+        throw `Error al obtener Idea completa: ${error}`;
     }
 }

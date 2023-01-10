@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fupdateIdeaAlternativeComplete = exports.getAlternative = exports.getAlternatives = exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreatePreInvestment = exports.FaddPertinenceQuality = exports.FcreateIdeaAlternativeComplete = exports.FgetPreinversion = void 0;
+exports.getIdeaCompleta = exports.fupdateIdeaAlternativeComplete = exports.getAlternativeComplete = exports.getAlternatives = exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreatePreInvestment = exports.FaddPertinenceQuality = exports.FcreateIdeaAlternativeComplete = exports.FgetPreinversion = void 0;
 const BancoIdeas_1 = require("../../models/BancoIdeas");
 const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
 function FgetPreinversion(idAlternativa) {
@@ -153,7 +153,7 @@ function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
             yield FcreateGeographicArea(ideaAlt.geoArea, codigoAlternativa, transaction);
             yield FcreateProjectDescription(ideaAlt.projDesc, codigoAlternativa, transaction);
             if (ideaAlternativeCreated) {
-                alternative = yield getAlternative(ideaAlternativeCreated.codigo);
+                alternative = yield getAlternativeComplete(ideaAlternativeCreated.codigo);
             }
             return {
                 message: `Idea alternativa creada correctamente`,
@@ -373,6 +373,7 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
 exports.FcreatePopulationDemilitation = FcreatePopulationDemilitation;
 function FcreateProjectDescription(proDescription, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log("🚀 ~ file: feature.ts:350 ~ FcreateProjectDescription ~ proDescription", proDescription);
         try {
             proDescription.AlterId = idAlternativa;
             if (proDescription.annual || proDescription.annual == true) {
@@ -713,7 +714,7 @@ function getAlternatives(idIdea) {
     });
 }
 exports.getAlternatives = getAlternatives;
-function getAlternative(idAlternative) {
+function getAlternativeComplete(idAlternative) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let datosResult;
@@ -1007,9 +1008,10 @@ function getAlternative(idAlternative) {
         }
     });
 }
-exports.getAlternative = getAlternative;
+exports.getAlternativeComplete = getAlternativeComplete;
 function fupdateIdeaAlternativeComplete(ideaAlt, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log("🚀 ~ file: feature.ts:1033 ~ fupdateIdeaAlternativeComplete ~ ideaAlt", ideaAlt);
         try {
             let alternative;
             let altActive = yield BancoIdeas_1.ideaAlternative.findOne({
@@ -1018,32 +1020,32 @@ function fupdateIdeaAlternativeComplete(ideaAlt, transaction) {
                 }
             });
             let ideaAlternativeCreated;
+            let alternativeCreatedAsync;
             if (altActive) {
                 ideaAlt.codigo = undefined;
                 ideaAlt.state = 'CREADA';
                 ideaAlternativeCreated = yield BancoIdeas_1.ideaAlternative.create(ideaAlt, { transaction }).then((alternativeCreated) => __awaiter(this, void 0, void 0, function* () {
+                    alternativeCreatedAsync = Object.assign({}, alternativeCreated);
                     yield altActive.destroy({ transaction });
-                    console.log(alternativeCreated);
                     let codigoAlternativa = alternativeCreated.codigo;
                     yield FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction);
                     yield FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction);
                     yield FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction);
                     yield FcreateGeographicArea(ideaAlt.geoArea, codigoAlternativa, transaction);
                     yield FcreateProjectDescription(ideaAlt.projDesc, codigoAlternativa, transaction);
-                    if (alternativeCreated) {
-                        alternative = yield getAlternative(alternativeCreated.codigo);
-                    }
                 })).catch((err) => __awaiter(this, void 0, void 0, function* () {
                     yield transaction.rollback();
                 }));
+                if (alternativeCreatedAsync) {
+                    return {
+                        message: `Idea alternativa Actualizada correctamente`,
+                        alternative: alternativeCreatedAsync
+                    };
+                }
             }
             else {
                 throw `Error al actualizar Alternativa, no existe el ID enviado`;
             }
-            return {
-                message: `Idea alternativa Actualizada correctamente`,
-                alternative
-            };
         }
         catch (error) {
             //devuelve errores al cliente
@@ -1052,3 +1054,73 @@ function fupdateIdeaAlternativeComplete(ideaAlt, transaction) {
     });
 }
 exports.fupdateIdeaAlternativeComplete = fupdateIdeaAlternativeComplete;
+function getIdeaCompleta(codigo) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const idea = yield BancoIdeas_1.generalInformation.findOne({
+                where: {
+                    codigo,
+                },
+                include: [
+                    {
+                        required: false,
+                        model: BancoIdeas_1.possibleEffects,
+                    },
+                    {
+                        required: false,
+                        model: BancoIdeas_1.possibleCauses,
+                    },
+                    {
+                        required: false,
+                        model: BancoIdeas_1.possibleAlternatives,
+                    },
+                    {
+                        required: false,
+                        model: BancoIdeas_1.stage
+                    },
+                ]
+            });
+            const alternativeF = yield getAlternatives(idea.codigo);
+            let ideaFind = {
+                codigo: idea.codigo,
+                author: idea.author,
+                analizer: idea.analizer,
+                idStage: idea.idStage,
+                productId: idea.productId,
+                productName: idea.productName,
+                date: idea.date,
+                correlation: idea.correlation,
+                registerCode: idea.registerCode,
+                planningInstrument: idea.planningInstrument,
+                description: idea.description,
+                dateOut: idea.dateOut,
+                punctuation: idea.punctuation,
+                state: idea.state,
+                result: idea.result,
+                idEntity: idea.idEntity,
+                nameEntity: idea.nameEntity,
+                responsibleName: idea.responsibleName,
+                email: idea.email,
+                phone: idea.phone,
+                definitionPotentiality: idea.definitionPotentiality,
+                baseLine: idea.baseLine,
+                descriptionCurrentSituation: idea.descriptionCurrentSituation,
+                generalObjective: idea.generalObjective,
+                expectedChange: idea.expectedChange,
+                createdAt: idea.createdAt,
+                updatedAt: idea.updatedAt,
+                deletedAt: idea.deletedAt,
+            };
+            ideaFind.Effects = idea.Effects;
+            ideaFind.Causes = idea.Causes;
+            ideaFind.Alternatives = idea.Alternatives;
+            ideaFind.stage = idea.stage;
+            ideaFind.alternatives = alternativeF;
+            return ideaFind;
+        }
+        catch (error) {
+            throw `Error al obtener Idea completa: ${error}`;
+        }
+    });
+}
+exports.getIdeaCompleta = getIdeaCompleta;

@@ -257,10 +257,19 @@ function updateIdeaAlternativeComplete(req, res) {
         let transaction;
         try {
             let ideaAlternative;
+            let fullIdeaAlternative;
             transaction = yield connection_1.default.transaction();
             ideaAlternative = yield (0, feature_1.fupdateIdeaAlternativeComplete)(req.body, transaction);
+            console.log("🚀 ~ file: index.ts:272 ~ updateIdeaAlternativeComplete ~ ideaAlternative", ideaAlternative.alternative.codigo);
+            if (ideaAlternative) {
+                fullIdeaAlternative = yield (0, feature_1.getAlternativeComplete)(ideaAlternative.alternative.codigo);
+                console.log("🚀 ~ file: index.ts:274 ~ updateIdeaAlternativeComplete ~ fullIdeaAlternative", fullIdeaAlternative);
+                return res.status(200).send(fullIdeaAlternative);
+            }
+            else {
+                return res.status(500).send({ message: `No se pudo a.ctualizar la alternativa` });
+            }
             // await transaction.commit()
-            return res.status(200).send(ideaAlternative);
         }
         catch (error) {
             yield transaction.rollback();

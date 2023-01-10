@@ -4,7 +4,7 @@ import moment from "moment";
 const Sequelize = require('sequelize-oracle');
 const { Op } = require("sequelize-oracle");
 
-import { FaddPertinenceQuality, FcreateIdeaAlternativeComplete, FgetPreinversion, getAlternatives } from '../alternativeIdea/feature';
+import { FaddPertinenceQuality, FcreateIdeaAlternativeComplete, FgetPreinversion, getAlternatives, getIdeaCompleta } from '../alternativeIdea/feature';
 import { stage, generalInformation, possibleEffects, possibleCauses, possibleAlternatives } from "../../models/BancoIdeas";
 
 export const postGeneralInformation = async (req: any, res: Response) => {
@@ -115,12 +115,15 @@ export const postGeneralInformation = async (req: any, res: Response) => {
 
         //#endregion
 
+        const information = await getIdeaCompleta(informationIsert.codigo);
+
 
         await transaction.commit();
 
+
         res.status(201).json({
             msg: "ideaIsertada Correctamente",
-            informationIsert,
+            information,
             correlative,
         });
     } catch (error) {
@@ -139,6 +142,7 @@ export const getGeneralInformation = async (req: any, res: Response) => {
         let filtros = req.query
 
         if (filtros) {
+            
 
             if (filtros.state && filtros.state != 'TODAS') { where.state = filtros.state }
             if (filtros.institucionId) { where.idEntity = filtros.institucionId }
@@ -147,7 +151,7 @@ export const getGeneralInformation = async (req: any, res: Response) => {
                     $like: `%${filtros.number}%`
                 }
             }
-            if (filtros.author == 'Mis Ideas'){
+            if (filtros.author == 'Mis Ideas') {
                 where.author = req.user.id
             }
             if (filtros.fechaDesde && filtros.fechaHasta) {
@@ -156,8 +160,12 @@ export const getGeneralInformation = async (req: any, res: Response) => {
                 }
             }
         }
+        
 
-        where.idEntity = req.user.id_inst;
+        // TODO: Este es el ID de SEGEPLAN 
+        if (req?.user?.id_inst != '16220') {
+            where.idEntity = req.user.id_inst;
+        }
         console.log(where)
 
         let generalInformations = await generalInformation.findAll({
@@ -165,33 +173,6 @@ export const getGeneralInformation = async (req: any, res: Response) => {
             order: [
                 ['correlation', 'ASC']
             ],
-            include: [
-                {
-                    required: false,
-
-                    model: possibleEffects,
-                    // as: 'possibleEffects'
-                },
-                {
-                    required: false,
-
-                    model: possibleCauses,
-                    // as: 'possibleCauses'
-
-                },
-                {
-                    required: false,
-
-                    model: possibleAlternatives,
-                    // as: 'possibleAlternatives'
-
-                },
-                {
-                    required: false,
-
-                    model: stage
-                },
-            ]
         });
 
         let ideas: any[] = []
@@ -199,62 +180,22 @@ export const getGeneralInformation = async (req: any, res: Response) => {
         if (generalInformations || generalInformations.length > 0) {
             let resGIdea = await Promise.all(
                 generalInformations.map(async (idea: any) => {
-
-                    let alternativeF = await getAlternatives(idea.codigo);
-                    let ideaFind: any = {
-                        codigo: idea.codigo,
-                        author: idea.author,
-                        analizer: idea.analizer,
-                        idStage: idea.idStage,
-                        productId: idea.productId,
-                        productName: idea.productName,
-                        date: idea.date,
-                        correlation: idea.correlation,
-                        registerCode: idea.registerCode,
-                        planningInstrument: idea.planningInstrument,
-                        description: idea.description,
-                        dateOut: idea.dateOut,
-                        punctuation: idea.punctuation,
-                        state: idea.state,
-                        result: idea.result,
-                        idEntity: idea.idEntity,
-                        nameEntity: idea.nameEntity,
-                        responsibleName: idea.responsibleName,
-                        email: idea.email,
-                        phone: idea.phone,
-                        definitionPotentiality: idea.definitionPotentiality,
-                        baseLine: idea.baseLine,
-                        descriptionCurrentSituation: idea.descriptionCurrentSituation,
-                        generalObjective: idea.generalObjective,
-                        expectedChange: idea.expectedChange,
-                        createdAt: idea.createdAt,
-                        updatedAt: idea.updatedAt,
-                        deletedAt: idea.deletedAt,
-                    }
-                    ideaFind.Effects = idea.Effects;
-                    ideaFind.Causes = idea.Causes;
-                    ideaFind.Alternatives = idea.Alternatives;
-                    ideaFind.stage = idea.stage;
-                    ideaFind.alternatives = alternativeF;
-
-
+                    const ideaFind = await getIdeaCompleta(idea.codigo)
                     ideas.push(ideaFind)
-
-
                 })
             )
         }
 
         await ideas.sort(function (a, b) {
             if (a.registerCode > b.registerCode) {
-              return 1;
+                return 1;
             }
             if (a.registerCode < b.registerCode) {
-              return -1;
+                return -1;
             }
             // a must be equal to b
             return 0;
-          });
+        });
 
 
         res.status(201).json({
@@ -268,6 +209,7 @@ export const getGeneralInformation = async (req: any, res: Response) => {
         });
     }
 };
+
 
 
 /**

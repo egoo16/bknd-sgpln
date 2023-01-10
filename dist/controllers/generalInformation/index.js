@@ -113,10 +113,11 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
             })));
         }
         //#endregion
+        const information = yield (0, feature_1.getIdeaCompleta)(informationIsert.codigo);
         yield transaction.commit();
         res.status(201).json({
             msg: "ideaIsertada Correctamente",
-            informationIsert,
+            information,
             correlative,
         });
     }
@@ -130,6 +131,7 @@ const postGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, f
 });
 exports.postGeneralInformation = postGeneralInformation;
 const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         let where = {};
         let filtros = req.query;
@@ -154,74 +156,21 @@ const getGeneralInformation = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 };
             }
         }
-        where.idEntity = req.user.id_inst;
+        // TODO: Este es el ID de SEGEPLAN 
+        if (((_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id_inst) != '16220') {
+            where.idEntity = req.user.id_inst;
+        }
         console.log(where);
         let generalInformations = yield BancoIdeas_1.generalInformation.findAll({
             where,
             order: [
                 ['correlation', 'ASC']
             ],
-            include: [
-                {
-                    required: false,
-                    model: BancoIdeas_1.possibleEffects,
-                    // as: 'possibleEffects'
-                },
-                {
-                    required: false,
-                    model: BancoIdeas_1.possibleCauses,
-                    // as: 'possibleCauses'
-                },
-                {
-                    required: false,
-                    model: BancoIdeas_1.possibleAlternatives,
-                    // as: 'possibleAlternatives'
-                },
-                {
-                    required: false,
-                    model: BancoIdeas_1.stage
-                },
-            ]
         });
         let ideas = [];
         if (generalInformations || generalInformations.length > 0) {
             let resGIdea = yield Promise.all(generalInformations.map((idea) => __awaiter(void 0, void 0, void 0, function* () {
-                let alternativeF = yield (0, feature_1.getAlternatives)(idea.codigo);
-                let ideaFind = {
-                    codigo: idea.codigo,
-                    author: idea.author,
-                    analizer: idea.analizer,
-                    idStage: idea.idStage,
-                    productId: idea.productId,
-                    productName: idea.productName,
-                    date: idea.date,
-                    correlation: idea.correlation,
-                    registerCode: idea.registerCode,
-                    planningInstrument: idea.planningInstrument,
-                    description: idea.description,
-                    dateOut: idea.dateOut,
-                    punctuation: idea.punctuation,
-                    state: idea.state,
-                    result: idea.result,
-                    idEntity: idea.idEntity,
-                    nameEntity: idea.nameEntity,
-                    responsibleName: idea.responsibleName,
-                    email: idea.email,
-                    phone: idea.phone,
-                    definitionPotentiality: idea.definitionPotentiality,
-                    baseLine: idea.baseLine,
-                    descriptionCurrentSituation: idea.descriptionCurrentSituation,
-                    generalObjective: idea.generalObjective,
-                    expectedChange: idea.expectedChange,
-                    createdAt: idea.createdAt,
-                    updatedAt: idea.updatedAt,
-                    deletedAt: idea.deletedAt,
-                };
-                ideaFind.Effects = idea.Effects;
-                ideaFind.Causes = idea.Causes;
-                ideaFind.Alternatives = idea.Alternatives;
-                ideaFind.stage = idea.stage;
-                ideaFind.alternatives = alternativeF;
+                const ideaFind = yield (0, feature_1.getIdeaCompleta)(idea.codigo);
                 ideas.push(ideaFind);
             })));
         }

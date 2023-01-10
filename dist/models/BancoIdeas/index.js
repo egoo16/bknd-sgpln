@@ -3,12 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.typePlanning = exports.stage = exports.responsibleEntity = exports.referencePopulation = exports.qualification = exports.projectType = exports.projectDescription = exports.preliminaryName = exports.preInvestment = exports.possibleEffects = exports.possibleCauses = exports.possibleAlternatives = exports.populationDelimitation = exports.ideaAlternative = exports.geographicArea = exports.generalInformation = exports.formulationProcess = exports.executionTime = exports.denomination = exports.model = exports.datageo = exports.complexity = void 0;
+exports.typePlanning = exports.stage = exports.responsibleEntity = exports.referencePopulation = exports.qualification = exports.projectType = exports.projectDescription = exports.preliminaryName = exports.preInvestment = exports.possibleEffects = exports.possibleCauses = exports.possibleAlternatives = exports.populationDelimitation = exports.ideaAlternative = exports.geographicArea = exports.generalInformation = exports.formulationProcess = exports.executionTime = exports.denomination = exports.datageo = exports.complexity = void 0;
 var complexity_1 = require("./complexity");
 Object.defineProperty(exports, "complexity", { enumerable: true, get: function () { return __importDefault(complexity_1).default; } });
 var datageo_model_1 = require("./datageo.model");
 Object.defineProperty(exports, "datageo", { enumerable: true, get: function () { return __importDefault(datageo_model_1).default; } });
-Object.defineProperty(exports, "model", { enumerable: true, get: function () { return datageo_model_1.model; } });
 var denomination_1 = require("./denomination");
 Object.defineProperty(exports, "denomination", { enumerable: true, get: function () { return __importDefault(denomination_1).default; } });
 var executionTime_1 = require("./executionTime");

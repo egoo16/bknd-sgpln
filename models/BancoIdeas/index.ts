@@ -1,5 +1,5 @@
 export { default as complexity } from './complexity';
-export { default as datageo.model } from './datageo.model';
+export { default as datageo } from './datageo.model';
 export { default as denomination } from './denomination';
 export { default as executionTime } from './executionTime';
 export { default as formulationProcess } from './formulationProcess';

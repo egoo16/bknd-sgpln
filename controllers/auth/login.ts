@@ -12,7 +12,7 @@ export const renovarToken = async (req: any, res: Response) => {
             },
             SEED,
             {
-                expiresIn: 14400,
+                expiresIn: 100,
             }
         );
 
