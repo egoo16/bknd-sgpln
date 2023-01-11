@@ -22,7 +22,7 @@ const renovarToken = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const token = jsonwebtoken_1.default.sign({
             user: req.user,
         }, environment_1.SEED, {
-            expiresIn: 100,
+            expiresIn: 4000,
         });
         res.status(200).json({
             ok: true,
@@ -32,6 +32,7 @@ const renovarToken = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
     }
     catch (error) {
+        return res.status(500).json({ error: error });
     }
 });
 exports.renovarToken = renovarToken;

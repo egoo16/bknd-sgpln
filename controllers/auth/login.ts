@@ -12,7 +12,7 @@ export const renovarToken = async (req: any, res: Response) => {
             },
             SEED,
             {
-                expiresIn: 100,
+                expiresIn: 4000,
             }
         );
 
@@ -23,7 +23,7 @@ export const renovarToken = async (req: any, res: Response) => {
             id: req.user.id,
         });
     } catch (error) {
-
+        return res.status(500).json({ error: error });
     }
 
 }

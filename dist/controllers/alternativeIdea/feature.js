@@ -331,28 +331,14 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
                     name: referenceName
                 }
             });
-            if (!reference) {
-                let ref = { name: referenceName };
-                let referenceCreate = yield BancoIdeas_1.referencePopulation.create(ref, { transaction });
-                popDemiliation.refPopId = referenceCreate.codigo;
-            }
-            else {
-                popDemiliation.refPopId = reference.codigo;
-            }
+            popDemiliation.refPopId = reference.codigo;
             let denominationName = popDemiliation.denId;
             let denmtion = yield BancoIdeas_1.denomination.findOne({
                 where: {
                     name: denominationName
                 }
             });
-            if (!denmtion) {
-                let denModel = { name: denominationName };
-                let denCreate = yield BancoIdeas_1.denomination.create(denModel, { transaction });
-                popDemiliation.denId = denCreate.codigo;
-            }
-            else {
-                popDemiliation.denId = denmtion.codigo;
-            }
+            popDemiliation.denId = denmtion.codigo;
             if (popDemiliation.estimateBeneficiaries && popDemiliation.totalPopulation) {
                 let estimateBeneficiaries = parseInt(popDemiliation.estimateBeneficiaries, 10);
                 let totalPopulation = parseInt(popDemiliation.totalPopulation, 10);

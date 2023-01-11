@@ -304,14 +304,7 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
             }
         });
 
-
-        if (!reference) {
-            let ref = { name: referenceName };
-            let referenceCreate = await referencePopulation.create(ref, { transaction });
-            popDemiliation.refPopId = referenceCreate.codigo;
-        } else {
-            popDemiliation.refPopId = reference.codigo;
-        }
+        popDemiliation.refPopId = reference.codigo;
 
         let denominationName = popDemiliation.denId;
         let denmtion = await denomination.findOne({
@@ -319,14 +312,7 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
                 name: denominationName
             }
         });
-
-        if (!denmtion) {
-            let denModel = { name: denominationName }
-            let denCreate = await denomination.create(denModel, { transaction });
-            popDemiliation.denId = denCreate.codigo;
-        } else {
-            popDemiliation.denId = denmtion.codigo;
-        }
+        popDemiliation.denId = denmtion.codigo;
 
 
         if (popDemiliation.estimateBeneficiaries && popDemiliation.totalPopulation) {
@@ -1046,7 +1032,7 @@ export async function fupdateIdeaAlternativeComplete(ideaAlt: any, transaction: 
             ideaAlt.codigo = undefined;
             ideaAlt.state = 'CREADA';
             ideaAlternativeCreated = await ideaAlternative.create(ideaAlt, { transaction }).then(async (alternativeCreated: any) => {
-                alternativeCreatedAsync = {...alternativeCreated}
+                alternativeCreatedAsync = { ...alternativeCreated }
                 await altActive.destroy({ transaction });
                 let codigoAlternativa = alternativeCreated.codigo
                 await FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction)
@@ -1062,7 +1048,8 @@ export async function fupdateIdeaAlternativeComplete(ideaAlt: any, transaction: 
                 return {
                     message: `Idea alternativa Actualizada correctamente`,
                     alternative: alternativeCreatedAsync
-                };            }
+                };
+            }
         } else {
             throw `Error al actualizar Alternativa, no existe el ID enviado`
         }
