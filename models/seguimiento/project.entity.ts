@@ -11,7 +11,7 @@ const project = db.define(
             type: Sequelize.UUID, primaryKey: true, allowNull: false, defaultValue: Sequelize.UUIDV4,
         },
         author: { type: Sequelize.STRING },
-        correlative: { type: Sequelize.INTEGER },
+        correlative: { type: Sequelize.INTEGER, autoIncrement: true },
         process: { type: Sequelize.STRING },
         sector: { type: Sequelize.STRING },
         depto: { type: Sequelize.STRING },
