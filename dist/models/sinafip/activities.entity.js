@@ -13,6 +13,8 @@ exports.activitiesEntity = connection_1.default.define('activities', {
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4
     },
+    dateStart: { type: sequelize_oracle_1.default.DATE },
+    dateEnd: { type: sequelize_oracle_1.default.DATE },
     activity: {
         type: sequelize_oracle_1.default.STRING
     },
