@@ -17,11 +17,13 @@ export const requestEntity = db.define('request', {
         allowNull: false,
         defaultValue: Sequelize.UUIDV4
     },
+    correlative: { type: Sequelize.INTEGER, autoIncrement: true },
     result: { type: Sequelize.STRING },
     status: { type: Sequelize.STRING },
+    idEntity: { type: Sequelize.STRING },
     author: { type: Sequelize.STRING },
-    advser: { type: Sequelize.STRING },
-    reviewd: { type: Sequelize.STRING },
+    advser: { type: Sequelize.STRING }, // Quien revisa
+    reviewd: { type: Sequelize.STRING }, // Quien admite
     created: { type: Sequelize.STRING },
     hasFinancing: { type: Sequelize.BOOLEAN },
     financing: { type: Sequelize.STRING }

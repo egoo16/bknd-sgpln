@@ -18,15 +18,18 @@ import { priorizationQuanty } from '../../models/sinafip/priorizationQualificati
 
 
 
-export async function createRequestSinafip(req: Request, res: Response) {
+export async function createRequestSinafip(req: any, res: Response) {
     // let transaction = await models.transaction()
     try {
         let allActivities: any = []
-        let { status, author, institution, investment, studyDescription, delimit, requirementsDocuments } = req.body;
+        let { status, author, institution, investment, studyDescription, delimit, requirementsDocuments, idEntity, hasFinancing } = req.body;
+        author = req.user.id;
         status = 'CREADA';
+        idEntity = req.user.id_inst;
+        hasFinancing = (studyDescription.modalityFinancing == 'NO SE CUENTA CON FUENTE DE FINANCIAMIENTO') ? 0 : 1
         const created = moment().format('L');
         const { totalStimated, activities } = requirementsDocuments.stimatedBudget
-        const requestCreated = await requestEntity.create({ status, author, created });
+        const requestCreated = await requestEntity.create({ status, author, idEntity, created, hasFinancing });
         const institutionCreated = await institutionEntity.create({ ...institution, requestId: requestCreated.id });
         const investmentCreated = await investmentProjectEntity.create({ ...investment, requestId: requestCreated.id });
         const studyDescriptionCreated = await studyDescriptionEntity.create({ ...studyDescription, requestId: requestCreated.id });
@@ -81,10 +84,27 @@ export async function createRequestSinafip(req: Request, res: Response) {
 }
 
 
-export async function getAllRequest(req: Request, res: Response) {
-
+export async function getAllRequest(req: any, res: Response) {
     try {
-        const requests = await requestEntity.findAll({ order: '"createdAt" DESC'});
+
+        let where: any = {};
+
+        let filtros = req.query;
+
+        if (filtros){
+            if (filtros.status && filtros.status != 'TODAS') { where.status = filtros.status }
+
+        }
+        // TODO: Este es el ID de SEGEPLAN 
+        if (req?.user?.id_inst != '16220') {
+            where.idEntity = req.user.id_inst;
+        }
+        console.log(where)
+
+        const requests = await requestEntity.findAll({
+            where,
+            order: '"createdAt" DESC'
+        });
         let stimatedBudget = null;
         let requirementsDocuments: any = null;
 
@@ -121,6 +141,9 @@ export async function getAllRequest(req: Request, res: Response) {
 
             let reqStruct = {
                 id: request.id,
+                correlative: request.correlative,
+                idEntity: request.idEntity,
+                hasFinancing: request.hasFinancing,
                 result: request.result,
                 status: request.status,
                 author: request.author,
@@ -201,7 +224,7 @@ export async function getOneRequest(req: Request, res: Response) {
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
     }
 }
-export async function updateState(req: Request, res: Response) {
+export async function updateState(req: any, res: Response) {
     try {
         let statusOptions = ['reception', 'analysis', 'denied'];
         let idSolicitud = req.params.id;
@@ -221,9 +244,11 @@ export async function updateState(req: Request, res: Response) {
                         }
                         if (banderaSolicitud == 'analysis') {
                             getSolicitud.status = 'EN ANÁLISIS';
+                            getSolicitud.advser = req.user.id;
                         }
                         if (banderaSolicitud == 'denied') {
                             getSolicitud.status = 'RECHAZADA';
+                            getSolicitud.advser = req.user.id;
                         }
 
                         await getSolicitud.save();
@@ -255,7 +280,7 @@ export async function updateState(req: Request, res: Response) {
     }
 }
 
-export async function createAdmissionQuanty(req: Request, res: Response) {
+export async function createAdmissionQuanty(req: any, res: Response) {
     try {
 
         let idSolicitud = req.params.id;
@@ -274,6 +299,7 @@ export async function createAdmissionQuanty(req: Request, res: Response) {
                 } else {
                     getSolicitud.result = 'NO ADMITIDA'
                 }
+                getSolicitud.reviewd = req.user.id;
                 getSolicitud.status = 'CALIFICADA'
                 await getSolicitud.save()
                 admissionObj.requestId = idSolicitud;

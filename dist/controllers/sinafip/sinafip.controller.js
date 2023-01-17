@@ -23,11 +23,14 @@ function createRequestSinafip(req, res) {
         // let transaction = await models.transaction()
         try {
             let allActivities = [];
-            let { status, author, institution, investment, studyDescription, delimit, requirementsDocuments } = req.body;
+            let { status, author, institution, investment, studyDescription, delimit, requirementsDocuments, idEntity, hasFinancing } = req.body;
+            author = req.user.id;
             status = 'CREADA';
+            idEntity = req.user.id_inst;
+            hasFinancing = (studyDescription.modalityFinancing == 'NO SE CUENTA CON FUENTE DE FINANCIAMIENTO') ? 0 : 1;
             const created = (0, moment_1.default)().format('L');
             const { totalStimated, activities } = requirementsDocuments.stimatedBudget;
-            const requestCreated = yield sinafip_1.requestEntity.create({ status, author, created });
+            const requestCreated = yield sinafip_1.requestEntity.create({ status, author, idEntity, created, hasFinancing });
             const institutionCreated = yield sinafip_1.institutionEntity.create(Object.assign(Object.assign({}, institution), { requestId: requestCreated.id }));
             const investmentCreated = yield sinafip_1.investmentProjectEntity.create(Object.assign(Object.assign({}, investment), { requestId: requestCreated.id }));
             const studyDescriptionCreated = yield sinafip_1.studyDescriptionEntity.create(Object.assign(Object.assign({}, studyDescription), { requestId: requestCreated.id }));
@@ -71,9 +74,25 @@ function createRequestSinafip(req, res) {
 }
 exports.createRequestSinafip = createRequestSinafip;
 function getAllRequest(req, res) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const requests = yield sinafip_1.requestEntity.findAll({ order: '"createdAt" DESC' });
+            let where = {};
+            let filtros = req.query;
+            if (filtros) {
+                if (filtros.status && filtros.status != 'TODAS') {
+                    where.status = filtros.status;
+                }
+            }
+            // TODO: Este es el ID de SEGEPLAN 
+            if (((_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id_inst) != '16220') {
+                where.idEntity = req.user.id_inst;
+            }
+            console.log(where);
+            const requests = yield sinafip_1.requestEntity.findAll({
+                where,
+                order: '"createdAt" DESC'
+            });
             let stimatedBudget = null;
             let requirementsDocuments = null;
             const allRequest = yield Promise.all(requests.map((request) => __awaiter(this, void 0, void 0, function* () {
@@ -103,6 +122,9 @@ function getAllRequest(req, res) {
                 }
                 let reqStruct = {
                     id: request.id,
+                    correlative: request.correlative,
+                    idEntity: request.idEntity,
+                    hasFinancing: request.hasFinancing,
                     result: request.result,
                     status: request.status,
                     author: request.author,
@@ -187,9 +209,11 @@ function updateState(req, res) {
                             }
                             if (banderaSolicitud == 'analysis') {
                                 getSolicitud.status = 'EN ANÁLISIS';
+                                getSolicitud.advser = req.user.id;
                             }
                             if (banderaSolicitud == 'denied') {
                                 getSolicitud.status = 'RECHAZADA';
+                                getSolicitud.advser = req.user.id;
                             }
                             yield getSolicitud.save();
                             let solicitud = yield getSolicitudCompleta(getSolicitud.id);
@@ -241,6 +265,7 @@ function createAdmissionQuanty(req, res) {
                     else {
                         getSolicitud.result = 'NO ADMITIDA';
                     }
+                    getSolicitud.reviewd = req.user.id;
                     getSolicitud.status = 'CALIFICADA';
                     yield getSolicitud.save();
                     admissionObj.requestId = idSolicitud;

@@ -21,8 +21,10 @@ exports.requestEntity = connection_1.default.define('request', {
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4
     },
+    correlative: { type: sequelize_oracle_1.default.INTEGER, autoIncrement: true },
     result: { type: sequelize_oracle_1.default.STRING },
     status: { type: sequelize_oracle_1.default.STRING },
+    idEntity: { type: sequelize_oracle_1.default.STRING },
     author: { type: sequelize_oracle_1.default.STRING },
     advser: { type: sequelize_oracle_1.default.STRING },
     reviewd: { type: sequelize_oracle_1.default.STRING },
