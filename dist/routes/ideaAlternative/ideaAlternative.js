@@ -6,6 +6,8 @@ const authentication_1 = require("../../middlewares/authentication");
 const preliminarRoute = (0, express_1.Router)();
 preliminarRoute.get("/preinversion/:id", alternativeIdea_1.getPreinversion);
 preliminarRoute.post("/", authentication_1.verificaToken, alternativeIdea_1.createIdeaAlternativeComplete);
+preliminarRoute.post("/first", alternativeIdea_1.createIdeaAlternativeFirstPart);
+preliminarRoute.post("/second/:id", alternativeIdea_1.createIdeaAlternativeSecondPart);
 preliminarRoute.put("/", authentication_1.verificaToken, alternativeIdea_1.updateIdeaAlternativeComplete);
 preliminarRoute.get("/denomination", alternativeIdea_1.getDenomination);
 preliminarRoute.get("/referencePopulation", alternativeIdea_1.getReferencePopulation);

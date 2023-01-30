@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getIdeaCompleta = exports.fupdateIdeaAlternativeComplete = exports.getAlternativeComplete = exports.getAlternatives = exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreatePreInvestment = exports.FaddPertinenceQuality = exports.FcreateIdeaAlternativeComplete = exports.FgetPreinversion = void 0;
+exports.getIdeaCompleta = exports.fupdateIdeaAlternativeComplete = exports.getAlternativeComplete = exports.getAlternatives = exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreatePreInvestment = exports.FaddPertinenceQuality = exports.createSecondPartAlternative = exports.createFirstPartAlternative = exports.FcreateIdeaAlternativeComplete = exports.FgetPreinversion = void 0;
 const BancoIdeas_1 = require("../../models/BancoIdeas");
 const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
 function FgetPreinversion(idAlternativa) {
@@ -168,6 +168,56 @@ function FcreateIdeaAlternativeComplete(ideaAlt, transaction) {
     });
 }
 exports.FcreateIdeaAlternativeComplete = FcreateIdeaAlternativeComplete;
+function createFirstPartAlternative(ideaAlt, transaction) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let alternativeToCreate = {
+                sectionBIId: ideaAlt.sectionBIId,
+                state: 'CREADA'
+            };
+            console.log("🚀 ~ file: feature.ts:146 ~ createFirstPartAlternative ~ alternativeToCreate", alternativeToCreate);
+            let ideaAlternativeCreated = yield BancoIdeas_1.ideaAlternative.create(alternativeToCreate, { transaction });
+            let codigoAlternativa = ideaAlternativeCreated.codigo;
+            yield FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction);
+            yield FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction);
+            yield FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction);
+            let alternative;
+            if (ideaAlternativeCreated) {
+                alternative = yield getAlternativeComplete(ideaAlternativeCreated.codigo);
+            }
+            return {
+                message: `Idea alternativa creada correctamente`,
+                alternative
+            };
+        }
+        catch (error) {
+            transaction.rollback();
+            //devuelve errores al cliente
+            throw `Error al ingresar Idea alternativa: ${error}`;
+        }
+    });
+}
+exports.createFirstPartAlternative = createFirstPartAlternative;
+function createSecondPartAlternative(idAlternative, ideaAlt, transaction) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let alternative;
+            yield FcreateGeographicArea(ideaAlt.geoArea, idAlternative, transaction);
+            yield FcreateProjectDescription(ideaAlt.projDesc, idAlternative, transaction);
+            alternative = yield getAlternativeComplete(idAlternative);
+            return {
+                message: `Idea alternativa creada correctamente`,
+                alternative
+            };
+        }
+        catch (error) {
+            transaction.rollback();
+            //devuelve errores al cliente
+            throw `Error al ingresar Idea alternativa: ${error}`;
+        }
+    });
+}
+exports.createSecondPartAlternative = createSecondPartAlternative;
 function FaddPertinenceQuality(pertinence, transaction, user) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -359,7 +409,6 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
 exports.FcreatePopulationDemilitation = FcreatePopulationDemilitation;
 function FcreateProjectDescription(proDescription, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("🚀 ~ file: feature.ts:350 ~ FcreateProjectDescription ~ proDescription", proDescription);
         try {
             proDescription.AlterId = idAlternativa;
             if (proDescription.annual || proDescription.annual == true) {

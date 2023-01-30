@@ -1,11 +1,24 @@
 import { Router } from "express";
-import { addPertinenceQuality, createIdeaAlternativeComplete, updateIdeaAlternativeComplete, getAlternative, getDenomination, getPertinencia, getPreinversion, getReferencePopulation } from "../../controllers/alternativeIdea";
+import {
+    addPertinenceQuality,
+    createIdeaAlternativeComplete,
+    updateIdeaAlternativeComplete,
+    getAlternative,
+    getDenomination,
+    getPertinencia,
+    getPreinversion,
+    getReferencePopulation,
+    createIdeaAlternativeSecondPart,
+    createIdeaAlternativeFirstPart
+} from "../../controllers/alternativeIdea";
 import { verificaToken } from "../../middlewares/authentication";
 
 const preliminarRoute = Router();
 
 preliminarRoute.get("/preinversion/:id", getPreinversion);
 preliminarRoute.post("/", verificaToken, createIdeaAlternativeComplete);
+preliminarRoute.post("/first", createIdeaAlternativeFirstPart);
+preliminarRoute.post("/second/:id", createIdeaAlternativeSecondPart);
 preliminarRoute.put("/", verificaToken, updateIdeaAlternativeComplete);
 preliminarRoute.get("/denomination", getDenomination);
 preliminarRoute.get("/referencePopulation", getReferencePopulation);

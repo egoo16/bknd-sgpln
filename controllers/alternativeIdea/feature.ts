@@ -137,6 +137,55 @@ export async function FcreateIdeaAlternativeComplete(ideaAlt: any, transaction: 
     }
 }
 
+export async function createFirstPartAlternative(ideaAlt: any, transaction: any) {
+    try {
+        let alternativeToCreate = {
+            sectionBIId: ideaAlt.sectionBIId,
+            state: 'CREADA' 
+        }
+        console.log("🚀 ~ file: feature.ts:146 ~ createFirstPartAlternative ~ alternativeToCreate", alternativeToCreate)
+        let ideaAlternativeCreated = await ideaAlternative.create(alternativeToCreate, { transaction })
+        let codigoAlternativa = ideaAlternativeCreated.codigo
+        await FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction)
+        await FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction)
+        await FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction)
+        
+        let alternative;
+        if (ideaAlternativeCreated) {
+            alternative = await getAlternativeComplete(ideaAlternativeCreated.codigo)
+        }
+
+        return {
+            message: `Idea alternativa creada correctamente`,
+            alternative
+        };
+    } catch (error) {
+        transaction.rollback()
+        //devuelve errores al cliente
+        throw `Error al ingresar Idea alternativa: ${error}`;
+    }
+}
+
+
+export async function createSecondPartAlternative(idAlternative: string, ideaAlt: any, transaction: any) {
+    try {
+        let alternative;
+
+        await FcreateGeographicArea(ideaAlt.geoArea, idAlternative, transaction)
+        await FcreateProjectDescription(ideaAlt.projDesc, idAlternative, transaction)
+        alternative = await getAlternativeComplete(idAlternative)
+
+        return {
+            message: `Idea alternativa creada correctamente`,
+            alternative
+        };
+    } catch (error) {
+        transaction.rollback()
+        //devuelve errores al cliente
+        throw `Error al ingresar Idea alternativa: ${error}`;
+    }
+}
+
 export async function FaddPertinenceQuality(pertinence: any, transaction: any, user?: any) {
     try {
 
@@ -264,7 +313,7 @@ export async function FcreatePreInvestment(preInversion: any, idAlternativa: any
     }
 }
 
-export async function FcreatePreleminaryName(prName: any, idAlternativa: number, transaction: any) {
+export async function FcreatePreleminaryName(prName: any, idAlternativa: string, transaction: any) {
     try {
         prName.AlterId = idAlternativa
         let preliminaryNameCreated = await preliminaryName.create(prName, { transaction })
@@ -276,7 +325,7 @@ export async function FcreatePreleminaryName(prName: any, idAlternativa: number,
     }
 }
 
-export async function FcresponsableEntity(resEntity: any, idAlternativa: number, transaction: any) {
+export async function FcresponsableEntity(resEntity: any, idAlternativa: string, transaction: any) {
     try {
         resEntity.AlterId = idAlternativa
         let responsableEntityCreated = await responsibleEntity.create(resEntity, { transaction })
@@ -288,7 +337,7 @@ export async function FcresponsableEntity(resEntity: any, idAlternativa: number,
     }
 }
 
-export async function FcreatePopulationDemilitation(popDemiliation: any, idAlternativa: number, transaction: any) {
+export async function FcreatePopulationDemilitation(popDemiliation: any, idAlternativa: string, transaction: any) {
     try {
         popDemiliation.AlterId = idAlternativa;
         // let refModel = await referencePopulation.findAll();
@@ -332,8 +381,7 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
     }
 }
 
-export async function FcreateProjectDescription(proDescription: any, idAlternativa: number, transaction: any) {
-    console.log("🚀 ~ file: feature.ts:350 ~ FcreateProjectDescription ~ proDescription", proDescription)
+export async function FcreateProjectDescription(proDescription: any, idAlternativa: string, transaction: any) {
     try {
         proDescription.AlterId = idAlternativa
         if (proDescription.annual || proDescription.annual == true) { proDescription.annual = 1 }
@@ -350,7 +398,7 @@ export async function FcreateProjectDescription(proDescription: any, idAlternati
     }
 }
 
-export async function FcreateGeographicArea(geograpicArea: any, idAlternativa: number, transaction: any) {
+export async function FcreateGeographicArea(geograpicArea: any, idAlternativa: string, transaction: any) {
     try {
         geograpicArea.AlterId = idAlternativa
         let geographicAreaCreated = await geographicArea.create(geograpicArea, { transaction })

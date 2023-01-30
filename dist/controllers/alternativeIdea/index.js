@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateIdeaAlternativeComplete = exports.getPertinencia = exports.getAlternative = exports.getReferencePopulation = exports.getDenomination = exports.getPreinversion = exports.addPertinenceQuality = exports.createIdeaAlternativeComplete = void 0;
+exports.updateIdeaAlternativeComplete = exports.getPertinencia = exports.getAlternative = exports.getReferencePopulation = exports.getDenomination = exports.getPreinversion = exports.addPertinenceQuality = exports.createIdeaAlternativeSecondPart = exports.createIdeaAlternativeFirstPart = exports.createIdeaAlternativeComplete = void 0;
 const connection_1 = __importDefault(require("../../db/connection"));
 const BancoIdeas_1 = require("../../models/BancoIdeas");
 const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
@@ -36,6 +36,37 @@ function createIdeaAlternativeComplete(req, res) {
     });
 }
 exports.createIdeaAlternativeComplete = createIdeaAlternativeComplete;
+function createIdeaAlternativeFirstPart(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let transaction = yield connection_1.default.transaction();
+        console.log("🚀 ~ file: index.ts:27 ~ createIdeaAlternativeFirstPart ~ req", req.body);
+        try {
+            let ideaAlternative = yield (0, feature_1.createFirstPartAlternative)(req.body, transaction);
+            transaction.commit();
+            return res.status(200).send(ideaAlternative);
+        }
+        catch (error) {
+            transaction.rollback();
+            return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
+        }
+    });
+}
+exports.createIdeaAlternativeFirstPart = createIdeaAlternativeFirstPart;
+function createIdeaAlternativeSecondPart(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let transaction = yield connection_1.default.transaction();
+        try {
+            console.log("🚀 ~ file: index.ts:40 ~ createIdeaAlternativeSecondPart ~ req", req.body);
+            const idAlternative = req.params.id;
+            let preInversion = yield (0, feature_1.createSecondPartAlternative)(idAlternative, req.body, transaction);
+            return res.status(200).send(preInversion);
+        }
+        catch (error) {
+            return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
+        }
+    });
+}
+exports.createIdeaAlternativeSecondPart = createIdeaAlternativeSecondPart;
 /**
  * Funcion para  listar las configuraciones globales
  * @param {*} req

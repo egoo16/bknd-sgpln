@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import models from "../../db/connection";
 import { denomination, referencePopulation, ideaAlternative, populationDelimitation, geographicArea, projectDescription, executionTime, generalInformation } from "../../models/BancoIdeas";
 import dataGeo from "../../models/BancoIdeas/datageo.model";
-import { FaddPertinenceQuality, FcreateIdeaAlternativeComplete, FgetPreinversion, fupdateIdeaAlternativeComplete, getAlternativeComplete, getAlternatives } from './feature';
+import { createSecondPartAlternative, createFirstPartAlternative, FaddPertinenceQuality, FcreateIdeaAlternativeComplete, FgetPreinversion, fupdateIdeaAlternativeComplete, getAlternativeComplete, getAlternatives } from './feature';
 
 
 /**
@@ -19,6 +19,31 @@ export async function createIdeaAlternativeComplete(req: Request, res: Response)
         return res.status(200).send(ideaAlternative)
     } catch (error: any) {
         transaction.rollback()
+        return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
+    }
+}
+
+export async function createIdeaAlternativeFirstPart(req: Request, res: Response) {
+    let transaction = await models.transaction()
+    console.log("🚀 ~ file: index.ts:27 ~ createIdeaAlternativeFirstPart ~ req", req.body)
+    try {
+        let ideaAlternative = await createFirstPartAlternative(req.body, transaction)
+        transaction.commit()
+        return res.status(200).send(ideaAlternative)
+    } catch (error: any) {
+        transaction.rollback()
+        return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
+    }
+}
+
+export async function createIdeaAlternativeSecondPart(req: Request, res: Response) {
+    let transaction = await models.transaction()
+    try {
+        console.log("🚀 ~ file: index.ts:40 ~ createIdeaAlternativeSecondPart ~ req", req.body)
+        const idAlternative = req.params.id
+        let preInversion = await createSecondPartAlternative(idAlternative, req.body, transaction)
+        return res.status(200).send(preInversion)
+    } catch (error: any) {
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
     }
 }
