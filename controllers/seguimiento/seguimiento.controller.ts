@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
+import models from "../../db/connection";
 import moment from 'moment';
 import { accessRoads, advisoryDoc, advisoryEpi, availableOrg, comment, disasters, imgVisit, meansTransport, project, serviceInf, threatTypes, track, visitCard } from '../../models/seguimiento';
 
 
 export async function createProject(req: Request, res: Response) {
+    let transaction = await models.transaction()
     try {
 
         let projectModel = req.body;
@@ -13,7 +15,7 @@ export async function createProject(req: Request, res: Response) {
         let allTracks: any = [];
 
 
-        const projectCreated = await project.create({ ...projectModel });
+        const projectCreated = await project.create({ ...projectModel }, {transaction});
         let proj = {
             id: projectCreated.id,
             author: projectCreated.author,
@@ -36,7 +38,7 @@ export async function createProject(req: Request, res: Response) {
         if (tracking?.length > 0) {
             const resTracking = await Promise.all(tracking.map(async (prog: any) => {
 
-                const res = await createTrack(prog, projectCreated.id);
+                const res = await createTrack(prog, projectCreated.id, transaction);
                 return res;
 
             }));
@@ -49,6 +51,7 @@ export async function createProject(req: Request, res: Response) {
                     tracking: allTracks
                 }
             }
+            transaction.commit()
             return res.status(201).send(response)
         } else {
             const response = {
@@ -57,146 +60,154 @@ export async function createProject(req: Request, res: Response) {
                     tracking: allTracks
                 }
             }
+            transaction.commit()
             return res.status(201).send(response)
 
         }
 
     } catch (error: any) {
+        transaction.rollback()
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
     }
 }
 
 export async function addTrack(req: Request, res: Response) {
+    let transaction = await models.transaction()
     try {
         const idProject = req.params.id
         const trackModel = req.body;
 
-        let trackCreated = await createTrack(trackModel, idProject);
+        let trackCreated = await createTrack(trackModel, idProject, transaction);
 
         const response = await getProjectCompleto(idProject)
+        transaction.commit()
         return res.status(201).send(response)
-
-
     } catch (error: any) {
+        transaction.rollback()
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
     }
 }
 
-async function createTrack(trackModel: any, projectId: string) {
+async function createTrack(trackModel: any, projectId: string, transaction: any) {
+    try {
 
-    let projectUd = await project.findOne({
-        where: {
-            id: projectId
-        }
-    })
-    if (projectUd) {
-        const a = parseInt(trackModel.iapa);
-        const b = parseInt(trackModel.iapb);
-        const c = parseInt(trackModel.iapc);
-        const totalProgress = a + b + c;
-        if (totalProgress == 100) {
-            projectUd.status = 'FINISHED';
-        }
-        projectUd.advance = totalProgress;
-        await projectUd.save()
+        let projectUd = await project.findOne({
+            where: {
+                id: projectId
+            }
+        })
+        if (projectUd) {
+            const a = parseInt(trackModel.iapa);
+            const b = parseInt(trackModel.iapb);
+            const c = parseInt(trackModel.iapc);
+            const totalProgress = a + b + c;
+            if (totalProgress == 100) {
+                projectUd.status = 'FINISHED';
+            }
+            projectUd.advance = totalProgress;
+            await projectUd.save({transaction})
 
-    } else {
-        throw new Error("No se Encontro el proyecto ");
+        } else {
+            throw new Error("No se Encontro el proyecto ");
+        }
+
+        const trackCreated = await track.create({ ...trackModel, projectId });
+        if (trackModel.advisoryEpi) {
+            let advEpi = trackModel.advisoryEpi;
+            advEpi.doc = '';
+            let advEpiCreated = await advisoryEpi.create({ ...advEpi, trackId: trackCreated.id }, {transaction});
+        }
+        if (trackModel.advisoryDoc) {
+            let advDoc = trackModel.advisoryDoc;
+            let cments = []
+            cments = trackModel.advisoryDoc.comments;
+            let advEpiCreated = await advisoryDoc.create({ ...advDoc, trackId: trackCreated.id }, {transaction});
+            if (cments.length > 0) {
+                const cmProm = await Promise.all(cments.map(async (cmt: any) => {
+                    cmt.advisoryDocId = advEpiCreated.id
+                    const response = await comment.create({ ...cmt }, {transaction});
+                }))
+            }
+        }
+        if (trackModel.visitCard) {
+
+            let vsCard = trackModel.visitCard;
+            let vsCardCreated = await visitCard.create({ ...vsCard, trackId: trackCreated.id }, {transaction});
+            // Variables de otras tablas
+            let accessRds = [];
+            let mtransport = [];
+            let srvInf = [];
+            let dsters = [];
+            let thrTypes = [];
+            let imgVst = [];
+            let avlOrg = [];
+
+            // asignacion de variables 
+
+            accessRds = trackModel.visitCard.accessRoads
+            mtransport = trackModel.visitCard.meanstransport
+            srvInf = trackModel.visitCard.serviceInf
+            dsters = trackModel.visitCard.disasters
+            thrTypes = trackModel.visitCard.threatTypes
+            imgVst = trackModel.visitCard.imgVisit
+            avlOrg = trackModel.visitCard.availableOrg
+
+            // Creacion de Registros
+            console.log("🚀 ~ file: seguimiento.controller.ts:157 ~ createTrack ~ accessRds.length", accessRds.length)
+            if (accessRds.length > 0) {
+                const resProm = await Promise.all(accessRds.map(async (obj: any) => {
+                    obj.visitCardId = vsCardCreated.id
+                    const response = await accessRoads.create({ ...obj }, {transaction});
+                }))
+            }
+
+            console.log("🚀 ~ file: seguimiento.controller.ts:165 ~ createTrack ~ mtransport.length", mtransport)
+            if (mtransport.length > 0) {
+                const resProm = await Promise.all(mtransport.map(async (obj: any) => {
+                    obj.visitCardId = vsCardCreated.id
+                    const response = await meansTransport.create({ ...obj }, {transaction});
+                }))
+            }
+
+            if (srvInf.length > 0) {
+                const resProm = await Promise.all(srvInf.map(async (obj: any) => {
+                    obj.visitCardId = vsCardCreated.id
+                    const response = await serviceInf.create({ ...obj },{transaction});
+                }))
+            }
+
+            if (dsters.length > 0) {
+                const resProm = await Promise.all(dsters.map(async (obj: any) => {
+                    obj.visitCardId = vsCardCreated.id
+                    const response = await disasters.create({ ...obj }, {transaction});
+                }))
+            }
+
+            if (thrTypes.length > 0) {
+                const resProm = await Promise.all(thrTypes.map(async (obj: any) => {
+                    obj.visitCardId = vsCardCreated.id
+                    const response = await threatTypes.create({ ...obj }, {transaction});
+                }))
+            }
+
+            if (imgVst.length > 0) {
+                const resProm = await Promise.all(imgVst.map(async (obj: any) => {
+                    obj.visitCardId = vsCardCreated.id
+                    const response = await imgVisit.create({ ...obj }, {transaction});
+                }))
+            }
+            if (avlOrg.length > 0) {
+                const resProm = await Promise.all(avlOrg.map(async (obj: any) => {
+                    obj.visitCardId = vsCardCreated.id
+                    const response = await availableOrg.create({ ...obj }, {transaction});
+                }))
+            }
+
+        }
+        return trackCreated;
+    } catch (error: any) {
+        throw `Error al ingresar Track: ${error}`;
     }
-
-    const trackCreated = await track.create({ ...trackModel, projectId });
-    if (trackModel.advisoryEpi) {
-        let advEpi = trackModel.advisoryEpi;
-        advEpi.doc = '';
-        let advEpiCreated = await advisoryEpi.create({ ...advEpi, trackId: trackCreated.id });
-    }
-    if (trackModel.advisoryDoc) {
-        let advDoc = trackModel.advisoryDoc;
-        let cments = []
-        cments = trackModel.advisoryDoc.comments;
-        let advEpiCreated = await advisoryDoc.create({ ...advDoc, trackId: trackCreated.id });
-        if (cments.length > 0) {
-            const cmProm = await Promise.all(cments.map(async (cmt: any) => {
-                cmt.advisoryDocId = advEpiCreated.id
-                const response = await comment.create({ ...cmt });
-            }))
-        }
-    }
-    if (trackModel.visitCard) {
-
-        let vsCard = trackModel.visitCard;
-        let vsCardCreated = await visitCard.create({ ...vsCard });
-        // Variables de otras tablas
-        let accessRds = [];
-        let mtransport = [];
-        let srvInf = [];
-        let dsters = [];
-        let thrTypes = [];
-        let imgVst = [];
-        let avlOrg = [];
-
-        // asignacion de variables 
-
-        accessRds = trackModel.visitCard.accessRoads
-        mtransport = trackModel.visitCard.meansTransport
-        srvInf = trackModel.visitCard.serviceInf
-        dsters = trackModel.visitCard.disasters
-        thrTypes = trackModel.visitCard.threatTypes
-        imgVst = trackModel.visitCard.imgVisit
-        avlOrg = trackModel.visitCard.availableOrg
-
-        // Creacion de Registros
-        if (accessRds.length > 0) {
-            const resProm = await Promise.all(accessRds.map(async (obj: any) => {
-                obj.visitCardId = vsCardCreated.id
-                const response = await accessRoads.create({ ...obj });
-            }))
-        }
-
-        if (mtransport.length > 0) {
-            const resProm = await Promise.all(mtransport.map(async (obj: any) => {
-                obj.visitCardId = vsCardCreated.id
-                const response = await meansTransport.create({ ...obj });
-            }))
-        }
-
-        if (srvInf.length > 0) {
-            const resProm = await Promise.all(srvInf.map(async (obj: any) => {
-                obj.visitCardId = vsCardCreated.id
-                const response = await serviceInf.create({ ...obj });
-            }))
-        }
-
-        if (dsters.length > 0) {
-            const resProm = await Promise.all(dsters.map(async (obj: any) => {
-                obj.visitCardId = vsCardCreated.id
-                const response = await disasters.create({ ...obj });
-            }))
-        }
-
-        if (thrTypes.length > 0) {
-            const resProm = await Promise.all(thrTypes.map(async (obj: any) => {
-                obj.visitCardId = vsCardCreated.id
-                const response = await threatTypes.create({ ...obj });
-            }))
-        }
-
-        if (imgVst.length > 0) {
-            const resProm = await Promise.all(imgVst.map(async (obj: any) => {
-                obj.visitCardId = vsCardCreated.id
-                const response = await imgVisit.create({ ...obj });
-            }))
-        }
-        if (avlOrg.length > 0) {
-            const resProm = await Promise.all(avlOrg.map(async (obj: any) => {
-                obj.visitCardId = vsCardCreated.id
-                const response = await availableOrg.create({ ...obj });
-            }))
-        }
-
-    }
-    return trackCreated;
-
 }
 
 export async function getProjectById(req: Request, res: Response) {

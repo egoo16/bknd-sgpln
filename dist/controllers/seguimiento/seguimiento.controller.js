@@ -8,18 +8,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllProjects = exports.getProjectById = exports.addTrack = exports.createProject = void 0;
+const connection_1 = __importDefault(require("../../db/connection"));
 const seguimiento_1 = require("../../models/seguimiento");
 function createProject(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
+        let transaction = yield connection_1.default.transaction();
         try {
             let projectModel = req.body;
             projectModel.advance = 0;
             projectModel.status = 'REGISTER';
             console.log("🚀 ~ file: seguimiento.controller.ts:20 ~ createProject ~ projectModel", projectModel);
             let allTracks = [];
-            const projectCreated = yield seguimiento_1.project.create(Object.assign({}, projectModel));
+            const projectCreated = yield seguimiento_1.project.create(Object.assign({}, projectModel), { transaction });
             let proj = {
                 id: projectCreated.id,
                 author: projectCreated.author,
@@ -41,23 +46,26 @@ function createProject(req, res) {
             const tracking = req.body.tracking;
             if ((tracking === null || tracking === void 0 ? void 0 : tracking.length) > 0) {
                 const resTracking = yield Promise.all(tracking.map((prog) => __awaiter(this, void 0, void 0, function* () {
-                    const res = yield createTrack(prog, projectCreated.id);
+                    const res = yield createTrack(prog, projectCreated.id, transaction);
                     return res;
                 })));
                 allTracks = [...resTracking];
                 const response = {
                     project: Object.assign(Object.assign({}, proj), { tracking: allTracks })
                 };
+                transaction.commit();
                 return res.status(201).send(response);
             }
             else {
                 const response = {
                     project: Object.assign(Object.assign({}, proj), { tracking: allTracks })
                 };
+                transaction.commit();
                 return res.status(201).send(response);
             }
         }
         catch (error) {
+            transaction.rollback();
             return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
         }
     });
@@ -65,122 +73,132 @@ function createProject(req, res) {
 exports.createProject = createProject;
 function addTrack(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
+        let transaction = yield connection_1.default.transaction();
         try {
             const idProject = req.params.id;
             const trackModel = req.body;
-            let trackCreated = yield createTrack(trackModel, idProject);
+            let trackCreated = yield createTrack(trackModel, idProject, transaction);
             const response = yield getProjectCompleto(idProject);
+            transaction.commit();
             return res.status(201).send(response);
         }
         catch (error) {
+            transaction.rollback();
             return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
         }
     });
 }
 exports.addTrack = addTrack;
-function createTrack(trackModel, projectId) {
+function createTrack(trackModel, projectId, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
-        let projectUd = yield seguimiento_1.project.findOne({
-            where: {
-                id: projectId
+        try {
+            let projectUd = yield seguimiento_1.project.findOne({
+                where: {
+                    id: projectId
+                }
+            });
+            if (projectUd) {
+                const a = parseInt(trackModel.iapa);
+                const b = parseInt(trackModel.iapb);
+                const c = parseInt(trackModel.iapc);
+                const totalProgress = a + b + c;
+                if (totalProgress == 100) {
+                    projectUd.status = 'FINISHED';
+                }
+                projectUd.advance = totalProgress;
+                yield projectUd.save({ transaction });
             }
-        });
-        if (projectUd) {
-            const a = parseInt(trackModel.iapa);
-            const b = parseInt(trackModel.iapb);
-            const c = parseInt(trackModel.iapc);
-            const totalProgress = a + b + c;
-            if (totalProgress == 100) {
-                projectUd.status = 'FINISHED';
+            else {
+                throw new Error("No se Encontro el proyecto ");
             }
-            projectUd.advance = totalProgress;
-            yield projectUd.save();
+            const trackCreated = yield seguimiento_1.track.create(Object.assign(Object.assign({}, trackModel), { projectId }));
+            if (trackModel.advisoryEpi) {
+                let advEpi = trackModel.advisoryEpi;
+                advEpi.doc = '';
+                let advEpiCreated = yield seguimiento_1.advisoryEpi.create(Object.assign(Object.assign({}, advEpi), { trackId: trackCreated.id }), { transaction });
+            }
+            if (trackModel.advisoryDoc) {
+                let advDoc = trackModel.advisoryDoc;
+                let cments = [];
+                cments = trackModel.advisoryDoc.comments;
+                let advEpiCreated = yield seguimiento_1.advisoryDoc.create(Object.assign(Object.assign({}, advDoc), { trackId: trackCreated.id }), { transaction });
+                if (cments.length > 0) {
+                    const cmProm = yield Promise.all(cments.map((cmt) => __awaiter(this, void 0, void 0, function* () {
+                        cmt.advisoryDocId = advEpiCreated.id;
+                        const response = yield seguimiento_1.comment.create(Object.assign({}, cmt), { transaction });
+                    })));
+                }
+            }
+            if (trackModel.visitCard) {
+                let vsCard = trackModel.visitCard;
+                let vsCardCreated = yield seguimiento_1.visitCard.create(Object.assign(Object.assign({}, vsCard), { trackId: trackCreated.id }), { transaction });
+                // Variables de otras tablas
+                let accessRds = [];
+                let mtransport = [];
+                let srvInf = [];
+                let dsters = [];
+                let thrTypes = [];
+                let imgVst = [];
+                let avlOrg = [];
+                // asignacion de variables 
+                accessRds = trackModel.visitCard.accessRoads;
+                mtransport = trackModel.visitCard.meanstransport;
+                srvInf = trackModel.visitCard.serviceInf;
+                dsters = trackModel.visitCard.disasters;
+                thrTypes = trackModel.visitCard.threatTypes;
+                imgVst = trackModel.visitCard.imgVisit;
+                avlOrg = trackModel.visitCard.availableOrg;
+                // Creacion de Registros
+                console.log("🚀 ~ file: seguimiento.controller.ts:157 ~ createTrack ~ accessRds.length", accessRds.length);
+                if (accessRds.length > 0) {
+                    const resProm = yield Promise.all(accessRds.map((obj) => __awaiter(this, void 0, void 0, function* () {
+                        obj.visitCardId = vsCardCreated.id;
+                        const response = yield seguimiento_1.accessRoads.create(Object.assign({}, obj), { transaction });
+                    })));
+                }
+                console.log("🚀 ~ file: seguimiento.controller.ts:165 ~ createTrack ~ mtransport.length", mtransport);
+                if (mtransport.length > 0) {
+                    const resProm = yield Promise.all(mtransport.map((obj) => __awaiter(this, void 0, void 0, function* () {
+                        obj.visitCardId = vsCardCreated.id;
+                        const response = yield seguimiento_1.meansTransport.create(Object.assign({}, obj), { transaction });
+                    })));
+                }
+                if (srvInf.length > 0) {
+                    const resProm = yield Promise.all(srvInf.map((obj) => __awaiter(this, void 0, void 0, function* () {
+                        obj.visitCardId = vsCardCreated.id;
+                        const response = yield seguimiento_1.serviceInf.create(Object.assign({}, obj), { transaction });
+                    })));
+                }
+                if (dsters.length > 0) {
+                    const resProm = yield Promise.all(dsters.map((obj) => __awaiter(this, void 0, void 0, function* () {
+                        obj.visitCardId = vsCardCreated.id;
+                        const response = yield seguimiento_1.disasters.create(Object.assign({}, obj), { transaction });
+                    })));
+                }
+                if (thrTypes.length > 0) {
+                    const resProm = yield Promise.all(thrTypes.map((obj) => __awaiter(this, void 0, void 0, function* () {
+                        obj.visitCardId = vsCardCreated.id;
+                        const response = yield seguimiento_1.threatTypes.create(Object.assign({}, obj), { transaction });
+                    })));
+                }
+                if (imgVst.length > 0) {
+                    const resProm = yield Promise.all(imgVst.map((obj) => __awaiter(this, void 0, void 0, function* () {
+                        obj.visitCardId = vsCardCreated.id;
+                        const response = yield seguimiento_1.imgVisit.create(Object.assign({}, obj), { transaction });
+                    })));
+                }
+                if (avlOrg.length > 0) {
+                    const resProm = yield Promise.all(avlOrg.map((obj) => __awaiter(this, void 0, void 0, function* () {
+                        obj.visitCardId = vsCardCreated.id;
+                        const response = yield seguimiento_1.availableOrg.create(Object.assign({}, obj), { transaction });
+                    })));
+                }
+            }
+            return trackCreated;
         }
-        else {
-            throw new Error("No se Encontro el proyecto ");
+        catch (error) {
+            throw `Error al ingresar Track: ${error}`;
         }
-        const trackCreated = yield seguimiento_1.track.create(Object.assign(Object.assign({}, trackModel), { projectId }));
-        if (trackModel.advisoryEpi) {
-            let advEpi = trackModel.advisoryEpi;
-            advEpi.doc = '';
-            let advEpiCreated = yield seguimiento_1.advisoryEpi.create(Object.assign(Object.assign({}, advEpi), { trackId: trackCreated.id }));
-        }
-        if (trackModel.advisoryDoc) {
-            let advDoc = trackModel.advisoryDoc;
-            let cments = [];
-            cments = trackModel.advisoryDoc.comments;
-            let advEpiCreated = yield seguimiento_1.advisoryDoc.create(Object.assign(Object.assign({}, advDoc), { trackId: trackCreated.id }));
-            if (cments.length > 0) {
-                const cmProm = yield Promise.all(cments.map((cmt) => __awaiter(this, void 0, void 0, function* () {
-                    cmt.advisoryDocId = advEpiCreated.id;
-                    const response = yield seguimiento_1.comment.create(Object.assign({}, cmt));
-                })));
-            }
-        }
-        if (trackModel.visitCard) {
-            let vsCard = trackModel.visitCard;
-            let vsCardCreated = yield seguimiento_1.visitCard.create(Object.assign({}, vsCard));
-            // Variables de otras tablas
-            let accessRds = [];
-            let mtransport = [];
-            let srvInf = [];
-            let dsters = [];
-            let thrTypes = [];
-            let imgVst = [];
-            let avlOrg = [];
-            // asignacion de variables 
-            accessRds = trackModel.visitCard.accessRoads;
-            mtransport = trackModel.visitCard.meansTransport;
-            srvInf = trackModel.visitCard.serviceInf;
-            dsters = trackModel.visitCard.disasters;
-            thrTypes = trackModel.visitCard.threatTypes;
-            imgVst = trackModel.visitCard.imgVisit;
-            avlOrg = trackModel.visitCard.availableOrg;
-            // Creacion de Registros
-            if (accessRds.length > 0) {
-                const resProm = yield Promise.all(accessRds.map((obj) => __awaiter(this, void 0, void 0, function* () {
-                    obj.visitCardId = vsCardCreated.id;
-                    const response = yield seguimiento_1.accessRoads.create(Object.assign({}, obj));
-                })));
-            }
-            if (mtransport.length > 0) {
-                const resProm = yield Promise.all(mtransport.map((obj) => __awaiter(this, void 0, void 0, function* () {
-                    obj.visitCardId = vsCardCreated.id;
-                    const response = yield seguimiento_1.meansTransport.create(Object.assign({}, obj));
-                })));
-            }
-            if (srvInf.length > 0) {
-                const resProm = yield Promise.all(srvInf.map((obj) => __awaiter(this, void 0, void 0, function* () {
-                    obj.visitCardId = vsCardCreated.id;
-                    const response = yield seguimiento_1.serviceInf.create(Object.assign({}, obj));
-                })));
-            }
-            if (dsters.length > 0) {
-                const resProm = yield Promise.all(dsters.map((obj) => __awaiter(this, void 0, void 0, function* () {
-                    obj.visitCardId = vsCardCreated.id;
-                    const response = yield seguimiento_1.disasters.create(Object.assign({}, obj));
-                })));
-            }
-            if (thrTypes.length > 0) {
-                const resProm = yield Promise.all(thrTypes.map((obj) => __awaiter(this, void 0, void 0, function* () {
-                    obj.visitCardId = vsCardCreated.id;
-                    const response = yield seguimiento_1.threatTypes.create(Object.assign({}, obj));
-                })));
-            }
-            if (imgVst.length > 0) {
-                const resProm = yield Promise.all(imgVst.map((obj) => __awaiter(this, void 0, void 0, function* () {
-                    obj.visitCardId = vsCardCreated.id;
-                    const response = yield seguimiento_1.imgVisit.create(Object.assign({}, obj));
-                })));
-            }
-            if (avlOrg.length > 0) {
-                const resProm = yield Promise.all(avlOrg.map((obj) => __awaiter(this, void 0, void 0, function* () {
-                    obj.visitCardId = vsCardCreated.id;
-                    const response = yield seguimiento_1.availableOrg.create(Object.assign({}, obj));
-                })));
-            }
-        }
-        return trackCreated;
     });
 }
 function getProjectById(req, res) {
