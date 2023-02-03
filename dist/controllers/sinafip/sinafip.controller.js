@@ -83,6 +83,9 @@ function getAllRequest(req, res) {
                 if (filtros.status && filtros.status != 'TODAS') {
                     where.status = filtros.status;
                 }
+                if (filtros.result) {
+                    where.status = filtros.result;
+                }
             }
             // TODO: Este es el ID de SEGEPLAN 
             if (((_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id_inst) != '16220') {

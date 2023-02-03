@@ -93,7 +93,7 @@ export async function getAllRequest(req: any, res: Response) {
 
         if (filtros){
             if (filtros.status && filtros.status != 'TODAS') { where.status = filtros.status }
-
+            if (filtros.result) { where.status = filtros.result }
         }
         // TODO: Este es el ID de SEGEPLAN 
         if (req?.user?.id_inst != '16220') {
