@@ -84,7 +84,7 @@ function getAllRequest(req, res) {
                     where.status = filtros.status;
                 }
                 if (filtros.result) {
-                    where.status = filtros.result;
+                    where.result = filtros.result;
                 }
             }
             // TODO: Este es el ID de SEGEPLAN 
