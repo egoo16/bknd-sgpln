@@ -542,6 +542,7 @@ function getAlternatives(idIdea) {
                         codigo: alter.resEntity.codigo,
                         AlterId: alter.resEntity.AlterId,
                         nameEPI: alter.resEntity.nameEPI,
+                        executionUnit: alter.resEntity.executionUnit,
                         leaderName: alter.resEntity.leaderName,
                         email: alter.resEntity.email,
                         phone: alter.resEntity.phone,
