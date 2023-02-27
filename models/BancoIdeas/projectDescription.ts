@@ -14,7 +14,7 @@ const projectDescription = db.define(
     },
     AlterId: { type: Sequelize.UUID, allowNull: false },
         projectType: { type: Sequelize.STRING, allowNull: false },
-        formulationProcess: { type: Sequelize.STRING, allowNull: false },
+        formulationProcess: { type: Sequelize.STRING },
         formulationProcessDescription: { type: Sequelize.STRING },
         descriptionInterventions: { type: Sequelize.STRING },
         complexity: { type: Sequelize.STRING, allowNull: false },

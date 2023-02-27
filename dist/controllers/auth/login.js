@@ -40,36 +40,6 @@ const loginUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const body = req.body;
         if (body) {
-            const usuarios = yield usuario_1.default.findAll();
-            if (!usuarios || usuarios.length <= 0) {
-                let userTest = {
-                    username: 'normal',
-                    password: bcrypt.hashSync('123456', 10),
-                    name: 'Usuario Externo de Prueba',
-                    id_inst: '9000',
-                    name_inst: 'MINISTERIO DE SALUD PUBLICA Y ASISTENCIA SOCIAL',
-                    role: 'USER_ROLE',
-                };
-                let userTestCreate = yield createUser(userTest);
-                userTest = {
-                    username: 'admin',
-                    password: bcrypt.hashSync('123456', 10),
-                    name: 'Usuario Administrador de Prueba',
-                    id_inst: '1',
-                    name_inst: 'INSTITUCION TEST',
-                    role: 'ADMIN_ROLE',
-                };
-                userTestCreate = yield createUser(userTest);
-                userTest = {
-                    username: 'digitador',
-                    password: bcrypt.hashSync('123456', 10),
-                    name: 'Usuario Administrador de Prueba',
-                    id_inst: '1',
-                    name_inst: 'INSTITUCION TEST',
-                    role: 'DIGITADOR_ROLE',
-                };
-                userTestCreate = yield createUser(userTest);
-            }
             const usuario = yield usuario_1.default.findOne({
                 where: { username: body.username },
             });

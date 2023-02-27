@@ -837,6 +837,7 @@ function getAlternativeComplete(idAlternative) {
                     codigo: data.resEntity.codigo,
                     AlterId: data.resEntity.AlterId,
                     nameEPI: data.resEntity.nameEPI,
+                    executionUnit: data.resEntity.executionUnit,
                     leaderName: data.resEntity.leaderName,
                     email: data.resEntity.email,
                     phone: data.resEntity.phone,

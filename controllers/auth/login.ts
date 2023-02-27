@@ -34,44 +34,6 @@ export const loginUsuario = async (req: Request, res: Response) => {
 
         if (body) {
 
-            const usuarios = await Usuario.findAll();
-
-            if (!usuarios || usuarios.length <= 0) {
-
-                let userTest = {
-                    username: 'normal',
-                    password: bcrypt.hashSync('123456', 10),
-                    name: 'Usuario Externo de Prueba',
-                    id_inst: '9000',
-                    name_inst: 'MINISTERIO DE SALUD PUBLICA Y ASISTENCIA SOCIAL',
-                    role: 'USER_ROLE',
-
-                };
-                let userTestCreate = await createUser(userTest);
-
-                userTest = {
-                    username: 'admin',
-                    password: bcrypt.hashSync('123456', 10),
-                    name: 'Usuario Administrador de Prueba',
-                    id_inst: '1',
-                    name_inst: 'INSTITUCION TEST',
-                    role: 'ADMIN_ROLE',
-
-                };
-                userTestCreate = await createUser(userTest);
-                userTest = {
-                    username: 'digitador',
-                    password: bcrypt.hashSync('123456', 10),
-                    name: 'Usuario Administrador de Prueba',
-                    id_inst: '1',
-                    name_inst: 'INSTITUCION TEST',
-                    role: 'DIGITADOR_ROLE',
-
-                };
-                userTestCreate = await createUser(userTest);
-
-            }
-
             const usuario = await Usuario.findOne({
                 where: { username: body.username },
             });
