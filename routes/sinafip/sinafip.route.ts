@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { getAllEntities, getAllgeneralStudies, getAllmodalityFinancing, getAllpreinvDocument, getAllProjectFunction } from '../../controllers/sinafip/list.controller';
-import { getAllRequest, getOneRequest, createRequestSinafip, updateState, createAdmissionQuanty, getDataPriorization } from '../../controllers/sinafip/sinafip.controller';
+import { getAllRequest, updateRequest, getOneRequest, createRequestSinafip, updateState, createAdmissionQuanty, getDataPriorization } from '../../controllers/sinafip/sinafip.controller';
 import { verificaToken } from '../../middlewares/authentication';
 
 
@@ -15,6 +15,8 @@ sinafipRouter.get('/modality-financing', getAllmodalityFinancing)
 
 
 sinafipRouter.post('/request/new',verificaToken, createRequestSinafip)
+sinafipRouter.post('/request/new',verificaToken, createRequestSinafip)
+sinafipRouter.put('/request/update/:id', updateRequest)
 sinafipRouter.get('/request/get-all', verificaToken, getAllRequest)
 sinafipRouter.get('/request/:id', getOneRequest)
 // sinafipRouter.post('/request/create', createRequest)
@@ -24,4 +26,4 @@ sinafipRouter.put('/request/:status/:id', verificaToken, updateState)
 sinafipRouter.post('/request/admission/:id', verificaToken, createAdmissionQuanty)
 sinafipRouter.get('/request/data-priorization/:id', getDataPriorization)
 
-export default sinafipRouter
+export default sinafipRouter 

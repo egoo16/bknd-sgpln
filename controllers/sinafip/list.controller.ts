@@ -74,7 +74,7 @@ export async function getAllgeneralStudies(req: Request, res: Response) {
       order: [['name', 'ASC']]
     })
     if (data.length <= 0) {
-      let ents = ['ESTUDIOS TÉCNICOS', 'ESTUDIOS ECONÓMICOS', 'ESTUDIOS SOCIALES',];
+      let ents = ['AMBIENTAL', 'ECONÓMICO', 'SOCIAL',];
 
       let resEnt = await Promise.all(ents.map(async (ent: any) => {
         let enti = { name: ent }
@@ -94,7 +94,6 @@ export async function getAllgeneralStudies(req: Request, res: Response) {
     return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
   }
 }
-
 
 export async function getAllpreinvDocument(req: Request, res: Response) {
   try {

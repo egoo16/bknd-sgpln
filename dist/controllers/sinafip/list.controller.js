@@ -80,7 +80,7 @@ function getAllgeneralStudies(req, res) {
                 order: [['name', 'ASC']]
             });
             if (data.length <= 0) {
-                let ents = ['ESTUDIOS TÉCNICOS', 'ESTUDIOS ECONÓMICOS', 'ESTUDIOS SOCIALES',];
+                let ents = ['AMBIENTAL', 'ECONÓMICO', 'SOCIAL',];
                 let resEnt = yield Promise.all(ents.map((ent) => __awaiter(this, void 0, void 0, function* () {
                     let enti = { name: ent };
                     let res = yield generalStudies_entity_1.generalStudies.create(enti);

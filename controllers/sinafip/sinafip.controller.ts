@@ -83,7 +83,6 @@ export async function createRequestSinafip(req: any, res: Response) {
     }
 }
 
-
 export async function getAllRequest(req: any, res: Response) {
     try {
 
@@ -91,7 +90,7 @@ export async function getAllRequest(req: any, res: Response) {
 
         let filtros = req.query;
 
-        if (filtros){
+        if (filtros) {
             if (filtros.status && filtros.status != 'TODAS') { where.status = filtros.status }
             if (filtros.result) { where.result = filtros.result }
         }
@@ -224,6 +223,7 @@ export async function getOneRequest(req: Request, res: Response) {
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
     }
 }
+
 export async function updateState(req: any, res: Response) {
     try {
         let statusOptions = ['reception', 'analysis', 'denied'];
@@ -486,7 +486,6 @@ async function verifyIndiceTotal(indice: any) {
 
 }
 
-
 async function getSolicitudCompleta(idSolicitud: string) {
     try {
         const request = await requestEntity.findOne({ where: { id: idSolicitud } });
@@ -532,7 +531,7 @@ async function getSolicitudCompleta(idSolicitud: string) {
                     response.priorizationQuanty = priorization;
                 }
             }
- 
+
 
 
             return response;
@@ -545,7 +544,6 @@ async function getSolicitudCompleta(idSolicitud: string) {
     }
 
 }
-
 
 const indicesProbreza = [
     { name: 'El Progreso', indice: 6.11, isMunicipio: false },
@@ -910,3 +908,171 @@ const indicesProbreza = [
     { name: 'San Jose Acatempa', indice: 1.47, isMunicipio: true },
     { name: 'Quezada', indice: 5.37, isMunicipio: true }
 ]
+
+export async function updateRequest(req: any, res: Response) {
+
+    try {
+        let idSolicitud = req.params.id;
+        if (idSolicitud) {
+            let getSolicitud = await requestEntity.findOne({
+                where: {
+                    id: idSolicitud
+                }
+            });
+            if (getSolicitud) {
+                getSolicitud.status = 'CREADA';
+                // getSolicitud.advser = req.user.id;
+                await getSolicitud.save();
+
+                let { institution, investment, studyDescription, delimit, requirementsDocuments, idEntity, hasFinancing } = req.body;
+                let solicitud = await getSolicitudCompleta(getSolicitud.id)
+
+                if (solicitud.institution) {
+                    let instVerify = {
+                        id: solicitud.institution.id,
+                        entityName: solicitud.institution.entityName,
+                        functionProjName: solicitud.institution.functionProjName,
+                        generalStudy: solicitud.institution.generalStudy,
+                        dcmntPreinvest: solicitud.institution.dcmntPreinvest,
+                        documentProject: solicitud.institution.documentProject,
+                        responsibleName: solicitud.institution.responsibleName,
+                        contactEmail: solicitud.institution.contactEmail,
+                        phoneNumber: solicitud.institution.phoneNumber,
+                        requestId: solicitud.institution.requestId,
+                    }
+                    if (!isEqual(instVerify, institution)) {
+                        solicitud.institution.entityName = institution.entityName;
+                        solicitud.institution.functionProjName = institution.functionProjName;
+                        solicitud.institution.generalStudy = institution.generalStudy;
+                        solicitud.institution.dcmntPreinvest = institution.dcmntPreinvest;
+                        solicitud.institution.documentProject = institution.documentProject;
+                        solicitud.institution.responsibleName = institution.responsibleName;
+                        solicitud.institution.contactEmail = institution.contactEmail;
+                        solicitud.institution.phoneNumber = institution.phoneNumber;
+                        solicitud.institution.requestId = institution.requestId;
+
+                        solicitud.institution.save();
+                    }
+                }
+
+                if (solicitud.investment) {
+                    let invstmtVerify = {
+                        id: solicitud.investment.id,
+                        coreProblem: solicitud.investment.coreProblem,
+                        productId: solicitud.investment.productId,
+                        productName: solicitud.investment.productName,
+                        nameProject: solicitud.investment.nameProject,
+                        objetiveProject: solicitud.investment.objetiveProject,
+                        descAdnJust: solicitud.investment.descAdnJust,
+                        infoStudies: solicitud.investment.infoStudies,
+                        estimatedProject: solicitud.investment.estimatedProject,
+                    }
+
+                    if (!isEqual(invstmtVerify, investment)) {
+                        solicitud.investment.coreProblem = investment.coreProblem;
+                        solicitud.investment.productId = investment.productId;
+                        solicitud.investment.productName = investment.productName;
+                        solicitud.investment.nameProject = investment.nameProject;
+                        solicitud.investment.objetiveProject = investment.objetiveProject;
+                        solicitud.investment.descAdnJust = investment.descAdnJust;
+                        solicitud.investment.infoStudies = investment.infoStudies;
+                        solicitud.investment.estimatedProject = investment.estimatedProject;
+
+                        solicitud.investment.save();
+                    }
+                }
+
+                if (solicitud.studyDescription) {
+                    let studyVerify = {
+                        id: studyDescription.id,
+                        nameStudy: studyDescription.nameStudy,
+                        objetiveGeneral: studyDescription.objetiveGeneral,
+                        costEstimted: studyDescription.costEstimted,
+                        modalityFinancing: studyDescription.modalityFinancing,
+                        requestId: studyDescription.requestId,
+                    }
+                    if (!isEqual(studyVerify, studyDescription)) {
+                        solicitud.studyDescription.id = studyDescription.id;
+                        solicitud.studyDescription.nameStudy = studyDescription.nameStudy;
+                        solicitud.studyDescription.objetiveGeneral = studyDescription.objetiveGeneral;
+                        solicitud.studyDescription.costEstimted = studyDescription.costEstimted;
+                        solicitud.studyDescription.modalityFinancing = studyDescription.modalityFinancing;
+                        solicitud.studyDescription.requestId = studyDescription.requestId;
+
+                        solicitud.studyDescription.save()
+                    }
+                }
+
+                if (solicitud.delimit) {
+
+                    let delimitVerify = {
+                        id: solicitud.delimit.id,
+                        nameRefPop: solicitud.delimit.nameRefPop,
+                        denomination: solicitud.delimit.denomination,
+                        estimatedBenef: solicitud.delimit.estimatedBenef,
+                        requestId: solicitud.delimit.requestId,
+                        departament: solicitud.delimit.departament,
+                        municipality: solicitud.delimit.municipality,
+                    }
+                    if (!isEqual(delimitVerify, studyDescription)) {
+                        solicitud.delimit.id = studyDescription.id;
+                        solicitud.delimit.nameRefPop = studyDescription.nameRefPop;
+                        solicitud.delimit.denomination = studyDescription.denomination;
+                        solicitud.delimit.estimatedBenef = studyDescription.estimatedBenef;
+                        solicitud.delimit.requestId = studyDescription.requestId;
+                        solicitud.delimit.departament = studyDescription.departament;
+                        solicitud.delimit.municipality = studyDescription.municipality;
+
+                        solicitud.delimit.save()
+                    }
+                }
+
+
+                res.status(200).send({
+                    solicitud
+                });
+
+            } else {
+                res.status(500).send({
+                    msj: 'No se encontro la solicitud con ID: ' + idSolicitud
+                });
+            }
+        } else {
+            res.status(400).send({
+                msj: 'Es necesario enviar un ID'
+            });
+        }
+
+
+    } catch (error: any) {
+        return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
+    }
+
+}
+
+function isEqual(a: any, b: any) {
+    console.log("🚀 ~ file: sinafip.controller.ts:965 ~ isEqual ~ b", b)
+    console.log("🚀 ~ file: sinafip.controller.ts:965 ~ isEqual ~ a", a)
+    const aProps = Object.getOwnPropertyNames(a);
+    const bProps = Object.getOwnPropertyNames(b);
+
+    if (aProps.length !== bProps.length) {
+        return false;
+    }
+
+    for (let i = 0; i < aProps.length; i++) {
+        const propName = aProps[i];
+
+        if (a[propName] !== b[propName]) {
+            if (typeof a[propName] === 'object') {
+                if (!isEqual(a[propName], b[propName])) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}

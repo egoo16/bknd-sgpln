@@ -12,6 +12,8 @@ sinafipRouter.get('/general-studies', list_controller_1.getAllgeneralStudies);
 sinafipRouter.get('/preinv-document', list_controller_1.getAllpreinvDocument);
 sinafipRouter.get('/modality-financing', list_controller_1.getAllmodalityFinancing);
 sinafipRouter.post('/request/new', authentication_1.verificaToken, sinafip_controller_1.createRequestSinafip);
+sinafipRouter.post('/request/new', authentication_1.verificaToken, sinafip_controller_1.createRequestSinafip);
+sinafipRouter.put('/request/update/:id', sinafip_controller_1.updateRequest);
 sinafipRouter.get('/request/get-all', authentication_1.verificaToken, sinafip_controller_1.getAllRequest);
 sinafipRouter.get('/request/:id', sinafip_controller_1.getOneRequest);
 // sinafipRouter.post('/request/create', createRequest)

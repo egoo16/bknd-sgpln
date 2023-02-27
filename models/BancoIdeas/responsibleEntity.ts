@@ -13,6 +13,7 @@ const responsibleEntity = db.define(
         },
         AlterId: { type: Sequelize.UUID, allowNull: false },
         nameEPI: { type: Sequelize.STRING },
+        executionUnit: { type: Sequelize.STRING },
         leaderName: { type: Sequelize.STRING },
         email: { type: Sequelize.STRING },
         phone: { type: Sequelize.STRING },

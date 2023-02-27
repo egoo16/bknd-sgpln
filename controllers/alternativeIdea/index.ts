@@ -67,8 +67,6 @@ export async function addPertinenceQuality(req: any, res: Response) {
     }
 }
 
-
-
 /**
  * Funcion para  listar las configuraciones globales
  * @param {*} req
@@ -81,7 +79,6 @@ export async function getPreinversion(req: Request, res: Response) {
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
     }
 }
-
 
 export const getDenomination = async (req: Request, res: Response) => {
     try {
@@ -156,7 +153,6 @@ export const getAlternative = async (req: Request, res: Response) => {
         });
     }
 };
-
 
 export const getPertinencia = async (req: Request, res: Response) => {
     try {
@@ -280,7 +276,6 @@ export const getPertinencia = async (req: Request, res: Response) => {
         });
     }
 };
-
 
 /**
  * Funcion para  actualizar Alternativa

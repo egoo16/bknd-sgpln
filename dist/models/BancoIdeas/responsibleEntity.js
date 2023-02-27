@@ -14,6 +14,7 @@ const responsibleEntity = connection_1.default.define("resEntity", {
     },
     AlterId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     nameEPI: { type: sequelize_oracle_1.default.STRING },
+    executionUnit: { type: sequelize_oracle_1.default.STRING },
     leaderName: { type: sequelize_oracle_1.default.STRING },
     email: { type: sequelize_oracle_1.default.STRING },
     phone: { type: sequelize_oracle_1.default.STRING },
