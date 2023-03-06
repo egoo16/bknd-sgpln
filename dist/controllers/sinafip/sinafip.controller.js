@@ -838,6 +838,7 @@ function updateRequest(req, res) {
                         let instVerify = {
                             id: solicitud.institution.id,
                             entityName: solicitud.institution.entityName,
+                            executionUnit: solicitud.institution.executionUnit,
                             functionProjName: solicitud.institution.functionProjName,
                             generalStudy: solicitud.institution.generalStudy,
                             dcmntPreinvest: solicitud.institution.dcmntPreinvest,
@@ -849,6 +850,7 @@ function updateRequest(req, res) {
                         };
                         if (!isEqual(instVerify, institution)) {
                             solicitud.institution.entityName = institution.entityName;
+                            solicitud.institution.executionUnit = institution.executionUnit;
                             solicitud.institution.functionProjName = institution.functionProjName;
                             solicitud.institution.generalStudy = institution.generalStudy;
                             solicitud.institution.dcmntPreinvest = institution.dcmntPreinvest;

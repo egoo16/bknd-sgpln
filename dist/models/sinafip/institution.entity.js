@@ -16,6 +16,9 @@ exports.institutionEntity = connection_1.default.define('institution', {
     entityName: {
         type: sequelize_oracle_1.default.STRING,
     },
+    executionUnit: {
+        type: sequelize_oracle_1.default.STRING,
+    },
     functionProjName: {
         type: sequelize_oracle_1.default.STRING
     },

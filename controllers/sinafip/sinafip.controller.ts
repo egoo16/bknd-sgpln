@@ -931,6 +931,7 @@ export async function updateRequest(req: any, res: Response) {
                     let instVerify = {
                         id: solicitud.institution.id,
                         entityName: solicitud.institution.entityName,
+                        executionUnit: solicitud.institution.executionUnit,
                         functionProjName: solicitud.institution.functionProjName,
                         generalStudy: solicitud.institution.generalStudy,
                         dcmntPreinvest: solicitud.institution.dcmntPreinvest,
@@ -942,6 +943,7 @@ export async function updateRequest(req: any, res: Response) {
                     }
                     if (!isEqual(instVerify, institution)) {
                         solicitud.institution.entityName = institution.entityName;
+                        solicitud.institution.executionUnit = institution.executionUnit;
                         solicitud.institution.functionProjName = institution.functionProjName;
                         solicitud.institution.generalStudy = institution.generalStudy;
                         solicitud.institution.dcmntPreinvest = institution.dcmntPreinvest;

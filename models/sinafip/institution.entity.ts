@@ -12,6 +12,9 @@ export const  institutionEntity = db.define('institution',{
     entityName: {
         type:Sequelize.STRING,
     },
+    executionUnit: {
+        type:Sequelize.STRING,
+    },
     functionProjName: {
         type:Sequelize.STRING
     },
