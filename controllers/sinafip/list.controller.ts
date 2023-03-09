@@ -408,10 +408,10 @@ export const createModalityFinancing = async (req: Request, res: Response) => {
 export const deleteModalityFinancing = async (req: Request, res: Response) => {
   try {
     if (req.params.id) {
-      const codigo = req.params.id;
+      const id = req.params.id;
       let denCreated = await modalityFinancing.destroy({
         where: {
-          codigo
+          id
         }
       })
 
@@ -435,11 +435,11 @@ export const updateModalityFinancing = async (req: Request, res: Response) => {
   try {
     if (req.body.name && req.params.id) {
       const name = req.body.name;
-      const codigo = req.params.id;
+      const id = req.params.id;
 
       let denCreated = await modalityFinancing.update({ name }, {
         where: {
-          codigo
+          id
         }
       })
 

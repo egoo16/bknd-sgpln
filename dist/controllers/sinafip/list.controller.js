@@ -396,10 +396,10 @@ exports.createModalityFinancing = createModalityFinancing;
 const deleteModalityFinancing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (req.params.id) {
-            const codigo = req.params.id;
+            const id = req.params.id;
             let denCreated = yield modalityFinancing_entity_1.modalityFinancing.destroy({
                 where: {
-                    codigo
+                    id
                 }
             });
             res.status(200).json({
@@ -422,10 +422,10 @@ const updateModalityFinancing = (req, res) => __awaiter(void 0, void 0, void 0, 
     try {
         if (req.body.name && req.params.id) {
             const name = req.body.name;
-            const codigo = req.params.id;
+            const id = req.params.id;
             let denCreated = yield modalityFinancing_entity_1.modalityFinancing.update({ name }, {
                 where: {
-                    codigo
+                    id
                 }
             });
             if (denCreated) {
