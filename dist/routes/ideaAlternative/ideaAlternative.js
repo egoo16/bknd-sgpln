@@ -1,17 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const alternativeIdea_1 = require("../../controllers/alternativeIdea");
+const controllers_1 = require("../../controllers");
 const authentication_1 = require("../../middlewares/authentication");
+const list_controller_1 = require("../../controllers/sinafip/list.controller");
 const preliminarRoute = (0, express_1.Router)();
-preliminarRoute.get("/preinversion/:id", alternativeIdea_1.getPreinversion);
-preliminarRoute.post("/", authentication_1.verificaToken, alternativeIdea_1.createIdeaAlternativeComplete);
-preliminarRoute.post("/first", alternativeIdea_1.createIdeaAlternativeFirstPart);
-preliminarRoute.post("/second/:id", alternativeIdea_1.createIdeaAlternativeSecondPart);
-preliminarRoute.put("/", authentication_1.verificaToken, alternativeIdea_1.updateIdeaAlternativeComplete);
-preliminarRoute.get("/denomination", alternativeIdea_1.getDenomination);
-preliminarRoute.get("/referencePopulation", alternativeIdea_1.getReferencePopulation);
-preliminarRoute.get("/:id", alternativeIdea_1.getAlternative);
-preliminarRoute.get("/pertinencia/:id", alternativeIdea_1.getPertinencia);
-preliminarRoute.post("/send-pertinencia/", authentication_1.verificaToken, alternativeIdea_1.addPertinenceQuality);
+// Demonimation
+preliminarRoute.get("/denomination", controllers_1.getDenomination);
+preliminarRoute.post("/denomination/", controllers_1.createDenomination);
+preliminarRoute.delete("/denomination/:id", list_controller_1.deleteDenomination);
+preliminarRoute.put("/denomination/:id", list_controller_1.updateDenomination);
+// Reference Population
+preliminarRoute.get("/referencePopulation", list_controller_1.getReferencePopulation);
+preliminarRoute.post("/referencePopulation/", list_controller_1.createReferencePopulation);
+preliminarRoute.delete("/referencePopulation/:id", list_controller_1.deleteReferencePopulation);
+preliminarRoute.put("/referencePopulation/:id", list_controller_1.updateReferencePopulation);
+// Alternative
+preliminarRoute.get("/preinversion/:id", controllers_1.getPreinversion);
+preliminarRoute.get("/:id", controllers_1.getAlternative);
+preliminarRoute.get("/pertinencia/:id", controllers_1.getPertinencia);
+preliminarRoute.post("/", authentication_1.verificaToken, controllers_1.createIdeaAlternativeComplete);
+preliminarRoute.post("/first", controllers_1.createIdeaAlternativeFirstPart);
+preliminarRoute.post("/second/:id", controllers_1.createIdeaAlternativeSecondPart);
+preliminarRoute.put("/", authentication_1.verificaToken, controllers_1.updateIdeaAlternativeComplete);
+preliminarRoute.post("/send-pertinencia/", authentication_1.verificaToken, controllers_1.addPertinenceQuality);
 exports.default = preliminarRoute;

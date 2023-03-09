@@ -10,7 +10,11 @@ sinafipRouter.get('/entities', list_controller_1.getAllEntities);
 sinafipRouter.get('/project-function', list_controller_1.getAllProjectFunction);
 sinafipRouter.get('/general-studies', list_controller_1.getAllgeneralStudies);
 sinafipRouter.get('/preinv-document', list_controller_1.getAllpreinvDocument);
+// Modality Financing
 sinafipRouter.get('/modality-financing', list_controller_1.getAllmodalityFinancing);
+sinafipRouter.post("/modality-financing/", list_controller_1.createModalityFinancing);
+sinafipRouter.delete("/modality-financing/:id", list_controller_1.deleteModalityFinancing);
+sinafipRouter.put("/modality-financing/:id", list_controller_1.updateModalityFinancing);
 sinafipRouter.post('/request/new', authentication_1.verificaToken, sinafip_controller_1.createRequestSinafip);
 sinafipRouter.post('/request/new', authentication_1.verificaToken, sinafip_controller_1.createRequestSinafip);
 sinafipRouter.put('/request/update/:id', sinafip_controller_1.updateRequest);

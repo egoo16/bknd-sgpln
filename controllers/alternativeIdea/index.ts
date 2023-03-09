@@ -80,59 +80,6 @@ export async function getPreinversion(req: Request, res: Response) {
     }
 }
 
-export const getDenomination = async (req: Request, res: Response) => {
-    try {
-        let data = await denomination.findAll();
-        if (data.length <= 0) {
-            let den1 = { name: 'Alumnos' };
-            let denCreated = await denomination.create(den1)
-            den1.name = 'Pacientes'
-            denCreated = await denomination.create(den1)
-            den1.name = 'Agricultores'
-            denCreated = await denomination.create(den1)
-        }
-        data = await denomination.findAll();
-
-
-        res.status(200).json({
-            msg: "Datos Obtenidos",
-            data,
-        });
-    } catch (error) {
-        res.status(500).json({
-            msg: "Error",
-            error,
-        });
-    }
-};
-
-export const getReferencePopulation = async (req: Request, res: Response) => {
-    try {
-        let data = await referencePopulation.findAll();
-        if (data.length <= 0) {
-            let ref = { name: 'Nacional' };
-            let denCreated = await referencePopulation.create(ref)
-            ref.name = 'Departamental'
-            denCreated = await referencePopulation.create(ref)
-            ref.name = 'Municipal'
-            denCreated = await referencePopulation.create(ref)
-            ref.name = 'Comunal'
-            denCreated = await referencePopulation.create(ref)
-        }
-        data = await referencePopulation.findAll();
-
-
-        res.status(200).json({
-            msg: "Datos Obtenidos",
-            data,
-        });
-    } catch (error) {
-        res.status(500).json({
-            msg: "Error",
-            error,
-        });
-    }
-};
 
 export const getAlternative = async (req: Request, res: Response) => {
     try {

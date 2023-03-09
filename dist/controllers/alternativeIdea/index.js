@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateIdeaAlternativeComplete = exports.getPertinencia = exports.getAlternative = exports.getReferencePopulation = exports.getDenomination = exports.getPreinversion = exports.addPertinenceQuality = exports.createIdeaAlternativeSecondPart = exports.createIdeaAlternativeFirstPart = exports.createIdeaAlternativeComplete = void 0;
+exports.updateIdeaAlternativeComplete = exports.getPertinencia = exports.getAlternative = exports.getPreinversion = exports.addPertinenceQuality = exports.createIdeaAlternativeSecondPart = exports.createIdeaAlternativeFirstPart = exports.createIdeaAlternativeComplete = void 0;
 const connection_1 = __importDefault(require("../../db/connection"));
 const BancoIdeas_1 = require("../../models/BancoIdeas");
 const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
@@ -105,58 +105,6 @@ function getPreinversion(req, res) {
     });
 }
 exports.getPreinversion = getPreinversion;
-const getDenomination = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        let data = yield BancoIdeas_1.denomination.findAll();
-        if (data.length <= 0) {
-            let den1 = { name: 'Alumnos' };
-            let denCreated = yield BancoIdeas_1.denomination.create(den1);
-            den1.name = 'Pacientes';
-            denCreated = yield BancoIdeas_1.denomination.create(den1);
-            den1.name = 'Agricultores';
-            denCreated = yield BancoIdeas_1.denomination.create(den1);
-        }
-        data = yield BancoIdeas_1.denomination.findAll();
-        res.status(200).json({
-            msg: "Datos Obtenidos",
-            data,
-        });
-    }
-    catch (error) {
-        res.status(500).json({
-            msg: "Error",
-            error,
-        });
-    }
-});
-exports.getDenomination = getDenomination;
-const getReferencePopulation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        let data = yield BancoIdeas_1.referencePopulation.findAll();
-        if (data.length <= 0) {
-            let ref = { name: 'Nacional' };
-            let denCreated = yield BancoIdeas_1.referencePopulation.create(ref);
-            ref.name = 'Departamental';
-            denCreated = yield BancoIdeas_1.referencePopulation.create(ref);
-            ref.name = 'Municipal';
-            denCreated = yield BancoIdeas_1.referencePopulation.create(ref);
-            ref.name = 'Comunal';
-            denCreated = yield BancoIdeas_1.referencePopulation.create(ref);
-        }
-        data = yield BancoIdeas_1.referencePopulation.findAll();
-        res.status(200).json({
-            msg: "Datos Obtenidos",
-            data,
-        });
-    }
-    catch (error) {
-        res.status(500).json({
-            msg: "Error",
-            error,
-        });
-    }
-});
-exports.getReferencePopulation = getReferencePopulation;
 const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let idAlternative = req.params.id;

@@ -29,7 +29,11 @@ class Server {
                     // await db.sync().then(() => {
                     console.log("Database online");
                 });
+                // await institutionEntity.sync({force: true})
+                // await visitCard.sync({force: true})
+                // await requestEntity.sync({force: true});
                 // await project.sync({force: true});
+                // await activitiesEntity.sync({force: true});
                 // await referencePopulation.sync({force:true});
                 // await populationDelimitation.sync({force:true});
             }

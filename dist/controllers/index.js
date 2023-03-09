@@ -14,6 +14,10 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./index"), exports);
-__exportStar(require("./list.controller"), exports);
-__exportStar(require("./sinafip.controller"), exports);
+__exportStar(require("./alternativeIdea"), exports);
+__exportStar(require("./auth/login"), exports);
+__exportStar(require("./auth/usuarios"), exports);
+__exportStar(require("./generalInformation"), exports);
+__exportStar(require("./integrations"), exports);
+__exportStar(require("./seguimiento/seguimiento.controller"), exports);
+__exportStar(require("./sinafip"), exports);

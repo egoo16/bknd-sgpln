@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import models from "../../db/connection";
+import { denomination, referencePopulation } from '../../models/BancoIdeas';
 import { entity } from '../../models/sinafip/entity.entity';
 import { generalStudies } from '../../models/sinafip/generalStudies.entity';
 import { modalityFinancing } from '../../models/sinafip/modalityFinancing.entity';
@@ -123,6 +124,225 @@ export async function getAllpreinvDocument(req: Request, res: Response) {
   }
 }
 
+
+
+export const getDenomination = async (req: Request, res: Response) => {
+  try {
+    let data = await denomination.findAll();
+    if (data.length <= 0) {
+      let den1 = { name: 'Alumnos' };
+      let denCreated = await denomination.create(den1)
+      den1.name = 'Pacientes'
+      denCreated = await denomination.create(den1)
+      den1.name = 'Agricultores'
+      denCreated = await denomination.create(den1)
+    }
+    data = await denomination.findAll();
+
+
+    res.status(200).json({
+      msg: "Datos Obtenidos",
+      data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
+  }
+};
+
+export const createDenomination = async (req: Request, res: Response) => {
+  try {
+    if (req.body.name) {
+      const name = req.body.name;
+      let denCreated = await denomination.create({ name })
+
+      if (denCreated) {
+        res.status(200).json({
+          msg: "Datos Creados",
+          data: denCreated,
+        });
+      }
+    }
+    else {
+      throw `Error al crear Denominacion`;
+    }
+
+  } catch (error) {
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
+  }
+}
+
+export const deleteDenomination = async (req: Request, res: Response) => {
+  try {
+    if (req.params.id) {
+      const codigo = req.params.id;
+      let denCreated = await denomination.destroy({
+        where: {
+          codigo
+        }
+      })
+
+      res.status(200).json({
+        msg: "Datos Eliminados",
+      });
+    }
+    else {
+      throw `Error al eliminar Denominacion`;
+    }
+
+  } catch (error) {
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
+  }
+}
+
+export const updateDenomination = async (req: Request, res: Response) => {
+  try {
+    if (req.body.name && req.params.id) {
+      const name = req.body.name;
+      const codigo = req.params.id;
+
+      let denCreated = await denomination.update({ name }, {
+        where: {
+          codigo
+        }
+      })
+
+      if (denCreated) {
+        res.status(200).json({
+          msg: "Datos Actualizados",
+        });
+      }
+    }
+    else {
+      throw `Error al crear Denominacion`;
+    }
+
+  } catch (error) {
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
+  }
+}
+
+export const getReferencePopulation = async (req: Request, res: Response) => {
+  try {
+      let data = await referencePopulation.findAll();
+      if (data.length <= 0) {
+          let ref = { name: 'Nacional' };
+          let denCreated = await referencePopulation.create(ref)
+          ref.name = 'Departamental'
+          denCreated = await referencePopulation.create(ref)
+          ref.name = 'Municipal'
+          denCreated = await referencePopulation.create(ref)
+          ref.name = 'Comunal'
+          denCreated = await referencePopulation.create(ref)
+      }
+      data = await referencePopulation.findAll();
+
+      res.status(200).json({
+          msg: "Datos Obtenidos",
+          data,
+      });
+  } catch (error) {
+      res.status(500).json({
+          msg: "Error",
+          error,
+      });
+  }
+};
+
+
+
+export const createReferencePopulation = async (req: Request, res: Response) => {
+  try {
+    if (req.body.name) {
+      const name = req.body.name;
+      let denCreated = await referencePopulation.create({ name })
+
+      if (denCreated) {
+        res.status(200).json({
+          msg: "Datos Created",
+          data: denCreated,
+        });
+      }
+    }
+    else {
+      throw `Error al crear Poblacion de Referencia`;
+    }
+
+  } catch (error) {
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
+  }
+}
+
+export const deleteReferencePopulation = async (req: Request, res: Response) => {
+  try {
+    if (req.params.id) {
+      const codigo = req.params.id;
+      let denCreated = await referencePopulation.destroy({
+        where: {
+          codigo
+        }
+      })
+
+      res.status(200).json({
+        msg: "Datos Eliminados",
+      });
+    }
+    else {
+      throw `Error al eliminar Poblacion de Referencia`;
+    }
+
+  } catch (error) {
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
+  }
+}
+
+export const updateReferencePopulation = async (req: Request, res: Response) => {
+  try {
+    if (req.body.name && req.params.id) {
+      const name = req.body.name;
+      const codigo = req.params.id;
+
+      let denCreated = await referencePopulation.update({ name }, {
+        where: {
+          codigo
+        }
+      })
+
+      if (denCreated) {
+        res.status(200).json({
+          msg: "Datos Actualizados",
+        });
+      }
+    }
+    else {
+      throw `Error al actualizar Poblacion de Referencia`;
+    }
+
+  } catch (error) {
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
+  }
+}
+
 export async function getAllmodalityFinancing(req: Request, res: Response) {
   try {
     let data = await modalityFinancing.findAll({
@@ -157,5 +377,86 @@ export async function getAllmodalityFinancing(req: Request, res: Response) {
 
   } catch (error: any) {
     return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
+  }
+}
+
+export const createModalityFinancing = async (req: Request, res: Response) => {
+  try {
+    if (req.body.name) {
+      const name = req.body.name;
+      let denCreated = await modalityFinancing.create({ name })
+
+      if (denCreated) {
+        res.status(200).json({
+          msg: "Datos Created",
+          data: denCreated,
+        });
+      }
+    }
+    else {
+      throw `Error al crear Fuentes de Financiamiento`;
+    }
+
+  } catch (error) {
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
+  }
+}
+
+export const deleteModalityFinancing = async (req: Request, res: Response) => {
+  try {
+    if (req.params.id) {
+      const codigo = req.params.id;
+      let denCreated = await modalityFinancing.destroy({
+        where: {
+          codigo
+        }
+      })
+
+      res.status(200).json({
+        msg: "Datos Eliminados",
+      });
+    }
+    else {
+      throw `Error al eliminar Fuentes de Financiamiento`;
+    }
+
+  } catch (error) {
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
+  }
+}
+
+export const updateModalityFinancing = async (req: Request, res: Response) => {
+  try {
+    if (req.body.name && req.params.id) {
+      const name = req.body.name;
+      const codigo = req.params.id;
+
+      let denCreated = await modalityFinancing.update({ name }, {
+        where: {
+          codigo
+        }
+      })
+
+      if (denCreated) {
+        res.status(200).json({
+          msg: "Datos Actualizados",
+        });
+      }
+    }
+    else {
+      throw `Error al crear Fuentes de Financiamiento`;
+    }
+
+  } catch (error) {
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
   }
 }
