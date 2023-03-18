@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.delimitEntity = void 0;
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
+const delimitPopulation_entity_1 = __importDefault(require("./delimitPopulation.entity"));
 exports.delimitEntity = connection_1.default.define('delimit', {
     id: {
         type: sequelize_oracle_1.default.UUID,
@@ -32,3 +33,4 @@ exports.delimitEntity = connection_1.default.define('delimit', {
         type: sequelize_oracle_1.default.STRING
     },
 });
+exports.delimitEntity.hasMany(delimitPopulation_entity_1.default, { foreignKey: "delimitId" });

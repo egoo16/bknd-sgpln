@@ -15,6 +15,7 @@ import moment from 'moment';
 import { admissionQuanty } from '../../models/sinafip/admisionQualification';
 import { povertyIndex } from '../../models/sinafip/povertyIndex.entity';
 import { priorizationQuanty } from '../../models/sinafip/priorizationQualification';
+import delimitPopulation, { IDelimitPopulation } from '../../models/sinafip/delimitPopulation.entity';
 
 
 
@@ -34,6 +35,17 @@ export async function createRequestSinafip(req: any, res: Response) {
         const investmentCreated = await investmentProjectEntity.create({ ...investment, requestId: requestCreated.id });
         const studyDescriptionCreated = await studyDescriptionEntity.create({ ...studyDescription, requestId: requestCreated.id });
         const delimitCreated = await delimitEntity.create({ ...delimit, requestId: requestCreated.id });
+        if (delimit.populations && delimit.populations.length > 0) {
+
+            let populations: IDelimitPopulation[] = delimit.populations;
+
+            let resDelimitPopulation = await Promise.all(populations.map(async (population: IDelimitPopulation) => {
+                population.delimitId = delimitCreated.id;
+                let res = await delimitPopulation.create(population);
+                return res;
+            }))
+
+        }
         const requiredDocumentCreated = await requiredDocumentEntity.create({ requestId: requestCreated.id });
         const stimatedBugdetCreated = await stimatedBudgetEntity.create({ totalStimated, docId: requiredDocumentCreated.id })
 
@@ -114,7 +126,7 @@ export async function getAllRequest(req: any, res: Response) {
             const addmision = await admissionQuanty.findOne({ where: { requestId: request.id } })
             const priorization = await priorizationQuanty.findOne({ where: { requestId: request.id } })
 
-            const delimit = await delimitEntity.findOne({ where: { requestId: request.id } });
+            let delimit = await delimitEntity.findOne({ where: { requestId: request.id } });
             const requirementsDocumentsGet = await requiredDocumentEntity.findOne({ where: { requestId: request.id } });
 
             if (requirementsDocumentsGet) {
@@ -149,6 +161,32 @@ export async function getAllRequest(req: any, res: Response) {
                 advser: request.advser,
                 reviewd: request.reviewd,
                 created: request.created,
+            }
+
+            if (delimit){
+                let pops = await delimitPopulation.findAll({
+                    where: {
+                        delimitId: delimit.id
+                    }
+                })
+
+
+                if (pops.length > 0){
+
+                    let delimitTemp = {
+                        id: delimit.id,
+                        nameRefPop: delimit.nameRefPop,
+                        denomination: delimit.denomination,
+                        estimatedBenef: delimit.estimatedBenef,
+                        requestId: delimit.requestId,
+                        departament: delimit.departament,
+                        municipality: delimit.municipality,
+                        createdAt: delimit.createdAt,
+                        updatedAt: delimit.updatedAt,
+                        populations: [...pops]
+                    }
+                    delimit = delimitTemp;
+                }
             }
 
 
@@ -493,7 +531,7 @@ async function getSolicitudCompleta(idSolicitud: string) {
             const institution = await institutionEntity.findOne({ where: { requestId: request.id } });
             const investment = await investmentProjectEntity.findOne({ where: { requestId: request.id } });
             const studyDescription = await studyDescriptionEntity.findOne({ where: { requestId: request.id } });
-            const delimit = await delimitEntity.findOne({ where: { requestId: request.id } });
+            let delimit = await delimitEntity.findOne({ where: { requestId: request.id } });
             const requiredDoc = await requiredDocumentEntity.findOne({ where: { requestId: request.id } });
             const addmision = await admissionQuanty.findOne({ where: { requestId: request.id } })
             const priorization = await priorizationQuanty.findOne({ where: { requestId: request.id } })
@@ -508,6 +546,32 @@ async function getSolicitudCompleta(idSolicitud: string) {
                 reviewd: request.reviewd,
                 created: request.created,
             }
+
+            if (delimit){
+                let pops = await delimitPopulation.findAll({
+                    where: {
+                        delimitId: delimit.id
+                    }
+                })
+
+                if (pops.length > 0){
+
+                    let delimitTemp = {
+                        id: delimit.id,
+                        nameRefPop: delimit.nameRefPop,
+                        denomination: delimit.denomination,
+                        estimatedBenef: delimit.estimatedBenef,
+                        requestId: delimit.requestId,
+                        departament: delimit.departament,
+                        municipality: delimit.municipality,
+                        createdAt: delimit.createdAt,
+                        updatedAt: delimit.updatedAt,
+                        populations: [...pops]
+                    }
+                    delimit = delimitTemp;
+                }
+            }
+
             const response: any = {
                 ...reqStruct,
                 institution,
@@ -1016,17 +1080,34 @@ export async function updateRequest(req: any, res: Response) {
                         departament: solicitud.delimit.departament,
                         municipality: solicitud.delimit.municipality,
                     }
-                    if (!isEqual(delimitVerify, studyDescription)) {
-                        solicitud.delimit.id = studyDescription.id;
-                        solicitud.delimit.nameRefPop = studyDescription.nameRefPop;
-                        solicitud.delimit.denomination = studyDescription.denomination;
-                        solicitud.delimit.estimatedBenef = studyDescription.estimatedBenef;
-                        solicitud.delimit.requestId = studyDescription.requestId;
-                        solicitud.delimit.departament = studyDescription.departament;
-                        solicitud.delimit.municipality = studyDescription.municipality;
+                    if (!isEqual(delimitVerify, delimit)) {
+                        solicitud.delimit.id = delimit.id;
+                        solicitud.delimit.nameRefPop = delimit.nameRefPop;
+                        solicitud.delimit.denomination = delimit.denomination;
+                        solicitud.delimit.estimatedBenef = delimit.estimatedBenef;
+                        solicitud.delimit.requestId = delimit.requestId;
+                        solicitud.delimit.departament = delimit.departament;
+                        solicitud.delimit.municipality = delimit.municipality;
 
                         solicitud.delimit.save()
                     }
+
+                    let populationsOrigin = solicitud.delimit.populations;
+                    let populationsVerify = delimit.populations
+                    if (!arraysEqual(populationsOrigin, populationsVerify)) {
+                        await delimitPopulation.destroy({
+                            where: {
+                                delimitId: solicitud.delimit.id
+                            }
+                        });
+
+                        let resDelimitPopulation = await Promise.all(populationsVerify.map(async (population: IDelimitPopulation) => {
+                            population.delimitId = solicitud.delimit.id;
+                            let res = await delimitPopulation.create(population);
+                            return res;
+                        }))
+                    }
+
                 }
 
 
@@ -1078,3 +1159,37 @@ function isEqual(a: any, b: any) {
 
     return true;
 }
+
+function arraysEqual(arr1: any, arr2: any) {
+    if (arr1.length !== arr2.length) {
+      return false;
+    }
+  
+    for (let i = 0; i < arr1.length; i++) {
+      const obj1 = arr1[i];
+      const obj2 = arr2[i];
+  
+      const obj1Props = Object.getOwnPropertyNames(obj1);
+      const obj2Props = Object.getOwnPropertyNames(obj2);
+  
+      if (obj1Props.length !== obj2Props.length) {
+        return false;
+      }
+  
+      for (let j = 0; j < obj1Props.length; j++) {
+        const propName = obj1Props[j];
+  
+        if (obj1[propName] !== obj2[propName]) {
+          if (typeof obj1[propName] === 'object') {
+            if (!arraysEqual([obj1[propName]], [obj2[propName]])) {
+              return false;
+            }
+          } else {
+            return false;
+          }
+        }
+      }
+    }
+  
+    return true;
+  }

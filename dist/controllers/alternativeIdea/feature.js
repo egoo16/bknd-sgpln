@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getIdeaCompleta = exports.fupdateIdeaAlternativeComplete = exports.getAlternativeComplete = exports.getAlternatives = exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreatePreInvestment = exports.FaddPertinenceQuality = exports.createSecondPartAlternative = exports.createFirstPartAlternative = exports.FcreateIdeaAlternativeComplete = exports.FgetPreinversion = void 0;
 const BancoIdeas_1 = require("../../models/BancoIdeas");
 const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
+const populationAlt_1 = __importDefault(require("../../models/BancoIdeas/populationAlt"));
 function FgetPreinversion(idAlternativa) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -397,6 +398,18 @@ function FcreatePopulationDemilitation(popDemiliation, idAlternativa, transactio
                 popDemiliation.coverage = resCov;
             }
             let populationDelimitationCreated = yield BancoIdeas_1.populationDelimitation.create(popDemiliation, { transaction });
+            if (popDemiliation.populations) {
+                let populations = popDemiliation.populations;
+                if (populations && populations.length > 0) {
+                    let resPop = yield Promise.all(populations.map((population) => __awaiter(this, void 0, void 0, function* () {
+                        population.popId = populationDelimitationCreated.codigo;
+                        let res = yield populationAlt_1.default.create(population, {
+                            transaction,
+                        });
+                        return res;
+                    })));
+                }
+            }
             return { populationDelimitationCreated, message: `Delimitación preliminar ingresada correctamente` };
         }
         catch (error) {
@@ -551,6 +564,11 @@ function getAlternatives(idIdea) {
                         deletedAt: alter.resEntity.deletedAt,
                     };
                     if (popDelimitation) {
+                        let pops = yield populationAlt_1.default.findAll({
+                            where: {
+                                popId: popDelimitation.codigo
+                            }
+                        });
                         alternativa.popDelimit = {
                             codigo: popDelimitation.codigo,
                             AlterId: popDelimitation.AlterId,
@@ -564,6 +582,7 @@ function getAlternatives(idIdea) {
                             createdAt: popDelimitation.createdAt,
                             updatedAt: popDelimitation.updatedAt,
                             deletedAt: popDelimitation.deletedAt,
+                            populations: [...pops]
                         };
                     }
                     if (popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.refPop) {
@@ -847,6 +866,23 @@ function getAlternativeComplete(idAlternative) {
                     deletedAt: data.resEntity.deletedAt,
                 };
                 if (popDelimitation) {
+                    let pops = yield populationAlt_1.default.findAll({
+                        where: {
+                            popId: popDelimitation.codigo
+                        }
+                    });
+                    // let populations: IPopulationAlt[] = []
+                    // if (pops.length > 0) {
+                    //     pops.forEach((pop: IPopulationAlt) => {
+                    //         let population: IPopulationAlt = {
+                    //             id: pop.id,
+                    //             type: pop.type,
+                    //             total: pop.total,
+                    //             popId: pop.popId
+                    //         }
+                    //         populations.push(population)
+                    //     })
+                    // }
                     alternativa.popDelimit = {
                         codigo: popDelimitation.codigo,
                         AlterId: popDelimitation.AlterId,
@@ -860,6 +896,7 @@ function getAlternativeComplete(idAlternative) {
                         createdAt: popDelimitation.createdAt,
                         updatedAt: popDelimitation.updatedAt,
                         deletedAt: popDelimitation.deletedAt,
+                        populations: [...pops]
                     };
                 }
                 if (popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.refPop) {

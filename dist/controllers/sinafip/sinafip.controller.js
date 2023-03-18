@@ -18,6 +18,7 @@ const moment_1 = __importDefault(require("moment"));
 const admisionQualification_1 = require("../../models/sinafip/admisionQualification");
 const povertyIndex_entity_1 = require("../../models/sinafip/povertyIndex.entity");
 const priorizationQualification_1 = require("../../models/sinafip/priorizationQualification");
+const delimitPopulation_entity_1 = __importDefault(require("../../models/sinafip/delimitPopulation.entity"));
 function createRequestSinafip(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         // let transaction = await models.transaction()
@@ -35,6 +36,14 @@ function createRequestSinafip(req, res) {
             const investmentCreated = yield sinafip_1.investmentProjectEntity.create(Object.assign(Object.assign({}, investment), { requestId: requestCreated.id }));
             const studyDescriptionCreated = yield sinafip_1.studyDescriptionEntity.create(Object.assign(Object.assign({}, studyDescription), { requestId: requestCreated.id }));
             const delimitCreated = yield sinafip_1.delimitEntity.create(Object.assign(Object.assign({}, delimit), { requestId: requestCreated.id }));
+            if (delimit.populations && delimit.populations.length > 0) {
+                let populations = delimit.populations;
+                let resDelimitPopulation = yield Promise.all(populations.map((population) => __awaiter(this, void 0, void 0, function* () {
+                    population.delimitId = delimitCreated.id;
+                    let res = yield delimitPopulation_entity_1.default.create(population);
+                    return res;
+                })));
+            }
             const requiredDocumentCreated = yield sinafip_1.requiredDocumentEntity.create({ requestId: requestCreated.id });
             const stimatedBugdetCreated = yield sinafip_1.stimatedBudgetEntity.create({ totalStimated, docId: requiredDocumentCreated.id });
             if ((activities === null || activities === void 0 ? void 0 : activities.length) > 0) {
@@ -104,7 +113,7 @@ function getAllRequest(req, res) {
                 const studyDescription = yield sinafip_1.studyDescriptionEntity.findOne({ where: { requestId: request.id } });
                 const addmision = yield admisionQualification_1.admissionQuanty.findOne({ where: { requestId: request.id } });
                 const priorization = yield priorizationQualification_1.priorizationQuanty.findOne({ where: { requestId: request.id } });
-                const delimit = yield sinafip_1.delimitEntity.findOne({ where: { requestId: request.id } });
+                let delimit = yield sinafip_1.delimitEntity.findOne({ where: { requestId: request.id } });
                 const requirementsDocumentsGet = yield sinafip_1.requiredDocumentEntity.findOne({ where: { requestId: request.id } });
                 if (requirementsDocumentsGet) {
                     const stimatedBudgetGet = yield sinafip_1.stimatedBudgetEntity.findOne({ where: { docId: requirementsDocumentsGet.id }, });
@@ -135,6 +144,28 @@ function getAllRequest(req, res) {
                     reviewd: request.reviewd,
                     created: request.created,
                 };
+                if (delimit) {
+                    let pops = yield delimitPopulation_entity_1.default.findAll({
+                        where: {
+                            delimitId: delimit.id
+                        }
+                    });
+                    if (pops.length > 0) {
+                        let delimitTemp = {
+                            id: delimit.id,
+                            nameRefPop: delimit.nameRefPop,
+                            denomination: delimit.denomination,
+                            estimatedBenef: delimit.estimatedBenef,
+                            requestId: delimit.requestId,
+                            departament: delimit.departament,
+                            municipality: delimit.municipality,
+                            createdAt: delimit.createdAt,
+                            updatedAt: delimit.updatedAt,
+                            populations: [...pops]
+                        };
+                        delimit = delimitTemp;
+                    }
+                }
                 if (addmision) {
                     if (priorization) {
                         return Object.assign(Object.assign({}, reqStruct), { institution,
@@ -451,7 +482,7 @@ function getSolicitudCompleta(idSolicitud) {
                 const institution = yield sinafip_1.institutionEntity.findOne({ where: { requestId: request.id } });
                 const investment = yield sinafip_1.investmentProjectEntity.findOne({ where: { requestId: request.id } });
                 const studyDescription = yield sinafip_1.studyDescriptionEntity.findOne({ where: { requestId: request.id } });
-                const delimit = yield sinafip_1.delimitEntity.findOne({ where: { requestId: request.id } });
+                let delimit = yield sinafip_1.delimitEntity.findOne({ where: { requestId: request.id } });
                 const requiredDoc = yield sinafip_1.requiredDocumentEntity.findOne({ where: { requestId: request.id } });
                 const addmision = yield admisionQualification_1.admissionQuanty.findOne({ where: { requestId: request.id } });
                 const priorization = yield priorizationQualification_1.priorizationQuanty.findOne({ where: { requestId: request.id } });
@@ -466,6 +497,28 @@ function getSolicitudCompleta(idSolicitud) {
                     reviewd: request.reviewd,
                     created: request.created,
                 };
+                if (delimit) {
+                    let pops = yield delimitPopulation_entity_1.default.findAll({
+                        where: {
+                            delimitId: delimit.id
+                        }
+                    });
+                    if (pops.length > 0) {
+                        let delimitTemp = {
+                            id: delimit.id,
+                            nameRefPop: delimit.nameRefPop,
+                            denomination: delimit.denomination,
+                            estimatedBenef: delimit.estimatedBenef,
+                            requestId: delimit.requestId,
+                            departament: delimit.departament,
+                            municipality: delimit.municipality,
+                            createdAt: delimit.createdAt,
+                            updatedAt: delimit.updatedAt,
+                            populations: [...pops]
+                        };
+                        delimit = delimitTemp;
+                    }
+                }
                 const response = Object.assign(Object.assign({}, reqStruct), { institution,
                     investment,
                     studyDescription,
@@ -915,15 +968,29 @@ function updateRequest(req, res) {
                             departament: solicitud.delimit.departament,
                             municipality: solicitud.delimit.municipality,
                         };
-                        if (!isEqual(delimitVerify, studyDescription)) {
-                            solicitud.delimit.id = studyDescription.id;
-                            solicitud.delimit.nameRefPop = studyDescription.nameRefPop;
-                            solicitud.delimit.denomination = studyDescription.denomination;
-                            solicitud.delimit.estimatedBenef = studyDescription.estimatedBenef;
-                            solicitud.delimit.requestId = studyDescription.requestId;
-                            solicitud.delimit.departament = studyDescription.departament;
-                            solicitud.delimit.municipality = studyDescription.municipality;
+                        if (!isEqual(delimitVerify, delimit)) {
+                            solicitud.delimit.id = delimit.id;
+                            solicitud.delimit.nameRefPop = delimit.nameRefPop;
+                            solicitud.delimit.denomination = delimit.denomination;
+                            solicitud.delimit.estimatedBenef = delimit.estimatedBenef;
+                            solicitud.delimit.requestId = delimit.requestId;
+                            solicitud.delimit.departament = delimit.departament;
+                            solicitud.delimit.municipality = delimit.municipality;
                             solicitud.delimit.save();
+                        }
+                        let populationsOrigin = solicitud.delimit.populations;
+                        let populationsVerify = delimit.populations;
+                        if (!arraysEqual(populationsOrigin, populationsVerify)) {
+                            yield delimitPopulation_entity_1.default.destroy({
+                                where: {
+                                    delimitId: solicitud.delimit.id
+                                }
+                            });
+                            let resDelimitPopulation = yield Promise.all(populationsVerify.map((population) => __awaiter(this, void 0, void 0, function* () {
+                                population.delimitId = solicitud.delimit.id;
+                                let res = yield delimitPopulation_entity_1.default.create(population);
+                                return res;
+                            })));
                         }
                     }
                     res.status(200).send({
@@ -966,6 +1033,34 @@ function isEqual(a, b) {
             }
             else {
                 return false;
+            }
+        }
+    }
+    return true;
+}
+function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+    for (let i = 0; i < arr1.length; i++) {
+        const obj1 = arr1[i];
+        const obj2 = arr2[i];
+        const obj1Props = Object.getOwnPropertyNames(obj1);
+        const obj2Props = Object.getOwnPropertyNames(obj2);
+        if (obj1Props.length !== obj2Props.length) {
+            return false;
+        }
+        for (let j = 0; j < obj1Props.length; j++) {
+            const propName = obj1Props[j];
+            if (obj1[propName] !== obj2[propName]) {
+                if (typeof obj1[propName] === 'object') {
+                    if (!arraysEqual([obj1[propName]], [obj2[propName]])) {
+                        return false;
+                    }
+                }
+                else {
+                    return false;
+                }
             }
         }
     }

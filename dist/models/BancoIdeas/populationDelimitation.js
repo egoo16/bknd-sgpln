@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
 const connection_1 = __importDefault(require("../../db/connection"));
 const denomination_1 = __importDefault(require("./denomination"));
+const populationAlt_1 = __importDefault(require("./populationAlt"));
 const referencePopulation_1 = __importDefault(require("./referencePopulation"));
 const populationDelimitation = connection_1.default.define("popDelimit", {
     codigo: {
@@ -27,6 +28,7 @@ const populationDelimitation = connection_1.default.define("popDelimit", {
     paranoid: true,
     freezeTableName: true,
 });
+populationDelimitation.hasMany(populationAlt_1.default, { foreignKey: "popId" });
 populationDelimitation.belongsTo(referencePopulation_1.default, {
     foreignKey: "refPopId",
     sourceKey: "codigo",

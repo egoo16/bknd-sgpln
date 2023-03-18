@@ -1,7 +1,9 @@
 'use strict'
 import models from "../../db/connection";
-import { projectDescription, populationDelimitation, ideaAlternative, qualification, generalInformation, preInvestment, preliminaryName, referencePopulation, denomination, executionTime, geographicArea, responsibleEntity, possibleAlternatives, possibleCauses, possibleEffects, stage } from "../../models/BancoIdeas";
+import { projectDescription, populationDelimitation, ideaAlternative, qualification, generalInformation, preInvestment, preliminaryName, denomination, executionTime, geographicArea, responsibleEntity, possibleAlternatives, possibleCauses, possibleEffects, stage, referencePopulation } from "../../models/BancoIdeas";
 import dataGeo from "../../models/BancoIdeas/datageo.model";
+import { IPopulationAlt } from '../../models/BancoIdeas/populationAlt';
+import populationAlt from '../../models/BancoIdeas/populationAlt';
 
 
 
@@ -141,7 +143,7 @@ export async function createFirstPartAlternative(ideaAlt: any, transaction: any)
     try {
         let alternativeToCreate = {
             sectionBIId: ideaAlt.sectionBIId,
-            state: 'CREADA' 
+            state: 'CREADA'
         }
         console.log("🚀 ~ file: feature.ts:146 ~ createFirstPartAlternative ~ alternativeToCreate", alternativeToCreate)
         let ideaAlternativeCreated = await ideaAlternative.create(alternativeToCreate, { transaction })
@@ -149,7 +151,7 @@ export async function createFirstPartAlternative(ideaAlt: any, transaction: any)
         await FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction)
         await FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction)
         await FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction)
-        
+
         let alternative;
         if (ideaAlternativeCreated) {
             alternative = await getAlternativeComplete(ideaAlternativeCreated.codigo)
@@ -373,6 +375,22 @@ export async function FcreatePopulationDemilitation(popDemiliation: any, idAlter
         }
 
         let populationDelimitationCreated = await populationDelimitation.create(popDemiliation, { transaction })
+
+
+        if (popDemiliation.populations) {
+
+            let populations: IPopulationAlt[] = popDemiliation.populations;
+            if (populations && populations.length > 0) {
+
+                let resPop = await Promise.all(populations.map(async (population: IPopulationAlt) => {
+                    population.popId = populationDelimitationCreated.codigo;
+                    let res = await populationAlt.create(population, {
+                        transaction,
+                    });
+                    return res;
+                }));
+            }
+        }
         return { populationDelimitationCreated, message: `Delimitación preliminar ingresada correctamente` };
     } catch (error) {
         //devuelve errores al cliente
@@ -526,6 +544,12 @@ export async function getAlternatives(idIdea: string) {
                 }
 
                 if (popDelimitation) {
+                    let pops = await populationAlt.findAll({
+                        where: {
+                            popId: popDelimitation.codigo
+                        }
+                    })
+
                     alternativa.popDelimit = {
                         codigo: popDelimitation.codigo,
                         AlterId: popDelimitation.AlterId,
@@ -539,6 +563,7 @@ export async function getAlternatives(idIdea: string) {
                         createdAt: popDelimitation.createdAt,
                         updatedAt: popDelimitation.updatedAt,
                         deletedAt: popDelimitation.deletedAt,
+                        populations: [...pops]
                     };
                 }
 
@@ -850,6 +875,25 @@ export async function getAlternativeComplete(idAlternative: string) {
             }
 
             if (popDelimitation) {
+
+                let pops = await populationAlt.findAll({
+                    where: {
+                        popId: popDelimitation.codigo
+                    }
+                })
+                // let populations: IPopulationAlt[] = []
+                // if (pops.length > 0) {
+                //     pops.forEach((pop: IPopulationAlt) => {
+                //         let population: IPopulationAlt = {
+                //             id: pop.id,
+                //             type: pop.type,
+                //             total: pop.total,
+                //             popId: pop.popId
+                //         }
+                //         populations.push(population)
+                //     })
+                // }
+
                 alternativa.popDelimit = {
                     codigo: popDelimitation.codigo,
                     AlterId: popDelimitation.AlterId,
@@ -863,6 +907,7 @@ export async function getAlternativeComplete(idAlternative: string) {
                     createdAt: popDelimitation.createdAt,
                     updatedAt: popDelimitation.updatedAt,
                     deletedAt: popDelimitation.deletedAt,
+                    populations: [...pops]
                 };
             }
 

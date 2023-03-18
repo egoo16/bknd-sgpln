@@ -6,13 +6,13 @@ import executionTime from "./executionTime";
 const projectDescription = db.define(
     "projDesc",
     {
-    codigo: {
-      type: Sequelize.UUID,
-      primaryKey: true,
-      allowNull: false,
-      defaultValue: Sequelize.UUIDV4,
-    },
-    AlterId: { type: Sequelize.UUID, allowNull: false },
+        codigo: {
+            type: Sequelize.UUID,
+            primaryKey: true,
+            allowNull: false,
+            defaultValue: Sequelize.UUIDV4,
+        },
+        AlterId: { type: Sequelize.UUID, allowNull: false },
         projectType: { type: Sequelize.STRING, allowNull: false },
         formulationProcess: { type: Sequelize.STRING },
         formulationProcessDescription: { type: Sequelize.STRING },

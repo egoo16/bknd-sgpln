@@ -2,6 +2,7 @@ import Sequelize from "sequelize-oracle";
 
 import db from "../../db/connection";
 import denomination from "./denomination";
+import populationAlt from "./populationAlt";
 import referencePopulation from "./referencePopulation";
 
 const populationDelimitation = db.define(
@@ -29,6 +30,7 @@ const populationDelimitation = db.define(
         freezeTableName: true,
     }
 );
+populationDelimitation.hasMany(populationAlt, { foreignKey: "popId" });
 populationDelimitation.belongsTo(referencePopulation, {
     foreignKey: "refPopId",
     sourceKey: "codigo",
