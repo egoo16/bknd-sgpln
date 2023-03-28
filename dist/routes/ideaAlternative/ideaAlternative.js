@@ -16,6 +16,7 @@ preliminarRoute.post("/referencePopulation/", list_controller_1.createReferenceP
 preliminarRoute.delete("/referencePopulation/:id", list_controller_1.deleteReferencePopulation);
 preliminarRoute.put("/referencePopulation/:id", list_controller_1.updateReferencePopulation);
 // Alternative
+preliminarRoute.get("/get-results/", authentication_1.verificaToken, controllers_1.listResults);
 preliminarRoute.get("/preinversion/:id", controllers_1.getPreinversion);
 preliminarRoute.get("/:id", controllers_1.getAlternative);
 preliminarRoute.get("/pertinencia/:id", controllers_1.getPertinencia);

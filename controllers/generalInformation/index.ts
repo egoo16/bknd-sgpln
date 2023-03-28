@@ -142,7 +142,7 @@ export const getGeneralInformation = async (req: any, res: Response) => {
         let filtros = req.query
 
         if (filtros) {
-            
+
 
             if (filtros.state && filtros.state != 'TODAS') { where.state = filtros.state }
             if (filtros.institucionId) { where.idEntity = filtros.institucionId }
@@ -160,7 +160,7 @@ export const getGeneralInformation = async (req: any, res: Response) => {
                 }
             }
         }
-        
+
 
         // TODO: Este es el ID de SEGEPLAN 
         if (req?.user?.id_inst != '16220') {
@@ -257,3 +257,141 @@ export async function returnIdea(req: Request, res: Response) {
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
     }
 }
+
+export const listResults = async (req: any, res: Response) => {
+    try {
+
+        let idEntity = req?.user?.id_inst
+
+        let resultado: any[] = [];
+        let queryGeneral = `
+            SELECT 
+            "alter"."codigo",
+            "preName"."preliminaryName",
+            "resEntity"."executionUnit",
+            (select "registerCode" from "Information" where "Information"."codigo" = "alter"."sectionBIId") as "registerCode",
+            (select "baseLine" from "Information" where "Information"."codigo" = "alter"."sectionBIId") as "problematic",
+            (select "idEntity" from "Information" where "Information"."codigo" = "alter"."sectionBIId") as "idEntity",
+            (select "nameEntity" from "Information" where "Information"."codigo" = "alter"."sectionBIId") as "nameEntity",
+            "projDesc"."estimatedCost",
+            "execTime"."tentativeTermMonth",
+            "execTime"."tentativeTermYear",
+            "preInvestment"."etapaResultado"
+            FROM "alter"
+            INNER JOIN "preName" ON "alter"."codigo" = "preName"."AlterId" 
+            INNER JOIN "projDesc" ON "alter"."codigo" = "projDesc"."AlterId" 
+            INNER JOIN "resEntity" ON "alter"."codigo" = "resEntity"."AlterId" 
+            INNER JOIN "execTime" ON "projDesc"."codigo" = "execTime"."projDescId"
+            INNER JOIN "preInvestment" ON "alter"."codigo" = "preInvestment"."AlterId" 
+            `;
+
+        let querySpecific = `
+            SELECT 
+            "alter"."codigo",
+            "preName"."preliminaryName",
+            "resEntity"."executionUnit",
+            (select "registerCode" from "Information" where "Information"."codigo" = "alter"."sectionBIId") as "registerCode",
+            (select "baseLine" from "Information" where "Information"."codigo" = "alter"."sectionBIId") as "problematic",
+            (select "idEntity" from "Information" where "Information"."codigo" = "alter"."sectionBIId") as "idEntity",
+            (select "nameEntity" from "Information" where "Information"."codigo" = "alter"."sectionBIId") as "nameEntity",
+            "projDesc"."estimatedCost",
+            "execTime"."tentativeTermMonth",
+            "execTime"."tentativeTermYear",
+            "preInvestment"."etapaResultado"
+            FROM "alter"
+            INNER JOIN "preName" ON "alter"."codigo" = "preName"."AlterId" 
+            INNER JOIN "projDesc" ON "alter"."codigo" = "projDesc"."AlterId" 
+            INNER JOIN "resEntity" ON "alter"."codigo" = "resEntity"."AlterId" 
+            INNER JOIN "execTime" ON "projDesc"."codigo" = "execTime"."projDescId"
+            INNER JOIN "preInvestment" ON "alter"."codigo" = "preInvestment"."AlterId" 
+            WHERE (select "idEntity" from "Information" where "Information"."codigo" = "alter"."sectionBIId") = '${idEntity}'
+        `
+
+        let queryToSend = ''
+
+
+        let filtros = req.query
+        console.log("🚀 ~ file: index.ts:314 ~ listResults ~ req.query:", req.query)
+
+        // TODO: Este es el ID de SEGEPLAN 
+        if (idEntity != '16220') {
+            queryToSend = queryGeneral;
+
+            if (filtros) {
+
+                const wordWhere = ` WHERE `
+                const wordAnd = ` AND `
+
+                let whereIsUsed = false;
+
+                if (filtros.stage && filtros.stage != 'TODAS') {
+                    const queryStage = ` "preInvestment"."etapaResultado" like '%${filtros.stage}%'`;
+                    if (whereIsUsed) {
+                        queryToSend = queryToSend + wordAnd + queryStage;
+                    } else {
+                        queryToSend = queryToSend + wordWhere + queryStage;
+                        whereIsUsed = true;
+                    }
+                }
+                if (filtros.executionUnit && filtros.executionUnit != '') {
+                    const queryExecutionUnit = ` "resEntity"."executionUnit" like '%${filtros.executionUnit}%'`;
+                    if (whereIsUsed) {
+                        queryToSend = queryToSend + wordAnd + queryExecutionUnit;
+                    } else {
+                        queryToSend = queryToSend + wordWhere + queryExecutionUnit;
+                        whereIsUsed = true;
+                    }
+                }
+                if (filtros.number) {
+                    const queryNumber = ` (select "registerCode" from "Information" where "Information"."codigo" = "alter"."sectionBIId") like '%${filtros.number}%'`;
+                    if (whereIsUsed) {
+                        queryToSend = queryToSend + wordAnd + queryNumber;
+                    } else {
+                        queryToSend = queryToSend + wordWhere + queryNumber;
+                        whereIsUsed = true;
+                    }
+                }
+            }
+
+
+
+        } else {
+            queryToSend = querySpecific;
+
+            if (filtros) {
+
+                if (filtros.stage && filtros.stage != 'TODAS') {
+                    const queryStage = ` and "preInvestment"."etapaResultado" like '%${filtros.stage}%'`
+                    queryToSend = queryToSend + queryStage;
+                }
+                if (filtros.executionUnit && filtros.executionUnit != '') {
+                    const queryExecutionUnit = ` and "resEntity"."executionUnit" like '%${filtros.executionUnit}%'`
+                    queryToSend = queryToSend + queryExecutionUnit;
+                }
+                if (filtros.number) {
+                    const queryNumber = ` and (select "registerCode" from "Information" where "Information"."codigo" = "alter"."sectionBIId") like '%${filtros.number}%'`
+                    queryToSend = queryToSend + queryNumber;
+                }
+            }
+
+        }
+
+        await models.query(queryToSend).spread((result: any) => { resultado = result; }).catch((error: any) => {
+            res.status(500).json({
+                msg: "Error",
+                error,
+            });
+        });
+
+
+        res.status(200).json({
+            msg: "Datos Obtenidos",
+            data: resultado,
+        });
+    } catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+};
