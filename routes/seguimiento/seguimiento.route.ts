@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { getAdvisedEntities } from '../../controllers';
 import { addTrack, createProject, getAllProjects, getProjectById } from '../../controllers/seguimiento/seguimiento.controller';
 
 
@@ -9,6 +10,7 @@ seguimientoRouter.post('/project/new', createProject)
 seguimientoRouter.get('/project/get-all', getAllProjects)
 seguimientoRouter.get('/project/:id', getProjectById)
 seguimientoRouter.post('/project/track/:id', addTrack)
+
 // sinafipRouter.delete('/request/delete/:id', deleteOneRequest)
 
 // seguimientoRouter.put('/request/:status/:id', updateState)

@@ -19,6 +19,7 @@ const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo
 const config_1 = require("../../config/config");
 const sinafip_1 = require("../../models/sinafip");
 const advisoryEpi_1 = __importDefault(require("../../models/seguimiento/advisoryEpi"));
+const institution_entity_1 = __importDefault(require("../../models/sinafip/institution.entity"));
 const UPLOAD_ROUTER = (0, express_1.Router)();
 // default options
 UPLOAD_ROUTER.use((0, express_fileupload_1.default)());
@@ -144,11 +145,12 @@ const uploadByType = (type, id, newNameFile, res) => {
                 });
             }
         }),
-        'projectDocument': () => sinafip_1.institutionEntity.findOne({
+        'projectDocument': () => institution_entity_1.default.findOne({
             where: {
                 id
             }
         }).then((data) => __awaiter(void 0, void 0, void 0, function* () {
+            console.log("🚀 ~ file: uploads.ts:161 ~ uploadByType ~ data:", data);
             if (!data) {
                 return res.status(400).json({
                     ok: false,

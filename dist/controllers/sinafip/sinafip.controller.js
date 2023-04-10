@@ -19,11 +19,14 @@ const admisionQualification_1 = require("../../models/sinafip/admisionQualificat
 const povertyIndex_entity_1 = require("../../models/sinafip/povertyIndex.entity");
 const priorizationQualification_1 = require("../../models/sinafip/priorizationQualification");
 const delimitPopulation_entity_1 = __importDefault(require("../../models/sinafip/delimitPopulation.entity"));
+const documentFinance_1 = __importDefault(require("../../models/sinafip/documentFinance"));
+const institution_entity_1 = __importDefault(require("../../models/sinafip/institution.entity"));
 function createRequestSinafip(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         // let transaction = await models.transaction()
         try {
             let allActivities = [];
+            let docsFinancingRes = [];
             let { status, author, institution, investment, studyDescription, delimit, requirementsDocuments, idEntity, hasFinancing } = req.body;
             author = req.user.id;
             status = 'CREADA';
@@ -32,7 +35,16 @@ function createRequestSinafip(req, res) {
             const created = (0, moment_1.default)().format('L');
             const { totalStimated, activities } = requirementsDocuments.stimatedBudget;
             const requestCreated = yield sinafip_1.requestEntity.create({ status, author, idEntity, created, hasFinancing });
-            const institutionCreated = yield sinafip_1.institutionEntity.create(Object.assign(Object.assign({}, institution), { requestId: requestCreated.id }));
+            let institutionCreated = yield institution_entity_1.default.create(Object.assign(Object.assign({}, institution), { requestId: requestCreated.id }));
+            if (institutionCreated) {
+                if (institution.documentsFinance && institution.documentsFinance.length > 0) {
+                    docsFinancingRes = yield Promise.all(institution.documentsFinance.map((document) => __awaiter(this, void 0, void 0, function* () {
+                        const doc = { name: document, institutionId: institutionCreated.id };
+                        let res = yield documentFinance_1.default.create(doc);
+                        return res;
+                    })));
+                }
+            }
             const investmentCreated = yield sinafip_1.investmentProjectEntity.create(Object.assign(Object.assign({}, investment), { requestId: requestCreated.id }));
             const studyDescriptionCreated = yield sinafip_1.studyDescriptionEntity.create(Object.assign(Object.assign({}, studyDescription), { requestId: requestCreated.id }));
             const delimitCreated = yield sinafip_1.delimitEntity.create(Object.assign(Object.assign({}, delimit), { requestId: requestCreated.id }));
@@ -62,8 +74,27 @@ function createRequestSinafip(req, res) {
                 reviewd: requestCreated.reviewd,
                 created: requestCreated.created,
             };
+            if (institutionCreated) {
+                if (docsFinancingRes.length > 0) {
+                    let institutionTemp = {
+                        id: institutionCreated.id,
+                        entityName: institutionCreated.entityName,
+                        executionUnit: institutionCreated.executionUnit,
+                        functionProjName: institutionCreated.functionProjName,
+                        generalStudy: institutionCreated.generalStudy,
+                        dcmntPreinvest: institutionCreated.dcmntPreinvest,
+                        documentProject: institutionCreated.documentProject,
+                        responsibleName: institutionCreated.responsibleName,
+                        contactEmail: institutionCreated.contactEmail,
+                        phoneNumber: institutionCreated.phoneNumber,
+                        requestId: institutionCreated.requestId,
+                        documentsFinance: docsFinancingRes
+                    };
+                    institutionCreated = institutionTemp;
+                }
+            }
             const response = {
-                request: Object.assign(Object.assign({}, reqStruct), { institution: institutionCreated, investment: investmentCreated, studyDescription: studyDescriptionCreated, delimit: delimitCreated, requirementsDocuments: {
+                request: Object.assign(Object.assign({}, reqStruct), { institution: Object.assign(Object.assign({}, institutionCreated), { documentsFinance: docsFinancingRes }), investment: investmentCreated, studyDescription: studyDescriptionCreated, delimit: delimitCreated, requirementsDocuments: {
                         id: requiredDocumentCreated.id,
                         stimatedBudget: {
                             id: stimatedBugdetCreated.id,
@@ -108,7 +139,8 @@ function getAllRequest(req, res) {
             let stimatedBudget = null;
             let requirementsDocuments = null;
             const allRequest = yield Promise.all(requests.map((request) => __awaiter(this, void 0, void 0, function* () {
-                const institution = yield sinafip_1.institutionEntity.findOne({ where: { requestId: request.id } });
+                let documentsFinance = [];
+                let institution = yield institution_entity_1.default.findOne({ where: { requestId: request.id } });
                 const investment = yield sinafip_1.investmentProjectEntity.findOne({ where: { requestId: request.id } });
                 const studyDescription = yield sinafip_1.studyDescriptionEntity.findOne({ where: { requestId: request.id } });
                 const addmision = yield admisionQualification_1.admissionQuanty.findOne({ where: { requestId: request.id } });
@@ -144,6 +176,26 @@ function getAllRequest(req, res) {
                     reviewd: request.reviewd,
                     created: request.created,
                 };
+                if (institution) {
+                    documentsFinance = yield documentFinance_1.default.findAll({ where: { institutionId: institution.id } });
+                    if (documentsFinance && documentsFinance.length) {
+                        let institutionTemp = {
+                            id: institution.id,
+                            entityName: institution.entityName,
+                            executionUnit: institution.executionUnit,
+                            functionProjName: institution.functionProjName,
+                            generalStudy: institution.generalStudy,
+                            dcmntPreinvest: institution.dcmntPreinvest,
+                            documentProject: institution.documentProject,
+                            responsibleName: institution.responsibleName,
+                            contactEmail: institution.contactEmail,
+                            phoneNumber: institution.phoneNumber,
+                            requestId: institution.requestId,
+                            documentsFinance
+                        };
+                        institution = institutionTemp;
+                    }
+                }
                 if (delimit) {
                     let pops = yield delimitPopulation_entity_1.default.findAll({
                         where: {
@@ -168,23 +220,20 @@ function getAllRequest(req, res) {
                 }
                 if (addmision) {
                     if (priorization) {
-                        return Object.assign(Object.assign({}, reqStruct), { institution,
-                            investment,
+                        return Object.assign(Object.assign({}, reqStruct), { institution: Object.assign(Object.assign({}, institution), { documentsFinance }), investment,
                             studyDescription,
                             delimit,
                             requirementsDocuments, admissionQuanty: addmision, priorizationQuanty: priorization });
                     }
                     else {
-                        return Object.assign(Object.assign({}, reqStruct), { institution,
-                            investment,
+                        return Object.assign(Object.assign({}, reqStruct), { institution: institution, investment,
                             studyDescription,
                             delimit,
                             requirementsDocuments, admissionQuanty: addmision });
                     }
                 }
                 else {
-                    return Object.assign(Object.assign({}, reqStruct), { institution,
-                        investment,
+                    return Object.assign(Object.assign({}, reqStruct), { institution: institution, investment,
                         studyDescription,
                         delimit,
                         requirementsDocuments });
@@ -479,7 +528,7 @@ function getSolicitudCompleta(idSolicitud) {
         try {
             const request = yield sinafip_1.requestEntity.findOne({ where: { id: idSolicitud } });
             if (request) {
-                const institution = yield sinafip_1.institutionEntity.findOne({ where: { requestId: request.id } });
+                let institution = yield institution_entity_1.default.findOne({ where: { requestId: request.id } });
                 const investment = yield sinafip_1.investmentProjectEntity.findOne({ where: { requestId: request.id } });
                 const studyDescription = yield sinafip_1.studyDescriptionEntity.findOne({ where: { requestId: request.id } });
                 let delimit = yield sinafip_1.delimitEntity.findOne({ where: { requestId: request.id } });
@@ -517,6 +566,27 @@ function getSolicitudCompleta(idSolicitud) {
                             populations: [...pops]
                         };
                         delimit = delimitTemp;
+                    }
+                }
+                let documentsFinance = [];
+                if (institution) {
+                    documentsFinance = yield documentFinance_1.default.findAll({ where: { institutionId: institution.id } });
+                    if (documentsFinance && documentsFinance.length) {
+                        let institutionTemp = {
+                            id: institution.id,
+                            entityName: institution.entityName,
+                            executionUnit: institution.executionUnit,
+                            functionProjName: institution.functionProjName,
+                            generalStudy: institution.generalStudy,
+                            dcmntPreinvest: institution.dcmntPreinvest,
+                            documentProject: institution.documentProject,
+                            responsibleName: institution.responsibleName,
+                            contactEmail: institution.contactEmail,
+                            phoneNumber: institution.phoneNumber,
+                            requestId: institution.requestId,
+                            documentsFinance
+                        };
+                        institution = institutionTemp;
                     }
                 }
                 const response = Object.assign(Object.assign({}, reqStruct), { institution,

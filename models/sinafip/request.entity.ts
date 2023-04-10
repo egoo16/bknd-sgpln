@@ -2,12 +2,12 @@ import Sequelize from "sequelize-oracle";
 import db from "../../db/connection";
 import { admissionQuanty } from "./admisionQualification";
 import { delimitEntity } from "./delimit.entity";
-import { institutionEntity } from "./institution.entity";
 import { investmentProjectEntity } from "./investment-project.entity";
 import { priorizationQuanty } from "./priorizationQualification";
 import { requiredDocumentEntity } from "./requirements-documents.entity";
 import { snp } from "./snp.entity";
 import { studyDescriptionEntity } from "./study-description.entity";
+import institutionEntity from "./institution.entity";
 
 export const requestEntity = db.define('request', {
 

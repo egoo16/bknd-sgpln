@@ -8,14 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateModalityFinancing = exports.deleteModalityFinancing = exports.createModalityFinancing = exports.getAllmodalityFinancing = exports.updateReferencePopulation = exports.deleteReferencePopulation = exports.createReferencePopulation = exports.getReferencePopulation = exports.updateDenomination = exports.deleteDenomination = exports.createDenomination = exports.getDenomination = exports.getAllpreinvDocument = exports.getAllgeneralStudies = exports.getAllProjectFunction = exports.getAllEntities = void 0;
+exports.getAdvisedEntities = exports.updateModalityFinancing = exports.deleteModalityFinancing = exports.createModalityFinancing = exports.getAllmodalityFinancing = exports.updateReferencePopulation = exports.deleteReferencePopulation = exports.createReferencePopulation = exports.getReferencePopulation = exports.updateDenomination = exports.deleteDenomination = exports.createDenomination = exports.getDenomination = exports.getAllpreinvDocument = exports.getAllgeneralStudies = exports.getAllProjectFunction = exports.getAllEntities = void 0;
 const BancoIdeas_1 = require("../../models/BancoIdeas");
+const advisedEntity_entity_1 = __importDefault(require("../../models/seguimiento/advisedEntity.entity"));
+const subSectorization_entity_1 = __importDefault(require("../../models/seguimiento/subSectorization.entity"));
 const entity_entity_1 = require("../../models/sinafip/entity.entity");
 const generalStudies_entity_1 = require("../../models/sinafip/generalStudies.entity");
 const modalityFinancing_entity_1 = require("../../models/sinafip/modalityFinancing.entity");
 const preinvDocument_entity_1 = require("../../models/sinafip/preinvDocument.entity");
 const projectFunction_entity_1 = require("../../models/sinafip/projectFunction.entity");
+const advisedEnt_1 = require("./advisedEnt");
 function getAllEntities(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -446,3 +452,49 @@ const updateModalityFinancing = (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.updateModalityFinancing = updateModalityFinancing;
+function getAdvisedEntities(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let data = yield advisedEntity_entity_1.default.findAll({
+                order: [['name', 'ASC']],
+                include: [
+                    {
+                        required: false,
+                        model: subSectorization_entity_1.default
+                    },
+                ]
+            });
+            if (data.length <= 0) {
+                let ents = advisedEnt_1.advEntities;
+                let resEnt = yield Promise.all(ents.map((ent) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    let entObj = { name: ent.name };
+                    let res = yield advisedEntity_entity_1.default.create(entObj);
+                    if (ent.sbSector && ((_a = ent.sbSector) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+                        let resEnt2 = yield Promise.all(ent.sbSector.map((ent2) => __awaiter(this, void 0, void 0, function* () {
+                            let ent2Obj = { name: ent2.name, advisedEntityId: res.id };
+                            let res2 = yield subSectorization_entity_1.default.create(ent2Obj);
+                            return res2;
+                        })));
+                    }
+                    return res;
+                })));
+                data = yield advisedEntity_entity_1.default.findAll({
+                    order: [['name', 'ASC']],
+                    include: [
+                        {
+                            required: false,
+                            model: subSectorization_entity_1.default
+                        },
+                    ]
+                });
+                return res.status(200).send(data);
+            }
+            return res.status(200).send(data);
+        }
+        catch (error) {
+            return res.status(error.codigo || 500).send({ message: `${error.message || error}` });
+        }
+    });
+}
+exports.getAdvisedEntities = getAdvisedEntities;

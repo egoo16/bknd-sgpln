@@ -4,9 +4,13 @@ import { SERVER_PORT } from "../global/environment";
 import { responsibleEntity } from "../models/BancoIdeas";
 import referencePopulation from "../models/BancoIdeas/referencePopulation";
 import { visitCard } from "../models/seguimiento";
+import advisedEntity from "../models/seguimiento/advisedEntity.entity";
 import project from '../models/seguimiento/project.entity';
-import { institutionEntity, requestEntity } from "../models/sinafip";
+import subSectorization from "../models/seguimiento/subSectorization.entity";
+import { requestEntity } from "../models/sinafip";
 import { activitiesEntity } from '../models/sinafip/activities.entity';
+import documentFinance from "../models/sinafip/documentFinance";
+import institutionEntity from "../models/sinafip/institution.entity";
 
 export default class Server {
   public app: express.Application;
@@ -26,8 +30,11 @@ export default class Server {
         console.log("Database online");
       });
 
-      
-      // await institutionEntity.sync({force: true})
+      // await advisedEntity.sync({ force: true });
+      // await subSectorization.sync({ force: true });
+      // await institutionEntity.sync({ force: true });
+      // await documentFinance.sync({ force: true });
+
       // await visitCard.sync({force: true})
       // await requestEntity.sync({force: true});
       // await project.sync({force: true});

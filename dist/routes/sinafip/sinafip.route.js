@@ -15,6 +15,7 @@ sinafipRouter.get('/modality-financing', list_controller_1.getAllmodalityFinanci
 sinafipRouter.post("/modality-financing/", list_controller_1.createModalityFinancing);
 sinafipRouter.delete("/modality-financing/:id", list_controller_1.deleteModalityFinancing);
 sinafipRouter.put("/modality-financing/:id", list_controller_1.updateModalityFinancing);
+sinafipRouter.get("/sector-adb/", list_controller_1.getAdvisedEntities);
 sinafipRouter.post('/request/new', authentication_1.verificaToken, sinafip_controller_1.createRequestSinafip);
 sinafipRouter.post('/request/new', authentication_1.verificaToken, sinafip_controller_1.createRequestSinafip);
 sinafipRouter.put('/request/update/:id', sinafip_controller_1.updateRequest);

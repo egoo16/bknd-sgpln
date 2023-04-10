@@ -1,44 +1,52 @@
 import db from "../../db/connection";
 import Sequelize from "sequelize-oracle";
+import documentFinance from "./documentFinance";
 
-export const  institutionEntity = db.define('institution',{
+const institutionEntity = db.define('institution', {
 
-    id :{
-        type:Sequelize.UUID,
+    id: {
+        type: Sequelize.UUID,
         primaryKey: true,
         allowNull: false,
         defaultValue: Sequelize.UUIDV4
     },
     entityName: {
-        type:Sequelize.STRING,
+        type: Sequelize.STRING,
     },
     executionUnit: {
-        type:Sequelize.STRING,
+        type: Sequelize.STRING,
     },
     functionProjName: {
-        type:Sequelize.STRING
+        type: Sequelize.STRING
     },
     generalStudy: {
-        type:Sequelize.STRING
+        type: Sequelize.STRING
     },
     dcmntPreinvest: {
-        type:Sequelize.STRING
+        type: Sequelize.STRING //delete
     },
     documentProject: {
-        type:Sequelize.STRING
+        type: Sequelize.STRING
     },
-    responsibleName : {
-        type:Sequelize.STRING
+    responsibleName: {
+        type: Sequelize.STRING
     },
-    contactEmail : {
-        type:Sequelize.STRING
+    contactEmail: {
+        type: Sequelize.STRING
     },
-    phoneNumber : {
-        type:Sequelize.STRING
+    phoneNumber: {
+        type: Sequelize.STRING
     },
-    requestId:{
-        type:Sequelize.UUID
+    requestId: {
+        type: Sequelize.UUID
     }
-    
+},
+    {
+        underscoded: true,
+        paranoid: true,
+        freezeTableName: true,
+    });
+institutionEntity.hasMany(documentFinance, { foreingKey: 'institutionId' })
 
-})
+export default institutionEntity;
+

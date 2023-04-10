@@ -1,11 +1,14 @@
 import { Request, Response } from 'express';
 import models from "../../db/connection";
 import { denomination, referencePopulation } from '../../models/BancoIdeas';
+import advisedEntity from '../../models/seguimiento/advisedEntity.entity';
+import subSectorization from '../../models/seguimiento/subSectorization.entity';
 import { entity } from '../../models/sinafip/entity.entity';
 import { generalStudies } from '../../models/sinafip/generalStudies.entity';
 import { modalityFinancing } from '../../models/sinafip/modalityFinancing.entity';
 import { preinvDocument } from '../../models/sinafip/preinvDocument.entity';
 import { projectFunction } from '../../models/sinafip/projectFunction.entity';
+import { advEntities } from './advisedEnt';
 
 
 
@@ -235,28 +238,28 @@ export const updateDenomination = async (req: Request, res: Response) => {
 
 export const getReferencePopulation = async (req: Request, res: Response) => {
   try {
-      let data = await referencePopulation.findAll();
-      if (data.length <= 0) {
-          let ref = { name: 'Nacional' };
-          let denCreated = await referencePopulation.create(ref)
-          ref.name = 'Departamental'
-          denCreated = await referencePopulation.create(ref)
-          ref.name = 'Municipal'
-          denCreated = await referencePopulation.create(ref)
-          ref.name = 'Comunal'
-          denCreated = await referencePopulation.create(ref)
-      }
-      data = await referencePopulation.findAll();
+    let data = await referencePopulation.findAll();
+    if (data.length <= 0) {
+      let ref = { name: 'Nacional' };
+      let denCreated = await referencePopulation.create(ref)
+      ref.name = 'Departamental'
+      denCreated = await referencePopulation.create(ref)
+      ref.name = 'Municipal'
+      denCreated = await referencePopulation.create(ref)
+      ref.name = 'Comunal'
+      denCreated = await referencePopulation.create(ref)
+    }
+    data = await referencePopulation.findAll();
 
-      res.status(200).json({
-          msg: "Datos Obtenidos",
-          data,
-      });
+    res.status(200).json({
+      msg: "Datos Obtenidos",
+      data,
+    });
   } catch (error) {
-      res.status(500).json({
-          msg: "Error",
-          error,
-      });
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
   }
 };
 
@@ -458,5 +461,62 @@ export const updateModalityFinancing = async (req: Request, res: Response) => {
       msg: "Error",
       error,
     });
+  }
+}
+
+export async function getAdvisedEntities(req: Request, res: Response) {
+  interface IsbSector {
+    id?: string;
+    name: string;
+    advisedEntityId?: string;
+  }
+  interface IAdvEntities {
+    id?: string;
+    name: string;
+    sbSector?: IsbSector[];
+  }
+
+
+  try {
+    let data = await advisedEntity.findAll({
+      order: [['name', 'ASC']],
+      include: [
+        {
+          required: false,
+          model: subSectorization
+        },
+      ]
+    })
+    if (data.length <= 0) {
+      let ents: IAdvEntities[] = advEntities;
+
+      let resEnt = await Promise.all(ents.map(async (ent: IAdvEntities) => {
+        let entObj = { name: ent.name }
+        let res = await advisedEntity.create(entObj);
+        if (ent.sbSector && ent.sbSector?.length > 0) {
+          let resEnt2 = await Promise.all(ent.sbSector.map(async (ent2: IsbSector) => {
+            let ent2Obj: IsbSector = { name: ent2.name, advisedEntityId: res.id }
+            let res2 = await subSectorization.create(ent2Obj);
+            return res2;
+          }));
+        }
+        return res;
+      }));
+
+      data = await advisedEntity.findAll({
+        order: [['name', 'ASC']],
+        include: [
+          {
+            required: false,
+            model: subSectorization
+          },
+        ]
+      })
+      return res.status(200).send(data)
+    }
+    return res.status(200).send(data)
+
+  } catch (error: any) {
+    return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
   }
 }

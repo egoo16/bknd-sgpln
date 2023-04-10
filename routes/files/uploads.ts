@@ -3,8 +3,9 @@ import fileUpload from 'express-fileupload';
 import fs from 'fs';
 import dataGeo from '../../models/BancoIdeas/datageo.model';
 import { ORIGINPATH } from "../../config/config";
-import { institutionEntity, requiredDocumentEntity } from '../../models/sinafip';
+import { requiredDocumentEntity } from '../../models/sinafip';
 import advisoryEpi from '../../models/seguimiento/advisoryEpi';
+import institutionEntity from '../../models/sinafip/institution.entity';
 
 
 const UPLOAD_ROUTER = Router();
@@ -158,6 +159,7 @@ const uploadByType = (type: string, id: string, newNameFile: string, res: Respon
                 id
             }
         }).then(async (data: any) => {
+            console.log("🚀 ~ file: uploads.ts:161 ~ uploadByType ~ data:", data)
 
             if (!data) {
                 return res.status(400).json({

@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createModalityFinancing, deleteModalityFinancing, getAllEntities, getAllgeneralStudies, getAllmodalityFinancing, getAllpreinvDocument, getAllProjectFunction, updateModalityFinancing } from '../../controllers/sinafip/list.controller';
+import { createModalityFinancing, deleteModalityFinancing, getAdvisedEntities, getAllEntities, getAllgeneralStudies, getAllmodalityFinancing, getAllpreinvDocument, getAllProjectFunction, updateModalityFinancing } from '../../controllers/sinafip/list.controller';
 import { getAllRequest, updateRequest, getOneRequest, createRequestSinafip, updateState, createAdmissionQuanty, getDataPriorization } from '../../controllers/sinafip/sinafip.controller';
 import { verificaToken } from '../../middlewares/authentication';
 
@@ -17,6 +17,9 @@ sinafipRouter.get('/modality-financing', getAllmodalityFinancing)
 sinafipRouter.post("/modality-financing/", createModalityFinancing);
 sinafipRouter.delete("/modality-financing/:id", deleteModalityFinancing);
 sinafipRouter.put("/modality-financing/:id", updateModalityFinancing);
+
+
+sinafipRouter.get("/sector-adb/", getAdvisedEntities);
 
 
 sinafipRouter.post('/request/new',verificaToken, createRequestSinafip)

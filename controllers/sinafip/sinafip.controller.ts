@@ -1,13 +1,13 @@
 import { entity } from './../../models/sinafip/entity.entity';
 import {
     requestEntity,
-    institutionEntity,
     investmentProjectEntity,
     studyDescriptionEntity,
     delimitEntity,
     requiredDocumentEntity,
     stimatedBudgetEntity,
-    activitiesEntity
+    activitiesEntity,
+    IDocumentFinance
 } from '../../models/sinafip';
 import { Request, Response } from 'express';
 import models from "../../db/connection";
@@ -16,13 +16,15 @@ import { admissionQuanty } from '../../models/sinafip/admisionQualification';
 import { povertyIndex } from '../../models/sinafip/povertyIndex.entity';
 import { priorizationQuanty } from '../../models/sinafip/priorizationQualification';
 import delimitPopulation, { IDelimitPopulation } from '../../models/sinafip/delimitPopulation.entity';
-
+import documentFinance from '../../models/sinafip/documentFinance';
+import institutionEntity from '../../models/sinafip/institution.entity';
 
 
 export async function createRequestSinafip(req: any, res: Response) {
     // let transaction = await models.transaction()
     try {
         let allActivities: any = []
+        let docsFinancingRes: IDocumentFinance[] = []
         let { status, author, institution, investment, studyDescription, delimit, requirementsDocuments, idEntity, hasFinancing } = req.body;
         author = req.user.id;
         status = 'CREADA';
@@ -31,7 +33,18 @@ export async function createRequestSinafip(req: any, res: Response) {
         const created = moment().format('L');
         const { totalStimated, activities } = requirementsDocuments.stimatedBudget
         const requestCreated = await requestEntity.create({ status, author, idEntity, created, hasFinancing });
-        const institutionCreated = await institutionEntity.create({ ...institution, requestId: requestCreated.id });
+        let institutionCreated = await institutionEntity.create({ ...institution, requestId: requestCreated.id });
+        if (institutionCreated) {
+            if (institution.documentsFinance && institution.documentsFinance.length > 0) {
+                docsFinancingRes = await Promise.all(institution.documentsFinance.map(async (document: string) => {
+                    const doc : IDocumentFinance= {name: document, institutionId: institutionCreated.id}
+                    let res = await documentFinance.create(doc);
+                    return res;
+                }))
+            }
+        }
+
+
         const investmentCreated = await investmentProjectEntity.create({ ...investment, requestId: requestCreated.id });
         const studyDescriptionCreated = await studyDescriptionEntity.create({ ...studyDescription, requestId: requestCreated.id });
         const delimitCreated = await delimitEntity.create({ ...delimit, requestId: requestCreated.id });
@@ -68,10 +81,30 @@ export async function createRequestSinafip(req: any, res: Response) {
             created: requestCreated.created,
         }
 
+        if (institutionCreated){
+            if (docsFinancingRes.length > 0) {
+                let institutionTemp = {
+                    id: institutionCreated.id,
+                    entityName: institutionCreated.entityName,
+                    executionUnit: institutionCreated.executionUnit,
+                    functionProjName: institutionCreated.functionProjName,
+                    generalStudy: institutionCreated.generalStudy,
+                    dcmntPreinvest: institutionCreated.dcmntPreinvest,
+                    documentProject: institutionCreated.documentProject,
+                    responsibleName: institutionCreated.responsibleName,
+                    contactEmail: institutionCreated.contactEmail,
+                    phoneNumber: institutionCreated.phoneNumber,
+                    requestId: institutionCreated.requestId,
+                    documentsFinance: docsFinancingRes
+                }
+                institutionCreated = institutionTemp;
+            }
+        }
+
         const response = {
             request: {
                 ...reqStruct,
-                institution: institutionCreated,
+                institution: {...institutionCreated, documentsFinance: docsFinancingRes },
                 investment: investmentCreated,
                 studyDescription: studyDescriptionCreated,
                 delimit: delimitCreated,
@@ -120,7 +153,11 @@ export async function getAllRequest(req: any, res: Response) {
         let requirementsDocuments: any = null;
 
         const allRequest = await Promise.all(requests.map(async (request: any) => {
-            const institution = await institutionEntity.findOne({ where: { requestId: request.id } });
+            
+            let documentsFinance :IDocumentFinance[] = []
+
+            let institution = await institutionEntity.findOne({ where: { requestId: request.id } });
+
             const investment = await investmentProjectEntity.findOne({ where: { requestId: request.id } });
             const studyDescription = await studyDescriptionEntity.findOne({ where: { requestId: request.id } });
             const addmision = await admissionQuanty.findOne({ where: { requestId: request.id } })
@@ -163,6 +200,30 @@ export async function getAllRequest(req: any, res: Response) {
                 created: request.created,
             }
 
+            if (institution){
+
+                documentsFinance = await documentFinance.findAll({ where: { institutionId: institution.id } });
+                if (documentsFinance && documentsFinance.length) {
+                    let institutionTemp = {
+                        id: institution.id,
+                        entityName: institution.entityName,
+                        executionUnit: institution.executionUnit,
+                        functionProjName: institution.functionProjName,
+                        generalStudy: institution.generalStudy,
+                        dcmntPreinvest: institution.dcmntPreinvest,
+                        documentProject: institution.documentProject,
+                        responsibleName: institution.responsibleName,
+                        contactEmail: institution.contactEmail,
+                        phoneNumber: institution.phoneNumber,
+                        requestId: institution.requestId,
+                        documentsFinance
+                    }
+
+                    institution = institutionTemp;
+                }
+
+            }
+
             if (delimit){
                 let pops = await delimitPopulation.findAll({
                     where: {
@@ -195,7 +256,7 @@ export async function getAllRequest(req: any, res: Response) {
                 if (priorization) {
                     return {
                         ...reqStruct,
-                        institution,
+                        institution: {...institution, documentsFinance},
                         investment,
                         studyDescription,
                         delimit,
@@ -206,7 +267,7 @@ export async function getAllRequest(req: any, res: Response) {
                 } else {
                     return {
                         ...reqStruct,
-                        institution,
+                        institution: institution,
                         investment,
                         studyDescription,
                         delimit,
@@ -218,7 +279,7 @@ export async function getAllRequest(req: any, res: Response) {
             } else {
                 return {
                     ...reqStruct,
-                    institution,
+                    institution: institution,
                     investment,
                     studyDescription,
                     delimit,
@@ -528,7 +589,7 @@ async function getSolicitudCompleta(idSolicitud: string) {
     try {
         const request = await requestEntity.findOne({ where: { id: idSolicitud } });
         if (request) {
-            const institution = await institutionEntity.findOne({ where: { requestId: request.id } });
+            let institution = await institutionEntity.findOne({ where: { requestId: request.id } });
             const investment = await investmentProjectEntity.findOne({ where: { requestId: request.id } });
             const studyDescription = await studyDescriptionEntity.findOne({ where: { requestId: request.id } });
             let delimit = await delimitEntity.findOne({ where: { requestId: request.id } });
@@ -570,6 +631,31 @@ async function getSolicitudCompleta(idSolicitud: string) {
                     }
                     delimit = delimitTemp;
                 }
+            }
+
+            let documentsFinance :IDocumentFinance[] = []
+            if (institution){
+
+                documentsFinance = await documentFinance.findAll({ where: { institutionId: institution.id } });
+                if (documentsFinance && documentsFinance.length) {
+                    let institutionTemp = {
+                        id: institution.id,
+                        entityName: institution.entityName,
+                        executionUnit: institution.executionUnit,
+                        functionProjName: institution.functionProjName,
+                        generalStudy: institution.generalStudy,
+                        dcmntPreinvest: institution.dcmntPreinvest,
+                        documentProject: institution.documentProject,
+                        responsibleName: institution.responsibleName,
+                        contactEmail: institution.contactEmail,
+                        phoneNumber: institution.phoneNumber,
+                        requestId: institution.requestId,
+                        documentsFinance
+                    }
+
+                    institution = institutionTemp;
+                }
+
             }
 
             const response: any = {
