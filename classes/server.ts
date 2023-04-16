@@ -11,6 +11,7 @@ import { requestEntity } from "../models/sinafip";
 import { activitiesEntity } from '../models/sinafip/activities.entity';
 import documentFinance from "../models/sinafip/documentFinance";
 import institutionEntity from "../models/sinafip/institution.entity";
+import { admisionConfig } from "../models";
 
 export default class Server {
   public app: express.Application;
@@ -30,17 +31,17 @@ export default class Server {
         console.log("Database online");
       });
 
+      
+      // await admisionConfig.sync({ force: true });
+
+
+
       // await advisedEntity.sync({ force: true });
       // await subSectorization.sync({ force: true });
       // await institutionEntity.sync({ force: true });
       // await documentFinance.sync({ force: true });
-
       // await visitCard.sync({force: true})
       // await requestEntity.sync({force: true});
-      // await project.sync({force: true});
-      // await activitiesEntity.sync({force: true});
-      // await referencePopulation.sync({force:true});
-      // await populationDelimitation.sync({force:true});
     } catch (error) {
       throw new Error("Error de conexion: " + error);
     }

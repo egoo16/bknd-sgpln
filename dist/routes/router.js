@@ -15,11 +15,13 @@ const usuarios_1 = __importDefault(require("./usuarios"));
 const sinafip_route_1 = __importDefault(require("./sinafip/sinafip.route"));
 const readFile_1 = __importDefault(require("./files/readFile"));
 const seguimiento_route_1 = __importDefault(require("./seguimiento/seguimiento.route"));
+const matrixValues_route_1 = __importDefault(require("./matrixSettings/matrixValues.route"));
 const router = (0, express_1.Router)();
 const prefix = 'api';
 // Rutas
 router.use("/api/readFile", readFile_1.default);
 router.use("/api/upload/", uploads_1.default);
+router.use(`/${prefix}/matrix/`, matrixValues_route_1.default);
 router.use(`/${prefix}/seguimiento/`, seguimiento_route_1.default);
 router.use(`/${prefix}/sinafip/`, sinafip_route_1.default);
 router.use(`/${prefix}/integrations/`, integrations_1.default);
