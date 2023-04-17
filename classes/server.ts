@@ -1,17 +1,8 @@
 import express from "express";
 import db from "../db/connection";
 import { SERVER_PORT } from "../global/environment";
-import { responsibleEntity } from "../models/BancoIdeas";
-import referencePopulation from "../models/BancoIdeas/referencePopulation";
-import { visitCard } from "../models/seguimiento";
-import advisedEntity from "../models/seguimiento/advisedEntity.entity";
-import project from '../models/seguimiento/project.entity';
-import subSectorization from "../models/seguimiento/subSectorization.entity";
-import { requestEntity } from "../models/sinafip";
-import { activitiesEntity } from '../models/sinafip/activities.entity';
-import documentFinance from "../models/sinafip/documentFinance";
-import institutionEntity from "../models/sinafip/institution.entity";
 import { admisionConfig } from "../models";
+import { relevanceBeneficiaries, relevanceComplexy, relevanceInvestment, relevanceStage } from "../models/matrixModels/relevanceConfig";
 
 export default class Server {
   public app: express.Application;
@@ -33,6 +24,10 @@ export default class Server {
 
       
       // await admisionConfig.sync({ force: true });
+      // await relevanceInvestment.sync({ force: true });
+      // await relevanceBeneficiaries.sync({ force: true });
+      // await relevanceComplexy.sync({ force: true });
+      // await relevanceStage.sync({ force: true });
 
 
 

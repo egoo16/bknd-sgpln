@@ -30,6 +30,10 @@ class Server {
                     console.log("Database online");
                 });
                 // await admisionConfig.sync({ force: true });
+                // await relevanceInvestment.sync({ force: true });
+                // await relevanceBeneficiaries.sync({ force: true });
+                // await relevanceComplexy.sync({ force: true });
+                // await relevanceStage.sync({ force: true });
                 // await advisedEntity.sync({ force: true });
                 // await subSectorization.sync({ force: true });
                 // await institutionEntity.sync({ force: true });
