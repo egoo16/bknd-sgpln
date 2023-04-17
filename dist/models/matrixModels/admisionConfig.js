@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.admisionConfig = void 0;
+exports.admissionConfig = void 0;
 const connection_1 = __importDefault(require("../../db/connection"));
 const sequelize_oracle_1 = __importDefault(require("sequelize-oracle"));
-exports.admisionConfig = connection_1.default.define('admisionConfig', {
+exports.admissionConfig = connection_1.default.define('admisionConfig', {
     id: {
         type: sequelize_oracle_1.default.UUID,
         primaryKey: true,

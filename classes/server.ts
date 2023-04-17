@@ -1,7 +1,7 @@
 import express from "express";
 import db from "../db/connection";
 import { SERVER_PORT } from "../global/environment";
-import { admisionConfig } from "../models";
+import { admissionConfig } from "../models";
 import { relevanceBeneficiaries, relevanceComplexy, relevanceInvestment, relevanceStage } from "../models/matrixModels/relevanceConfig";
 
 export default class Server {

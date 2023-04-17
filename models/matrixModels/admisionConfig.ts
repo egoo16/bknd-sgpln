@@ -1,7 +1,7 @@
 import db from "../../db/connection";
 import Sequelize from "sequelize-oracle";
 
-export const admisionConfig = db.define('admisionConfig', {
+export const admissionConfig = db.define('admisionConfig', {
 
     id: {
         type: Sequelize.UUID,
@@ -27,7 +27,7 @@ export const admisionConfig = db.define('admisionConfig', {
     freezeTableName: true,
 })
 
-export interface IAdmisionConfig {
+export interface IAdmissionConfig {
     id?: string;
     statementMaxValue: number;
     beneficiariestMaxValue: number;

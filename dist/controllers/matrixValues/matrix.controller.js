@@ -9,13 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRelevanceMatrixValues = exports.getAdmissionMatrixValues = void 0;
+exports.updateRelevanceStage = exports.updateRelevanceComplexy = exports.updateRelevanceBeneficiaries = exports.updateRelevanceInvestment = exports.getRelevanceMatrixValues = exports.updateAdmissionValues = exports.getAdmissionMatrixValues = void 0;
 const models_1 = require("../../models");
 const relevanceConfig_1 = require("../../models/matrixModels/relevanceConfig");
 function getAdmissionMatrixValues(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let data = yield models_1.admisionConfig.findAll();
+            let data = yield models_1.admissionConfig.findAll();
             if (data.length <= 0) {
                 let config = {
                     beneficiariestMaxValue: 10,
@@ -25,8 +25,8 @@ function getAdmissionMatrixValues(req, res) {
                     statementMaxValue: 20,
                     tdrMaxValue: 30
                 };
-                let resConfig = yield models_1.admisionConfig.create(config);
-                data = yield models_1.admisionConfig.findAll();
+                let resConfig = yield models_1.admissionConfig.create(config);
+                data = yield models_1.admissionConfig.findAll();
                 return res.status(200).send(data[0]);
             }
             return res.status(200).send(data[0]);
@@ -37,6 +37,36 @@ function getAdmissionMatrixValues(req, res) {
     });
 }
 exports.getAdmissionMatrixValues = getAdmissionMatrixValues;
+const updateAdmissionValues = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (req.body) {
+            const admissionUp = req.body;
+            const verifyAdmissionC = yield models_1.admissionConfig.findOne({ where: { id: admissionUp.id } });
+            if (!verifyAdmissionC) {
+                throw `Error al encontrar Regla`;
+            }
+            const admissionUpdated = yield models_1.admissionConfig.update(admissionUp, {
+                where: {
+                    id: admissionUp.id
+                }
+            });
+            return res.status(200).json({
+                msg: 'Reglas actualizadas correctamente',
+                admissionUpdated
+            });
+        }
+        else {
+            throw `Error al Modificar Reglas`;
+        }
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+});
+exports.updateAdmissionValues = updateAdmissionValues;
 function getRelevanceMatrixValues(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -118,3 +148,123 @@ function getRelevanceMatrixValues(req, res) {
     });
 }
 exports.getRelevanceMatrixValues = getRelevanceMatrixValues;
+const updateRelevanceInvestment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (req.body) {
+            const relevanceI = req.body;
+            const verifyRelevanceI = yield relevanceConfig_1.relevanceInvestment.findOne({ where: { id: relevanceI.id } });
+            if (!verifyRelevanceI) {
+                throw `Error al encontrar Regla`;
+            }
+            const relevanceIUpdated = yield relevanceConfig_1.relevanceInvestment.update(relevanceI, {
+                where: {
+                    id: relevanceI.id
+                }
+            });
+            return res.status(200).json({
+                msj: 'Reglas actualizadas correctamente',
+                relevanceIUpdated
+            });
+        }
+        else {
+            throw `Error al Modificar Reglas`;
+        }
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+});
+exports.updateRelevanceInvestment = updateRelevanceInvestment;
+const updateRelevanceBeneficiaries = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (req.body) {
+            const relevanceB = req.body;
+            const verifyRelevanceB = yield relevanceConfig_1.relevanceBeneficiaries.findOne({ where: { id: relevanceB.id } });
+            if (!verifyRelevanceB) {
+                throw `Error al encontrar Regla`;
+            }
+            const relevanceBUpdated = yield relevanceConfig_1.relevanceBeneficiaries.update(relevanceB, {
+                where: {
+                    id: relevanceB.id
+                }
+            });
+            return res.status(200).json({
+                msj: 'Reglas actualizadas correctamente',
+                relevanceBUpdated
+            });
+        }
+        else {
+            throw `Error al Modificar Reglas`;
+        }
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+});
+exports.updateRelevanceBeneficiaries = updateRelevanceBeneficiaries;
+const updateRelevanceComplexy = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (req.body) {
+            const relevanceC = req.body;
+            const verifyRelevanceC = yield relevanceConfig_1.relevanceComplexy.findOne({ where: { id: relevanceC.id } });
+            if (!verifyRelevanceC) {
+                throw `Error al encontrar Regla`;
+            }
+            const relevanceCUpdated = yield relevanceConfig_1.relevanceComplexy.update(relevanceC, {
+                where: {
+                    id: relevanceC.id
+                }
+            });
+            return res.status(200).json({
+                msj: 'Reglas actualizadas correctamente',
+                relevanceCUpdated
+            });
+        }
+        else {
+            throw `Error al Modificar Reglas`;
+        }
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+});
+exports.updateRelevanceComplexy = updateRelevanceComplexy;
+const updateRelevanceStage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (req.body) {
+            const relevanceS = req.body;
+            const verifyRelevanceS = yield relevanceConfig_1.relevanceStage.findOne({ where: { id: relevanceS.id } });
+            if (!verifyRelevanceS) {
+                throw `Error al encontrar Regla`;
+            }
+            const relevanceSUpdated = yield relevanceConfig_1.relevanceStage.update(relevanceS, {
+                where: {
+                    id: relevanceS.id
+                }
+            });
+            return res.status(200).json({
+                msj: 'Reglas actualizadas correctamente',
+                relevanceSUpdated
+            });
+        }
+        else {
+            throw `Error al Modificar Reglas`;
+        }
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+});
+exports.updateRelevanceStage = updateRelevanceStage;

@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
-import { IAdmisionConfig, admisionConfig } from '../../models';
+import { IAdmissionConfig, admissionConfig } from '../../models';
 import { IRelevanceInvestment, relevanceBeneficiaries, relevanceComplexy, relevanceInvestment, IRelevanceBeneficiaries, IRelevanceComplexy, relevanceStage, IRelevanceStage } from '../../models/matrixModels/relevanceConfig';
 
 
 export async function getAdmissionMatrixValues(req: Request, res: Response) {
     try {
-        let data = await admisionConfig.findAll()
+        let data = await admissionConfig.findAll()
         if (data.length <= 0) {
-            let config: IAdmisionConfig = {
+            let config: IAdmissionConfig = {
                 beneficiariestMaxValue: 10,
                 costMaxValue: 10,
                 goalsMaxValue: 20,
@@ -16,9 +16,9 @@ export async function getAdmissionMatrixValues(req: Request, res: Response) {
                 tdrMaxValue: 30
             };
 
-            let resConfig = await admisionConfig.create(config);
+            let resConfig = await admissionConfig.create(config);
 
-            data = await admisionConfig.findAll()
+            data = await admissionConfig.findAll()
             return res.status(200).send(data[0])
         }
 
@@ -27,6 +27,41 @@ export async function getAdmissionMatrixValues(req: Request, res: Response) {
 
     } catch (error: any) {
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
+    }
+}
+
+export const updateAdmissionValues = async (req: Request, res: Response) => {
+    try {
+        if (req.body) {
+
+            const admissionUp: IAdmissionConfig = req.body;
+
+            const verifyAdmissionC = await admissionConfig.findOne({ where: { id: admissionUp.id } })
+            if (!verifyAdmissionC) {
+                throw `Error al encontrar Regla`;
+            }
+
+
+            const admissionUpdated = await admissionConfig.update(admissionUp, {
+                where: {
+                    id: admissionUp.id
+                }
+            });
+
+            return res.status(200).json({
+                msg: 'Reglas actualizadas correctamente',
+                admissionUpdated
+            });
+        }
+        else {
+            throw `Error al Modificar Reglas`;
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
     }
 }
 
@@ -121,10 +156,145 @@ export async function getRelevanceMatrixValues(req: Request, res: Response) {
             complexyValues: complexyV,
             stageValues: stageV
         })
-        
+
 
     } catch (error: any) {
         return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
     }
 }
 
+export const updateRelevanceInvestment = async (req: Request, res: Response) => {
+    try {
+        if (req.body) {
+
+            const relevanceI: IRelevanceInvestment = req.body;
+
+            const verifyRelevanceI = await relevanceInvestment.findOne({ where: { id: relevanceI.id } })
+            if (!verifyRelevanceI) {
+                throw `Error al encontrar Regla`;
+            }
+
+            const relevanceIUpdated = await relevanceInvestment.update(relevanceI, {
+                where: {
+                    id: relevanceI.id
+                }
+            });
+
+            return res.status(200).json({
+                msj: 'Reglas actualizadas correctamente',
+                relevanceIUpdated
+            });
+        }
+        else {
+            throw `Error al Modificar Reglas`;
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+}
+
+export const updateRelevanceBeneficiaries = async (req: Request, res: Response) => {
+    try {
+        if (req.body) {
+
+            const relevanceB: IRelevanceBeneficiaries = req.body;
+
+            const verifyRelevanceB = await relevanceBeneficiaries.findOne({ where: { id: relevanceB.id } })
+            if (!verifyRelevanceB) {
+                throw `Error al encontrar Regla`;
+            }
+
+            const relevanceBUpdated = await relevanceBeneficiaries.update(relevanceB, {
+                where: {
+                    id: relevanceB.id
+                }
+            });
+
+            return res.status(200).json({
+                msj: 'Reglas actualizadas correctamente',
+                relevanceBUpdated
+            });
+        }
+        else {
+            throw `Error al Modificar Reglas`;
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+}
+
+export const updateRelevanceComplexy = async (req: Request, res: Response) => {
+    try {
+        if (req.body) {
+
+            const relevanceC: IRelevanceComplexy = req.body;
+            
+            const verifyRelevanceC = await relevanceComplexy.findOne({ where: { id: relevanceC.id } })
+            if (!verifyRelevanceC) {
+                throw `Error al encontrar Regla`;
+            }
+
+            const relevanceCUpdated = await relevanceComplexy.update(relevanceC, {
+                where: {
+                    id: relevanceC.id
+                }
+            });
+
+            return res.status(200).json({
+                msj: 'Reglas actualizadas correctamente',
+                relevanceCUpdated
+            });
+        }
+        else {
+            throw `Error al Modificar Reglas`;
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+}
+
+export const updateRelevanceStage = async (req: Request, res: Response) => {
+    try {
+        if (req.body) {
+
+            const relevanceS: IRelevanceStage = req.body;
+
+            const verifyRelevanceS = await relevanceStage.findOne({ where: { id: relevanceS.id } })
+            if (!verifyRelevanceS) {
+                throw `Error al encontrar Regla`;
+            }
+
+            const relevanceSUpdated = await relevanceStage.update(relevanceS, {
+                where: {
+                    id: relevanceS.id
+                }
+            });
+
+            return res.status(200).json({
+                msj: 'Reglas actualizadas correctamente',
+                relevanceSUpdated
+            });
+        }
+        else {
+            throw `Error al Modificar Reglas`;
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+}
