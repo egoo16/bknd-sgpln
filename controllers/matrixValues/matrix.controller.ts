@@ -47,10 +47,11 @@ export const updateAdmissionValues = async (req: Request, res: Response) => {
                     id: admissionUp.id
                 }
             });
+            const verifyAdmissionUpdated = await admissionConfig.findOne({ where: { id: admissionUp.id } })
 
             return res.status(200).json({
                 msg: 'Reglas actualizadas correctamente',
-                admissionUpdated
+                data: verifyAdmissionUpdated
             });
         }
         else {
@@ -180,9 +181,11 @@ export const updateRelevanceInvestment = async (req: Request, res: Response) => 
                 }
             });
 
+            const verifyRelevanceUpdted = await relevanceInvestment.findOne({ where: { id: relevanceI.id } })
+
             return res.status(200).json({
                 msj: 'Reglas actualizadas correctamente',
-                relevanceIUpdated
+                data: verifyRelevanceUpdted
             });
         }
         else {
@@ -213,10 +216,11 @@ export const updateRelevanceBeneficiaries = async (req: Request, res: Response) 
                     id: relevanceB.id
                 }
             });
+            const verifyRelevanceBUpdated = await relevanceBeneficiaries.findOne({ where: { id: relevanceB.id } })
 
             return res.status(200).json({
                 msj: 'Reglas actualizadas correctamente',
-                relevanceBUpdated
+                data: verifyRelevanceBUpdated
             });
         }
         else {
@@ -236,7 +240,7 @@ export const updateRelevanceComplexy = async (req: Request, res: Response) => {
         if (req.body) {
 
             const relevanceC: IRelevanceComplexy = req.body;
-            
+
             const verifyRelevanceC = await relevanceComplexy.findOne({ where: { id: relevanceC.id } })
             if (!verifyRelevanceC) {
                 throw `Error al encontrar Regla`;
@@ -248,9 +252,11 @@ export const updateRelevanceComplexy = async (req: Request, res: Response) => {
                 }
             });
 
+            const verifyRelevanceCUpdated = await relevanceComplexy.findOne({ where: { id: relevanceC.id } })
+
             return res.status(200).json({
                 msj: 'Reglas actualizadas correctamente',
-                relevanceCUpdated
+                data: verifyRelevanceCUpdated
             });
         }
         else {
@@ -281,10 +287,11 @@ export const updateRelevanceStage = async (req: Request, res: Response) => {
                     id: relevanceS.id
                 }
             });
+            const verifyRelevanceSUpdated = await relevanceStage.findOne({ where: { id: relevanceS.id } })
 
             return res.status(200).json({
                 msj: 'Reglas actualizadas correctamente',
-                relevanceSUpdated
+                data: verifyRelevanceSUpdated
             });
         }
         else {

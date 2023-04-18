@@ -50,9 +50,10 @@ const updateAdmissionValues = (req, res) => __awaiter(void 0, void 0, void 0, fu
                     id: admissionUp.id
                 }
             });
+            const verifyAdmissionUpdated = yield models_1.admissionConfig.findOne({ where: { id: admissionUp.id } });
             return res.status(200).json({
                 msg: 'Reglas actualizadas correctamente',
-                admissionUpdated
+                data: verifyAdmissionUpdated
             });
         }
         else {
@@ -161,9 +162,10 @@ const updateRelevanceInvestment = (req, res) => __awaiter(void 0, void 0, void 0
                     id: relevanceI.id
                 }
             });
+            const verifyRelevanceUpdted = yield relevanceConfig_1.relevanceInvestment.findOne({ where: { id: relevanceI.id } });
             return res.status(200).json({
                 msj: 'Reglas actualizadas correctamente',
-                relevanceIUpdated
+                data: verifyRelevanceUpdted
             });
         }
         else {
@@ -191,9 +193,10 @@ const updateRelevanceBeneficiaries = (req, res) => __awaiter(void 0, void 0, voi
                     id: relevanceB.id
                 }
             });
+            const verifyRelevanceBUpdated = yield relevanceConfig_1.relevanceBeneficiaries.findOne({ where: { id: relevanceB.id } });
             return res.status(200).json({
                 msj: 'Reglas actualizadas correctamente',
-                relevanceBUpdated
+                data: verifyRelevanceBUpdated
             });
         }
         else {
@@ -221,9 +224,10 @@ const updateRelevanceComplexy = (req, res) => __awaiter(void 0, void 0, void 0, 
                     id: relevanceC.id
                 }
             });
+            const verifyRelevanceCUpdated = yield relevanceConfig_1.relevanceComplexy.findOne({ where: { id: relevanceC.id } });
             return res.status(200).json({
                 msj: 'Reglas actualizadas correctamente',
-                relevanceCUpdated
+                data: verifyRelevanceCUpdated
             });
         }
         else {
@@ -251,9 +255,10 @@ const updateRelevanceStage = (req, res) => __awaiter(void 0, void 0, void 0, fun
                     id: relevanceS.id
                 }
             });
+            const verifyRelevanceSUpdated = yield relevanceConfig_1.relevanceStage.findOne({ where: { id: relevanceS.id } });
             return res.status(200).json({
                 msj: 'Reglas actualizadas correctamente',
-                relevanceSUpdated
+                data: verifyRelevanceSUpdated
             });
         }
         else {
