@@ -16,120 +16,120 @@ exports.getIdeaCompleta = exports.fupdateIdeaAlternativeComplete = exports.getAl
 const BancoIdeas_1 = require("../../models/BancoIdeas");
 const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
 const populationAlt_1 = __importDefault(require("../../models/BancoIdeas/populationAlt"));
+const relevanceConfig_1 = require("../../models/matrixModels/relevanceConfig");
 function FgetPreinversion(idAlternativa) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const rango = {
+                valor: '',
+                resultado: '',
+            };
+            const estimacion = {
+                valor: '',
+                resultado: '',
+            };
+            const complejidad = {
+                valor: '',
+                resultado: '',
+            };
+            const etapa = {
+                valor: '',
+                resultado: '',
+            };
             const proDes = yield BancoIdeas_1.projectDescription.findOne({ where: { AlterId: idAlternativa } });
             const popDel = yield BancoIdeas_1.populationDelimitation.findOne({ where: { AlterId: idAlternativa } });
             let costo = proDes.investmentCost;
             let rangoInversion = 0;
             let resRangoInversion = '';
             //RANGO DE INVERSIÓN
-            if (costo <= 300000) {
-                rangoInversion = 2;
-                resRangoInversion = '<=300,000';
+            let relInvestmenRes = yield relevanceConfig_1.relevanceInvestment.findAll({
+                where: {
+                    rangeMin: { lte: +costo },
+                    rangeMax: { gte: +costo },
+                },
+            });
+            if (relInvestmenRes.length <= 0) {
+                const relInvestmenResMax = yield relevanceConfig_1.relevanceInvestment.max('rangeMax');
+                if (+costo >= +relInvestmenResMax) {
+                    const investmentMaxFind = yield relevanceConfig_1.relevanceInvestment.findOne({
+                        where: {
+                            rangeMax: +relInvestmenResMax
+                        }
+                    });
+                    rango.resultado = `La cantidad es mayor a ${investmentMaxFind.rangeMax} `;
+                    rango.valor = investmentMaxFind.rangeValue;
+                }
+                else {
+                    throw `Ocurrio un error mientras se calculaba la matriz. El rango de Inversión no fue encontrado.`;
+                }
             }
-            else if (costo >= 300001 && costo <= 500000) {
-                rangoInversion = 5;
-                resRangoInversion = '>300,001<=500,000';
-            }
-            else if (costo >= 500001 && costo <= 699999) {
-                rangoInversion = 7;
-                resRangoInversion = '>500,001<=699,999';
-            }
-            else if (costo >= 700000 && costo <= 900000) {
-                rangoInversion = 10;
-                resRangoInversion = '>700,000<=900,000';
-            }
-            else if (costo >= 900001 && costo <= 10000000) {
-                rangoInversion = 12;
-                resRangoInversion = '>900,001<=10,000,000';
-            }
-            else if (costo >= 10000001 && costo <= 19000000) {
-                rangoInversion = 15;
-                resRangoInversion = '>10,000,001<=19,000,000';
-            }
-            else if (costo >= 19000001 && costo <= 30000000) {
-                rangoInversion = 18;
-                resRangoInversion = '>19,000,001<=30,000,000';
-            }
-            else if (costo >= 30000001 && costo <= 40000000) {
-                rangoInversion = 22;
-                resRangoInversion = '>30,000,001<=40,000,000';
-            }
-            else if (costo >= 40000001 && costo <= 50000000) {
-                rangoInversion = 25;
-                resRangoInversion = '>40,000,001<=50,000,000';
-            }
-            else if (costo >= 50000001) {
-                rangoInversion = 40;
-                resRangoInversion = '>=50,000,001';
+            else {
+                rango.resultado = `Entre ${relInvestmenRes[0].rangeMin} y ${relInvestmenRes[0].rangeMax} `;
+                rango.valor = relInvestmenRes[0].rangeValue;
             }
             //ESTIMACIÓN BENEFICIARIOS 
             let benefits = popDel.estimateBeneficiaries;
-            let estBenefits = 0;
-            let resEstBenefits = '';
-            if (benefits <= 1000) {
-                estBenefits = 6;
-                resEstBenefits = '1 <= 1,000';
+            let relBeneficiariesRes = yield relevanceConfig_1.relevanceBeneficiaries.findAll({
+                where: {
+                    rangeMin: { lte: +benefits },
+                    rangeMax: { gte: +benefits },
+                },
+            });
+            if (relBeneficiariesRes.length <= 0) {
+                const relBeneficiariesMaxRes = yield relevanceConfig_1.relevanceBeneficiaries.max('rangeMax');
+                if (+benefits >= +relBeneficiariesMaxRes) {
+                    const beneficiariesMaxFind = yield relevanceConfig_1.relevanceBeneficiaries.findOne({
+                        where: {
+                            rangeMax: +relBeneficiariesMaxRes
+                        }
+                    });
+                    estimacion.resultado = `La cantidad es mayor a ${beneficiariesMaxFind.rangeMax} `;
+                    estimacion.valor = beneficiariesMaxFind.rangeValue;
+                }
+                else {
+                    throw `Ocurrio un error mientras se calculaba la matriz. El rango de Beneficiarios no fue encontrado.`;
+                }
             }
-            else if (benefits >= 1001 && benefits <= 10000) {
-                estBenefits = 12;
-                resEstBenefits = '>1,001 <= 10,000';
-            }
-            else if (benefits >= 10001 && benefits <= 20000) {
-                estBenefits = 18;
-                resEstBenefits = '>10,001 <= 20,000';
-            }
-            else if (benefits >= 20001 && benefits <= 50000) {
-                estBenefits = 24;
-                resEstBenefits = '>20,001 <= 50,000';
-            }
-            else if (benefits >= 50001) {
-                estBenefits = 30;
-                resEstBenefits = '>50,001';
+            else {
+                estimacion.resultado = `Entre ${relBeneficiariesRes[0].rangeMin} y ${relBeneficiariesRes[0].rangeMax} `;
+                estimacion.valor = relBeneficiariesRes[0].rangeValue;
             }
             //COMPLEJIDAD
-            let complejidad = proDes.complexity;
-            let complejidadTotal = 0;
-            if (complejidad == 'Alta') {
-                complejidadTotal = 30;
+            let complejidadToFind = proDes.complexity;
+            complejidadToFind = complejidadToFind.toUpperCase();
+            let relComplexyRes = yield relevanceConfig_1.relevanceComplexy.findAll({
+                where: {
+                    name: complejidadToFind
+                },
+            });
+            if (relComplexyRes.length <= 0) {
             }
-            else if (complejidad == 'Media') {
-                complejidadTotal = 20;
+            else {
+                complejidad.resultado = `Complejidad definida como: ${complejidadToFind} `;
+                complejidad.valor = relComplexyRes[0].rangeValue;
             }
-            else if (complejidad == 'Baja') {
-                complejidadTotal = 10;
+            const totalSuma = (+rango.valor + +estimacion.valor + +complejidad.valor);
+            const valueCalculated = totalSuma / 3;
+            //Stage
+            let relStageRes = yield relevanceConfig_1.relevanceStage.findAll({
+                where: {
+                    rangeMin: { lte: +valueCalculated },
+                    rangeMax: { gte: +valueCalculated },
+                },
+            });
+            if (relStageRes.length <= 0) {
+                throw `Ocurrio un error mientras se calculaba la matriz. El rango de Etapa no fue encontrado.`;
             }
-            let totalSuma = (rangoInversion + estBenefits + complejidadTotal);
-            let etapa = '';
-            if (totalSuma <= 40) {
-                etapa = 'Perfil';
-            }
-            else if (totalSuma >= 41 && totalSuma <= 69) {
-                etapa = 'Prefactibilidad';
-            }
-            else if (totalSuma >= 70 && totalSuma <= 100) {
-                etapa = 'Factibilidad';
+            else {
+                etapa.resultado = `Entre ${relStageRes[0].rangeMin} y ${relStageRes[0].rangeMax} `;
+                etapa.valor = relStageRes[0].suggestedStage;
             }
             //RESULTADO
             let preInversion = {
-                rango: {
-                    valor: rangoInversion,
-                    resultado: resRangoInversion,
-                },
-                estimacion: {
-                    valor: estBenefits,
-                    resultado: resEstBenefits
-                },
-                complejidad: {
-                    valor: complejidadTotal,
-                    resultado: complejidad
-                },
-                etapa: {
-                    valor: totalSuma,
-                    resultado: etapa
-                }
+                rango,
+                estimacion,
+                complejidad,
+                etapa
             };
             yield FcreatePreInvestment(preInversion, proDes.AlterId);
             return { preInversion };

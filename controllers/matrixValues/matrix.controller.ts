@@ -240,6 +240,7 @@ export const updateRelevanceComplexy = async (req: Request, res: Response) => {
         if (req.body) {
 
             const relevanceC: IRelevanceComplexy = req.body;
+            relevanceC.name = relevanceC.name.toUpperCase();
 
             const verifyRelevanceC = await relevanceComplexy.findOne({ where: { id: relevanceC.id } })
             if (!verifyRelevanceC) {

@@ -19,7 +19,7 @@ const preInvestment = connection_1.default.define("preInvestment", {
     estimacionResultado: { type: sequelize_oracle_1.default.STRING, },
     complejidadValor: { type: sequelize_oracle_1.default.INTEGER },
     complejidadResultado: { type: sequelize_oracle_1.default.STRING },
-    etapaValor: { type: sequelize_oracle_1.default.INTEGER },
+    etapaValor: { type: sequelize_oracle_1.default.STRING },
     etapaResultado: { type: sequelize_oracle_1.default.STRING },
 }, {
     underscoded: true,

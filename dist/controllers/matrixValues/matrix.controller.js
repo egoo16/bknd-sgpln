@@ -215,6 +215,7 @@ const updateRelevanceComplexy = (req, res) => __awaiter(void 0, void 0, void 0, 
     try {
         if (req.body) {
             const relevanceC = req.body;
+            relevanceC.name = relevanceC.name.toUpperCase();
             const verifyRelevanceC = yield relevanceConfig_1.relevanceComplexy.findOne({ where: { id: relevanceC.id } });
             if (!verifyRelevanceC) {
                 throw `Error al encontrar Regla`;

@@ -19,7 +19,7 @@ const preInvestment = db.define(
     estimacionResultado: { type: Sequelize.STRING, },
     complejidadValor: { type: Sequelize.INTEGER },
     complejidadResultado: { type: Sequelize.STRING },
-    etapaValor: { type: Sequelize.INTEGER },
+    etapaValor: { type: Sequelize.STRING },
     etapaResultado: { type: Sequelize.STRING },
   },
   {

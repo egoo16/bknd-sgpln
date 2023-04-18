@@ -1,7 +1,7 @@
 import express from "express";
 import db from "../db/connection";
 import { SERVER_PORT } from "../global/environment";
-import { admissionConfig } from "../models";
+import { admissionConfig, preInvestment } from "../models";
 import { relevanceBeneficiaries, relevanceComplexy, relevanceInvestment, relevanceStage } from "../models/matrixModels/relevanceConfig";
 
 export default class Server {
@@ -28,7 +28,7 @@ export default class Server {
       // await relevanceBeneficiaries.sync({ force: true });
       // await relevanceComplexy.sync({ force: true });
       // await relevanceStage.sync({ force: true });
-
+      // await preInvestment.sync({force: true});
 
 
       // await advisedEntity.sync({ force: true });

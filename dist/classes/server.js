@@ -34,6 +34,7 @@ class Server {
                 // await relevanceBeneficiaries.sync({ force: true });
                 // await relevanceComplexy.sync({ force: true });
                 // await relevanceStage.sync({ force: true });
+                // await preInvestment.sync({force: true});
                 // await advisedEntity.sync({ force: true });
                 // await subSectorization.sync({ force: true });
                 // await institutionEntity.sync({ force: true });
