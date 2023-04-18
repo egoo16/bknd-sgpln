@@ -445,7 +445,7 @@ export const deleteModalityFinancing = async (req: Request, res: Response) => {
   try {
     if (req.params.id) {
 
-      const modalityToDelete = await modalityFinancing.findOne({ where: { codigo: req.params.id } });
+      const modalityToDelete = await modalityFinancing.findOne({ where: { id: req.params.id } });
 
       if (modalityToDelete) {
 
@@ -481,7 +481,7 @@ export const updateModalityFinancing = async (req: Request, res: Response) => {
     if (req.body.name && req.params.id) {
       const name = req.body.name;
       const id = req.params.id;
-      const modalityToUpdate = await modalityFinancing.findOne({ where: { codigo: req.params.id } });
+      const modalityToUpdate = await modalityFinancing.findOne({ where: { id: req.params.id } });
 
       if (modalityToUpdate) {
 
@@ -490,7 +490,7 @@ export const updateModalityFinancing = async (req: Request, res: Response) => {
             id
           }
         })
-        const modalityToUpdate = await modalityFinancing.findOne({ where: { codigo: req.params.id } });
+        const modalityToUpdate = await modalityFinancing.findOne({ where: { id: req.params.id } });
 
         if (denCreated) {
           res.status(200).json({

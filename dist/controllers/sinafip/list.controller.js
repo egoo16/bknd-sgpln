@@ -432,7 +432,7 @@ exports.createModalityFinancing = createModalityFinancing;
 const deleteModalityFinancing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (req.params.id) {
-            const modalityToDelete = yield modalityFinancing_entity_1.modalityFinancing.findOne({ where: { codigo: req.params.id } });
+            const modalityToDelete = yield modalityFinancing_entity_1.modalityFinancing.findOne({ where: { id: req.params.id } });
             if (modalityToDelete) {
                 const id = req.params.id;
                 let denCreated = yield modalityFinancing_entity_1.modalityFinancing.destroy({
@@ -466,14 +466,14 @@ const updateModalityFinancing = (req, res) => __awaiter(void 0, void 0, void 0, 
         if (req.body.name && req.params.id) {
             const name = req.body.name;
             const id = req.params.id;
-            const modalityToUpdate = yield modalityFinancing_entity_1.modalityFinancing.findOne({ where: { codigo: req.params.id } });
+            const modalityToUpdate = yield modalityFinancing_entity_1.modalityFinancing.findOne({ where: { id: req.params.id } });
             if (modalityToUpdate) {
                 let denCreated = yield modalityFinancing_entity_1.modalityFinancing.update({ name }, {
                     where: {
                         id
                     }
                 });
-                const modalityToUpdate = yield modalityFinancing_entity_1.modalityFinancing.findOne({ where: { codigo: req.params.id } });
+                const modalityToUpdate = yield modalityFinancing_entity_1.modalityFinancing.findOne({ where: { id: req.params.id } });
                 if (denCreated) {
                     res.status(200).json({
                         msg: "Datos Actualizados",
