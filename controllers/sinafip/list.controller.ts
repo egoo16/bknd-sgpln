@@ -183,17 +183,26 @@ export const createDenomination = async (req: Request, res: Response) => {
 export const deleteDenomination = async (req: Request, res: Response) => {
   try {
     if (req.params.id) {
-      const codigo = req.params.id;
-      let denCreated = await denomination.destroy({
-        where: {
-          codigo
-        }
-      })
 
-      res.status(200).json({
-        msg: "Datos Eliminados",
-      });
+      const denominationToDelete = await denomination.findOne({ where: { codigo: req.params.id } });
+      if (denominationToDelete) {
+
+        const codigo = req.params.id;
+        let denCreated = await denomination.destroy({
+          where: {
+            codigo: denominationToDelete.codigo
+          }
+        })
+
+        res.status(200).json({
+          msg: "Datos Eliminados",
+          data: denominationToDelete
+        });
+      } else {
+        throw `No se encontró el registro`;
+      }
     }
+
     else {
       throw `Error al eliminar Denominacion`;
     }
@@ -211,18 +220,25 @@ export const updateDenomination = async (req: Request, res: Response) => {
     if (req.body.name && req.params.id) {
       const name = req.body.name;
       const codigo = req.params.id;
+      const denominationToUpdate = await denomination.findOne({ where: { codigo: req.params.id } });
+      if (denominationToUpdate) {
 
-      let denCreated = await denomination.update({ name }, {
-        where: {
-          codigo
+        let denCreated = await denomination.update({ name }, {
+          where: {
+            codigo
+          }
+        })
+
+        if (denCreated) {
+          res.status(200).json({
+            msg: "Datos Actualizados",
+            data: denominationToUpdate
+          });
         }
-      })
-
-      if (denCreated) {
-        res.status(200).json({
-          msg: "Datos Actualizados",
-        });
+      } else {
+        throw `No se encontró el registro`;
       }
+
     }
     else {
       throw `Error al crear Denominacion`;
@@ -293,16 +309,23 @@ export const createReferencePopulation = async (req: Request, res: Response) => 
 export const deleteReferencePopulation = async (req: Request, res: Response) => {
   try {
     if (req.params.id) {
-      const codigo = req.params.id;
-      let denCreated = await referencePopulation.destroy({
-        where: {
-          codigo
-        }
-      })
+      const refToDelete = await referencePopulation.findOne({ where: { codigo: req.params.id } });
+      if (refToDelete) {
+        const codigo = req.params.id;
+        let denCreated = await referencePopulation.destroy({
+          where: {
+            codigo
+          }
+        })
 
-      res.status(200).json({
-        msg: "Datos Eliminados",
-      });
+        res.status(200).json({
+          msg: "Datos Eliminados",
+          data: refToDelete
+        });
+      } else {
+        throw `No se encontró el registro`;
+      }
+
     }
     else {
       throw `Error al eliminar Poblacion de Referencia`;
@@ -321,18 +344,25 @@ export const updateReferencePopulation = async (req: Request, res: Response) => 
     if (req.body.name && req.params.id) {
       const name = req.body.name;
       const codigo = req.params.id;
+      const refToUpdate = await referencePopulation.findOne({ where: { codigo: req.params.id } });
 
-      let denCreated = await referencePopulation.update({ name }, {
-        where: {
-          codigo
+      if (refToUpdate) {
+        let denCreated = await referencePopulation.update({ name }, {
+          where: {
+            codigo
+          }
+        })
+
+        if (denCreated) {
+          res.status(200).json({
+            msg: "Datos Actualizados",
+            data: refToUpdate
+          });
         }
-      })
-
-      if (denCreated) {
-        res.status(200).json({
-          msg: "Datos Actualizados",
-        });
+      } else {
+        throw `No se encontró el registro`;
       }
+
     }
     else {
       throw `Error al actualizar Poblacion de Referencia`;
@@ -411,16 +441,25 @@ export const createModalityFinancing = async (req: Request, res: Response) => {
 export const deleteModalityFinancing = async (req: Request, res: Response) => {
   try {
     if (req.params.id) {
-      const id = req.params.id;
-      let denCreated = await modalityFinancing.destroy({
-        where: {
-          id
-        }
-      })
 
-      res.status(200).json({
-        msg: "Datos Eliminados",
-      });
+      const modalityToDelete = await modalityFinancing.findOne({ where: { codigo: req.params.id } });
+
+      if (modalityToDelete) {
+
+        const id = req.params.id;
+        let denCreated = await modalityFinancing.destroy({
+          where: {
+            id
+          }
+        })
+
+        res.status(200).json({
+          msg: "Datos Eliminados",
+          data: modalityToDelete
+        });
+      } else {
+        throw `No se encontró el registro`;
+      }
     }
     else {
       throw `Error al eliminar Fuentes de Financiamiento`;
@@ -439,17 +478,24 @@ export const updateModalityFinancing = async (req: Request, res: Response) => {
     if (req.body.name && req.params.id) {
       const name = req.body.name;
       const id = req.params.id;
+      const modalityToUpdate = await modalityFinancing.findOne({ where: { codigo: req.params.id } });
 
-      let denCreated = await modalityFinancing.update({ name }, {
-        where: {
-          id
+      if (modalityToUpdate) {
+
+        let denCreated = await modalityFinancing.update({ name }, {
+          where: {
+            id
+          }
+        })
+
+        if (denCreated) {
+          res.status(200).json({
+            msg: "Datos Actualizados",
+            data: modalityToUpdate
+          });
         }
-      })
-
-      if (denCreated) {
-        res.status(200).json({
-          msg: "Datos Actualizados",
-        });
+      } else {
+        throw `No se encontró el registro`;
       }
     }
     else {

@@ -185,15 +185,22 @@ exports.createDenomination = createDenomination;
 const deleteDenomination = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (req.params.id) {
-            const codigo = req.params.id;
-            let denCreated = yield BancoIdeas_1.denomination.destroy({
-                where: {
-                    codigo
-                }
-            });
-            res.status(200).json({
-                msg: "Datos Eliminados",
-            });
+            const denominationToDelete = yield BancoIdeas_1.denomination.findOne({ where: { codigo: req.params.id } });
+            if (denominationToDelete) {
+                const codigo = req.params.id;
+                let denCreated = yield BancoIdeas_1.denomination.destroy({
+                    where: {
+                        codigo: denominationToDelete.codigo
+                    }
+                });
+                res.status(200).json({
+                    msg: "Datos Eliminados",
+                    data: denominationToDelete
+                });
+            }
+            else {
+                throw `No se encontró el registro`;
+            }
         }
         else {
             throw `Error al eliminar Denominacion`;
@@ -212,15 +219,22 @@ const updateDenomination = (req, res) => __awaiter(void 0, void 0, void 0, funct
         if (req.body.name && req.params.id) {
             const name = req.body.name;
             const codigo = req.params.id;
-            let denCreated = yield BancoIdeas_1.denomination.update({ name }, {
-                where: {
-                    codigo
-                }
-            });
-            if (denCreated) {
-                res.status(200).json({
-                    msg: "Datos Actualizados",
+            const denominationToUpdate = yield BancoIdeas_1.denomination.findOne({ where: { codigo: req.params.id } });
+            if (denominationToUpdate) {
+                let denCreated = yield BancoIdeas_1.denomination.update({ name }, {
+                    where: {
+                        codigo
+                    }
                 });
+                if (denCreated) {
+                    res.status(200).json({
+                        msg: "Datos Actualizados",
+                        data: denominationToUpdate
+                    });
+                }
+            }
+            else {
+                throw `No se encontró el registro`;
             }
         }
         else {
@@ -289,15 +303,22 @@ exports.createReferencePopulation = createReferencePopulation;
 const deleteReferencePopulation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (req.params.id) {
-            const codigo = req.params.id;
-            let denCreated = yield BancoIdeas_1.referencePopulation.destroy({
-                where: {
-                    codigo
-                }
-            });
-            res.status(200).json({
-                msg: "Datos Eliminados",
-            });
+            const refToDelete = yield BancoIdeas_1.referencePopulation.findOne({ where: { codigo: req.params.id } });
+            if (refToDelete) {
+                const codigo = req.params.id;
+                let denCreated = yield BancoIdeas_1.referencePopulation.destroy({
+                    where: {
+                        codigo
+                    }
+                });
+                res.status(200).json({
+                    msg: "Datos Eliminados",
+                    data: refToDelete
+                });
+            }
+            else {
+                throw `No se encontró el registro`;
+            }
         }
         else {
             throw `Error al eliminar Poblacion de Referencia`;
@@ -316,15 +337,22 @@ const updateReferencePopulation = (req, res) => __awaiter(void 0, void 0, void 0
         if (req.body.name && req.params.id) {
             const name = req.body.name;
             const codigo = req.params.id;
-            let denCreated = yield BancoIdeas_1.referencePopulation.update({ name }, {
-                where: {
-                    codigo
-                }
-            });
-            if (denCreated) {
-                res.status(200).json({
-                    msg: "Datos Actualizados",
+            const refToUpdate = yield BancoIdeas_1.referencePopulation.findOne({ where: { codigo: req.params.id } });
+            if (refToUpdate) {
+                let denCreated = yield BancoIdeas_1.referencePopulation.update({ name }, {
+                    where: {
+                        codigo
+                    }
                 });
+                if (denCreated) {
+                    res.status(200).json({
+                        msg: "Datos Actualizados",
+                        data: refToUpdate
+                    });
+                }
+            }
+            else {
+                throw `No se encontró el registro`;
             }
         }
         else {
@@ -402,15 +430,22 @@ exports.createModalityFinancing = createModalityFinancing;
 const deleteModalityFinancing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (req.params.id) {
-            const id = req.params.id;
-            let denCreated = yield modalityFinancing_entity_1.modalityFinancing.destroy({
-                where: {
-                    id
-                }
-            });
-            res.status(200).json({
-                msg: "Datos Eliminados",
-            });
+            const modalityToDelete = yield modalityFinancing_entity_1.modalityFinancing.findOne({ where: { codigo: req.params.id } });
+            if (modalityToDelete) {
+                const id = req.params.id;
+                let denCreated = yield modalityFinancing_entity_1.modalityFinancing.destroy({
+                    where: {
+                        id
+                    }
+                });
+                res.status(200).json({
+                    msg: "Datos Eliminados",
+                    data: modalityToDelete
+                });
+            }
+            else {
+                throw `No se encontró el registro`;
+            }
         }
         else {
             throw `Error al eliminar Fuentes de Financiamiento`;
@@ -429,15 +464,22 @@ const updateModalityFinancing = (req, res) => __awaiter(void 0, void 0, void 0, 
         if (req.body.name && req.params.id) {
             const name = req.body.name;
             const id = req.params.id;
-            let denCreated = yield modalityFinancing_entity_1.modalityFinancing.update({ name }, {
-                where: {
-                    id
-                }
-            });
-            if (denCreated) {
-                res.status(200).json({
-                    msg: "Datos Actualizados",
+            const modalityToUpdate = yield modalityFinancing_entity_1.modalityFinancing.findOne({ where: { codigo: req.params.id } });
+            if (modalityToUpdate) {
+                let denCreated = yield modalityFinancing_entity_1.modalityFinancing.update({ name }, {
+                    where: {
+                        id
+                    }
                 });
+                if (denCreated) {
+                    res.status(200).json({
+                        msg: "Datos Actualizados",
+                        data: modalityToUpdate
+                    });
+                }
+            }
+            else {
+                throw `No se encontró el registro`;
             }
         }
         else {
