@@ -19,16 +19,22 @@ const environment_1 = require("../../global/environment");
 const bcrypt = require('bcrypt');
 const renovarToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        if (!req.headers.authorization) {
+            return res.status(401).json({
+                ok: false,
+                mensaje: 'Invalid Token',
+            });
+        }
         const token = jsonwebtoken_1.default.sign({
             user: req.user,
         }, environment_1.SEED, {
-            expiresIn: 4000,
+            expiresIn: '4h',
         });
         res.status(200).json({
             ok: true,
+            id: req.user._id,
             user: req.user,
-            token: token,
-            id: req.user.id,
+            token,
         });
     }
     catch (error) {

@@ -6,21 +6,28 @@ const bcrypt = require('bcrypt');
 
 export const renovarToken = async (req: any, res: Response) => {
     try {
+        if (!req.headers.authorization) {
+            return res.status(401).json({
+                ok: false,
+                mensaje: 'Invalid Token',
+            });
+        }
+
         const token = jwt.sign(
             {
                 user: req.user,
             },
             SEED,
             {
-                expiresIn: 4000,
+                expiresIn: '4h',
             }
         );
 
         res.status(200).json({
             ok: true,
+            id: req.user._id,
             user: req.user,
-            token: token,
-            id: req.user.id,
+            token,
         });
     } catch (error) {
         return res.status(500).json({ error: error });

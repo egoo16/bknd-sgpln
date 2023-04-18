@@ -8,12 +8,18 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const environment_1 = require("../global/environment");
 const verificaToken = (req, res, next) => {
     try {
-        const token = req.headers.token;
-        jsonwebtoken_1.default.verify(token, environment_1.SEED, (err, decoded) => {
+        if (!req.headers.authorization) {
+            return res.status(401).json({
+                ok: false,
+                mensaje: 'Invalid Token',
+            });
+        }
+        const TOKEN = req.headers.authorization.split(" ")[1];
+        jsonwebtoken_1.default.verify(TOKEN, environment_1.SEED, (err, decoded) => {
             if (err) {
                 return res.status(401).json({
                     ok: false,
-                    mensaje: 'Token Incorrecto',
+                    mensaje: 'Sesión expirada...',
                     errors: err,
                 });
             }
