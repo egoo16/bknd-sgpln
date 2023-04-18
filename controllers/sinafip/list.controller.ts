@@ -229,10 +229,12 @@ export const updateDenomination = async (req: Request, res: Response) => {
           }
         })
 
+        const denominationToUpdated = await denomination.findOne({ where: { codigo: req.params.id } });
+
         if (denCreated) {
           res.status(200).json({
             msg: "Datos Actualizados",
-            data: denominationToUpdate
+            data: denominationToUpdated
           });
         }
       } else {
@@ -352,11 +354,12 @@ export const updateReferencePopulation = async (req: Request, res: Response) => 
             codigo
           }
         })
+      const refToUpdated = await referencePopulation.findOne({ where: { codigo: req.params.id } });
 
         if (denCreated) {
           res.status(200).json({
             msg: "Datos Actualizados",
-            data: refToUpdate
+            data: refToUpdated
           });
         }
       } else {
@@ -487,6 +490,7 @@ export const updateModalityFinancing = async (req: Request, res: Response) => {
             id
           }
         })
+        const modalityToUpdate = await modalityFinancing.findOne({ where: { codigo: req.params.id } });
 
         if (denCreated) {
           res.status(200).json({

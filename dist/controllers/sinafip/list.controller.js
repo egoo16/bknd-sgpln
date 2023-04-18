@@ -226,10 +226,11 @@ const updateDenomination = (req, res) => __awaiter(void 0, void 0, void 0, funct
                         codigo
                     }
                 });
+                const denominationToUpdated = yield BancoIdeas_1.denomination.findOne({ where: { codigo: req.params.id } });
                 if (denCreated) {
                     res.status(200).json({
                         msg: "Datos Actualizados",
-                        data: denominationToUpdate
+                        data: denominationToUpdated
                     });
                 }
             }
@@ -344,10 +345,11 @@ const updateReferencePopulation = (req, res) => __awaiter(void 0, void 0, void 0
                         codigo
                     }
                 });
+                const refToUpdated = yield BancoIdeas_1.referencePopulation.findOne({ where: { codigo: req.params.id } });
                 if (denCreated) {
                     res.status(200).json({
                         msg: "Datos Actualizados",
-                        data: refToUpdate
+                        data: refToUpdated
                     });
                 }
             }
@@ -471,6 +473,7 @@ const updateModalityFinancing = (req, res) => __awaiter(void 0, void 0, void 0, 
                         id
                     }
                 });
+                const modalityToUpdate = yield modalityFinancing_entity_1.modalityFinancing.findOne({ where: { codigo: req.params.id } });
                 if (denCreated) {
                     res.status(200).json({
                         msg: "Datos Actualizados",
