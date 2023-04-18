@@ -7,7 +7,7 @@ const loginRouter = Router();
 
 
 loginRouter.post("/", loginUsuario);
-loginRouter.get('/renuevatoken', renovarToken);
+loginRouter.get('/refresh-token', renovarToken);
 
 
 export default loginRouter;
