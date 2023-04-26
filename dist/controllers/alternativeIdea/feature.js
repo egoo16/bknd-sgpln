@@ -726,7 +726,9 @@ function getAlternatives(idAlternative) {
                             etapaResultado: preInv.etapaResultado,
                         };
                     }
-                    datosResult.push(alternativa);
+                    if (alter.preName && alter.preName.codigo) {
+                        datosResult.push(alternativa);
+                    }
                     // }));
                 }
                 ;

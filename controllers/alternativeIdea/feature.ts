@@ -761,7 +761,10 @@ export async function getAlternatives(idAlternative: string) {
                         etapaResultado: preInv.etapaResultado,
                     }
                 }
-                datosResult.push(alternativa);
+
+                if (alter.preName && alter.preName.codigo){
+                    datosResult.push(alternativa);
+                }
                 // }));
             };
         }
