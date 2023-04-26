@@ -464,10 +464,9 @@ function FcreateGeographicArea(geograpicArea, idAlternativa, transaction) {
     });
 }
 exports.FcreateGeographicArea = FcreateGeographicArea;
-function getAlternatives(idIdea) {
+function getAlternatives(idAlternative) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let idAlternative = idIdea;
             let datosResult = [];
             let data = yield BancoIdeas_1.ideaAlternative.findAll({
                 where: {
@@ -485,8 +484,8 @@ function getAlternatives(idIdea) {
                     },
                 ]
             });
-            if (data || data.length > 0) {
-                let resPopDel = yield Promise.all(data.map((alter) => __awaiter(this, void 0, void 0, function* () {
+            if (data) {
+                for (const alter of data) {
                     let idAlt = alter.codigo;
                     let popDelimitation = yield BancoIdeas_1.populationDelimitation.findOne({
                         where: {
@@ -537,55 +536,77 @@ function getAlternatives(idIdea) {
                         updatedAt: alter.updatedAt,
                         deletedAt: alter.deletedAt,
                     };
-                    alternativa.preName = {
-                        codigo: alter.preName.codigo,
-                        AlterId: alter.preName.AlterId,
-                        typeProject: alter.preName.typeProject,
-                        proccess: alter.preName.proccess,
-                        object: alter.preName.object,
-                        departament: alter.preName.departament,
-                        municipality: alter.preName.municipality,
-                        village: alter.preName.village,
-                        preliminaryName: alter.preName.preliminaryName,
-                        createdAt: alter.preName.createdAt,
-                        updatedAt: alter.preName.updatedAt,
-                        deletedAt: alter.preName.deletedAt,
-                    };
-                    alternativa.resEntity = {
-                        codigo: alter.resEntity.codigo,
-                        AlterId: alter.resEntity.AlterId,
-                        nameEPI: alter.resEntity.nameEPI,
-                        executionUnit: alter.resEntity.executionUnit,
-                        leaderName: alter.resEntity.leaderName,
-                        email: alter.resEntity.email,
-                        phone: alter.resEntity.phone,
-                        createdAt: alter.resEntity.createdAt,
-                        updatedAt: alter.resEntity.updatedAt,
-                        deletedAt: alter.resEntity.deletedAt,
-                    };
-                    if (popDelimitation) {
+                    if (alter.preName && alter.preName.codigo) {
+                        alternativa.preName = {
+                            codigo: alter.preName.codigo,
+                            AlterId: alter.preName.AlterId,
+                            typeProject: alter.preName.typeProject,
+                            proccess: alter.preName.proccess,
+                            object: alter.preName.object,
+                            departament: alter.preName.departament,
+                            municipality: alter.preName.municipality,
+                            village: alter.preName.village,
+                            preliminaryName: alter.preName.preliminaryName,
+                            createdAt: alter.preName.createdAt,
+                            updatedAt: alter.preName.updatedAt,
+                            deletedAt: alter.preName.deletedAt,
+                        };
+                    }
+                    if (alter.resEntity && alter.resEntity.codigo) {
+                        alternativa.resEntity = {
+                            codigo: alter.resEntity.codigo,
+                            AlterId: alter.resEntity.AlterId,
+                            nameEPI: alter.resEntity.nameEPI,
+                            executionUnit: alter.resEntity.executionUnit,
+                            leaderName: alter.resEntity.leaderName,
+                            email: alter.resEntity.email,
+                            phone: alter.resEntity.phone,
+                            createdAt: alter.resEntity.createdAt,
+                            updatedAt: alter.resEntity.updatedAt,
+                            deletedAt: alter.resEntity.deletedAt,
+                        };
+                    }
+                    if (popDelimitation && popDelimitation.codigo) {
                         let pops = yield populationAlt_1.default.findAll({
                             where: {
                                 popId: popDelimitation.codigo
                             }
                         });
-                        alternativa.popDelimit = {
-                            codigo: popDelimitation.codigo,
-                            AlterId: popDelimitation.AlterId,
-                            refPopId: popDelimitation.refPopId,
-                            denId: popDelimitation.denId,
-                            totalPopulation: popDelimitation.totalPopulation,
-                            gender: popDelimitation.gender,
-                            estimateBeneficiaries: popDelimitation.estimateBeneficiaries,
-                            preliminaryCharacterization: popDelimitation.preliminaryCharacterization,
-                            coverage: popDelimitation.coverage,
-                            createdAt: popDelimitation.createdAt,
-                            updatedAt: popDelimitation.updatedAt,
-                            deletedAt: popDelimitation.deletedAt,
-                            populations: [...pops]
-                        };
+                        if (pops) {
+                            alternativa.popDelimit = {
+                                codigo: popDelimitation.codigo,
+                                AlterId: popDelimitation.AlterId,
+                                refPopId: popDelimitation.refPopId,
+                                denId: popDelimitation.denId,
+                                totalPopulation: popDelimitation.totalPopulation,
+                                gender: popDelimitation.gender,
+                                estimateBeneficiaries: popDelimitation.estimateBeneficiaries,
+                                preliminaryCharacterization: popDelimitation.preliminaryCharacterization,
+                                coverage: popDelimitation.coverage,
+                                createdAt: popDelimitation.createdAt,
+                                updatedAt: popDelimitation.updatedAt,
+                                deletedAt: popDelimitation.deletedAt,
+                                populations: [...pops]
+                            };
+                        }
+                        else {
+                            alternativa.popDelimit = {
+                                codigo: popDelimitation.codigo,
+                                AlterId: popDelimitation.AlterId,
+                                refPopId: popDelimitation.refPopId,
+                                denId: popDelimitation.denId,
+                                totalPopulation: popDelimitation.totalPopulation,
+                                gender: popDelimitation.gender,
+                                estimateBeneficiaries: popDelimitation.estimateBeneficiaries,
+                                preliminaryCharacterization: popDelimitation.preliminaryCharacterization,
+                                coverage: popDelimitation.coverage,
+                                createdAt: popDelimitation.createdAt,
+                                updatedAt: popDelimitation.updatedAt,
+                                deletedAt: popDelimitation.deletedAt,
+                            };
+                        }
                     }
-                    if (popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.refPop) {
+                    if ((popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.refPop) && (popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.refPop.codigo)) {
                         alternativa.popDelimit.refPop = {
                             codigo: popDelimitation.refPop.codigo,
                             name: popDelimitation.refPop.name,
@@ -594,7 +615,7 @@ function getAlternatives(idIdea) {
                             deletedAt: popDelimitation.refPop.deletedAt,
                         };
                     }
-                    if (popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.denmtion) {
+                    if ((popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.denmtion) && (popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.denmtion.codigo)) {
                         alternativa.popDelimitdenmtion = {
                             codigo: popDelimitation.denmtion.codigo,
                             name: popDelimitation.denmtion.name,
@@ -603,7 +624,7 @@ function getAlternatives(idIdea) {
                             deletedAt: popDelimitation.denmtion.deletedAt,
                         };
                     }
-                    if (gArea) {
+                    if (gArea && gArea.codigo) {
                         let datageo = yield datageo_model_1.default.findAll({
                             where: {
                                 geoAreaId: gArea.codigo
@@ -620,7 +641,7 @@ function getAlternatives(idIdea) {
                             deletedAt: gArea.deletedAt,
                         };
                         alternativa.geoArea.dataGeo = [];
-                        if (datageo) {
+                        if (datageo && datageo.length > 0) {
                             datageo.map((dta) => {
                                 let coord = {
                                     id: dta.id,
@@ -654,7 +675,7 @@ function getAlternatives(idIdea) {
                             });
                         }
                     }
-                    if (pDescription) {
+                    if (pDescription && pDescription.codigo) {
                         alternativa.projDesc = {
                             codigo: pDescription.codigo,
                             AlterId: pDescription.AlterId,
@@ -672,7 +693,7 @@ function getAlternatives(idIdea) {
                             deletedAt: pDescription.deletedAt,
                             execTime: null,
                         };
-                        if (pDescription.execTime)
+                        if (pDescription.execTime && pDescription.execTime.codigo)
                             alternativa.projDesc.execTime = {
                                 codigo: pDescription.execTime.codigo,
                                 projDescId: pDescription.execTime.projDescId,
@@ -691,7 +712,7 @@ function getAlternatives(idIdea) {
                     if (quali) {
                         alternativa.qualification = quali;
                     }
-                    if (preInv) {
+                    if (preInv && preInv.codigo) {
                         alternativa.preInvestment = {
                             codigo: preInv.codigo,
                             AlterId: preInv.AlterId,
@@ -706,61 +727,10 @@ function getAlternatives(idIdea) {
                         };
                     }
                     datosResult.push(alternativa);
-                })));
+                    // }));
+                }
+                ;
             }
-            // let datosResult = await ideaAlternative.findAll({
-            //     where: {
-            //         sectionBIId: idAlternative
-            //     },
-            //     include: [
-            //         {
-            //             required: false,
-            //             model: preliminaryName
-            //         },
-            //         {
-            //             required: false,
-            //             model: responsibleEntity
-            //         },
-            //         {
-            //             required: false,
-            //             model: populationDelimitation,
-            //             include: [
-            //                 {
-            //                     required: false,
-            //                     model: referencePopulation
-            //                 },
-            //                 {
-            //                     required: false,
-            //                     model: denomination
-            //                 },
-            //             ]
-            //         },
-            //         {
-            //             required: false,
-            //             model: geographicArea,
-            //             include: [
-            //                 {
-            //                     required: false,
-            //                     model: coordinates
-            //                 },
-            //             ]
-            //         },
-            //         {
-            //             required: false,
-            //             model: projectDescription,
-            //             include: [
-            //                 {
-            //                     required: false,
-            //                     model: executionTime
-            //                 },
-            //             ]
-            //         },
-            //         {
-            //             required: false,
-            //             model: qualification
-            //         },
-            //     ]
-            // });
             return datosResult;
         }
         catch (error) {
@@ -1085,7 +1055,6 @@ function getAlternativeComplete(idAlternative) {
 exports.getAlternativeComplete = getAlternativeComplete;
 function fupdateIdeaAlternativeComplete(ideaAlt, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("🚀 ~ file: feature.ts:1033 ~ fupdateIdeaAlternativeComplete ~ ideaAlt", ideaAlt);
         try {
             let alternative;
             let altActive = yield BancoIdeas_1.ideaAlternative.findOne({
