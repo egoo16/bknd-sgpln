@@ -56,7 +56,7 @@ export async function addPertinenceQuality(req: any, res: Response) {
     let transaction = await models.transaction()
     try {
         console.log(req.body)
-        let matrixPertinence = {...req.body}
+        let matrixPertinence = { ...req.body }
         matrixPertinence.terreno = JSON.stringify(req.body.terreno)
         let pertinence = await FaddPertinenceQuality(matrixPertinence, transaction, req.user)
         transaction.commit()
@@ -101,6 +101,25 @@ export const getAlternative = async (req: Request, res: Response) => {
     }
 };
 
+export const getOneAlternative = async (req: Request, res: Response) => {
+    try {
+        let idAlternative = req.params.id;
+
+        let datosResult: any[] = [];
+
+        datosResult = await getAlternativeComplete(idAlternative);
+
+        res.status(200).json({
+            msg: "Datos Obtenidos",
+            data: datosResult,
+        });
+    } catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+};
 export const getPertinencia = async (req: Request, res: Response) => {
     try {
         let idAlternative = req.params.id;
@@ -189,7 +208,7 @@ export const getPertinencia = async (req: Request, res: Response) => {
             investPurchase: geograficArea.investPurchase,
         };
 
-        let criterio5 = { 
+        let criterio5 = {
             terrenos: terrains
         }
 
@@ -237,13 +256,18 @@ export async function updateIdeaAlternativeComplete(req: Request, res: Response)
 
         ideaAlternative = await fupdateIdeaAlternativeComplete(req.body, transaction)
 
-        console.log("🚀 ~ file: index.ts:272 ~ updateIdeaAlternativeComplete ~ ideaAlternative", ideaAlternative.alternative.codigo)
         if (ideaAlternative) {
-            fullIdeaAlternative = await getAlternativeComplete(ideaAlternative.alternative.codigo)
-            console.log("🚀 ~ file: index.ts:274 ~ updateIdeaAlternativeComplete ~ fullIdeaAlternative", fullIdeaAlternative)
-            return res.status(200).send(fullIdeaAlternative)
+            fullIdeaAlternative = await getAlternativeComplete(req.body.codigo)
+            res.status(200).json({
+                msg: "Datos Actualizados",
+                data: fullIdeaAlternative,
+            });
         } else {
-            return res.status(500).send({ message: `No se pudo a.ctualizar la alternativa` })
+            fullIdeaAlternative = await getAlternativeComplete(req.body.codigo)
+            res.status(200).json({
+                msg: "No se Encontraron cambios",
+                data: fullIdeaAlternative,
+            });
         }
         // await transaction.commit()
     } catch (error: any) {

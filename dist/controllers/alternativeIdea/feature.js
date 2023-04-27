@@ -67,7 +67,7 @@ function FgetPreinversion(idAlternativa) {
                 rango.resultado = `Entre ${relInvestmenRes[0].rangeMin} y ${relInvestmenRes[0].rangeMax} `;
                 rango.valor = relInvestmenRes[0].rangeValue;
             }
-            //ESTIMACIÓN BENEFICIARIOS 
+            //ESTIMACIÓN BENEFICIARIOS
             let benefits = popDel.estimateBeneficiaries;
             let relBeneficiariesRes = yield relevanceConfig_1.relevanceBeneficiaries.findAll({
                 where: {
@@ -760,7 +760,7 @@ function getAlternativeComplete(idAlternative) {
                     },
                 ]
             });
-            if (data) {
+            if (data.codigo) {
                 let idAlt = data.codigo;
                 let popDelimitation = yield BancoIdeas_1.populationDelimitation.findOne({
                     where: {
@@ -811,67 +811,77 @@ function getAlternativeComplete(idAlternative) {
                     updatedAt: data.updatedAt,
                     deletedAt: data.deletedAt,
                 };
-                alternativa.preName = {
-                    codigo: data.preName.codigo,
-                    AlterId: data.preName.AlterId,
-                    typeProject: data.preName.typeProject,
-                    proccess: data.preName.proccess,
-                    object: data.preName.object,
-                    departament: data.preName.departament,
-                    municipality: data.preName.municipality,
-                    village: data.preName.village,
-                    preliminaryName: data.preName.preliminaryName,
-                    createdAt: data.preName.createdAt,
-                    updatedAt: data.preName.updatedAt,
-                    deletedAt: data.preName.deletedAt,
-                };
-                alternativa.resEntity = {
-                    codigo: data.resEntity.codigo,
-                    AlterId: data.resEntity.AlterId,
-                    nameEPI: data.resEntity.nameEPI,
-                    executionUnit: data.resEntity.executionUnit,
-                    leaderName: data.resEntity.leaderName,
-                    email: data.resEntity.email,
-                    phone: data.resEntity.phone,
-                    createdAt: data.resEntity.createdAt,
-                    updatedAt: data.resEntity.updatedAt,
-                    deletedAt: data.resEntity.deletedAt,
-                };
-                if (popDelimitation) {
+                if (data.preName && data.preName.codigo) {
+                    alternativa.preName = {
+                        codigo: data.preName.codigo,
+                        AlterId: data.preName.AlterId,
+                        typeProject: data.preName.typeProject,
+                        proccess: data.preName.proccess,
+                        object: data.preName.object,
+                        departament: data.preName.departament,
+                        municipality: data.preName.municipality,
+                        village: data.preName.village,
+                        preliminaryName: data.preName.preliminaryName,
+                        createdAt: data.preName.createdAt,
+                        updatedAt: data.preName.updatedAt,
+                        deletedAt: data.preName.deletedAt,
+                    };
+                }
+                if (data.resEntity && data.resEntity.codigo) {
+                    alternativa.resEntity = {
+                        codigo: data.resEntity.codigo,
+                        AlterId: data.resEntity.AlterId,
+                        nameEPI: data.resEntity.nameEPI,
+                        executionUnit: data.resEntity.executionUnit,
+                        leaderName: data.resEntity.leaderName,
+                        email: data.resEntity.email,
+                        phone: data.resEntity.phone,
+                        createdAt: data.resEntity.createdAt,
+                        updatedAt: data.resEntity.updatedAt,
+                        deletedAt: data.resEntity.deletedAt,
+                    };
+                }
+                if (popDelimitation && popDelimitation.codigo) {
                     let pops = yield populationAlt_1.default.findAll({
                         where: {
                             popId: popDelimitation.codigo
                         }
                     });
-                    // let populations: IPopulationAlt[] = []
-                    // if (pops.length > 0) {
-                    //     pops.forEach((pop: IPopulationAlt) => {
-                    //         let population: IPopulationAlt = {
-                    //             id: pop.id,
-                    //             type: pop.type,
-                    //             total: pop.total,
-                    //             popId: pop.popId
-                    //         }
-                    //         populations.push(population)
-                    //     })
-                    // }
-                    alternativa.popDelimit = {
-                        codigo: popDelimitation.codigo,
-                        AlterId: popDelimitation.AlterId,
-                        refPopId: popDelimitation.refPopId,
-                        denId: popDelimitation.denId,
-                        totalPopulation: popDelimitation.totalPopulation,
-                        gender: popDelimitation.gender,
-                        estimateBeneficiaries: popDelimitation.estimateBeneficiaries,
-                        preliminaryCharacterization: popDelimitation.preliminaryCharacterization,
-                        coverage: popDelimitation.coverage,
-                        createdAt: popDelimitation.createdAt,
-                        updatedAt: popDelimitation.updatedAt,
-                        deletedAt: popDelimitation.deletedAt,
-                        populations: [...pops]
-                    };
+                    if (pops) {
+                        alternativa.popDelimit = {
+                            codigo: popDelimitation.codigo,
+                            AlterId: popDelimitation.AlterId,
+                            refPopId: popDelimitation.refPopId,
+                            denId: popDelimitation.denId,
+                            totalPopulation: popDelimitation.totalPopulation,
+                            gender: popDelimitation.gender,
+                            estimateBeneficiaries: popDelimitation.estimateBeneficiaries,
+                            preliminaryCharacterization: popDelimitation.preliminaryCharacterization,
+                            coverage: popDelimitation.coverage,
+                            createdAt: popDelimitation.createdAt,
+                            updatedAt: popDelimitation.updatedAt,
+                            deletedAt: popDelimitation.deletedAt,
+                            populations: [...pops]
+                        };
+                    }
+                    else {
+                        alternativa.popDelimit = {
+                            codigo: popDelimitation.codigo,
+                            AlterId: popDelimitation.AlterId,
+                            refPopId: popDelimitation.refPopId,
+                            denId: popDelimitation.denId,
+                            totalPopulation: popDelimitation.totalPopulation,
+                            gender: popDelimitation.gender,
+                            estimateBeneficiaries: popDelimitation.estimateBeneficiaries,
+                            preliminaryCharacterization: popDelimitation.preliminaryCharacterization,
+                            coverage: popDelimitation.coverage,
+                            createdAt: popDelimitation.createdAt,
+                            updatedAt: popDelimitation.updatedAt,
+                            deletedAt: popDelimitation.deletedAt,
+                        };
+                    }
                 }
-                if (popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.refPop) {
+                if ((popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.refPop) && (popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.refPop.codigo)) {
                     alternativa.popDelimit.refPop = {
                         codigo: popDelimitation.refPop.codigo,
                         name: popDelimitation.refPop.name,
@@ -880,7 +890,7 @@ function getAlternativeComplete(idAlternative) {
                         deletedAt: popDelimitation.refPop.deletedAt,
                     };
                 }
-                if (popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.denmtion) {
+                if ((popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.denmtion) && (popDelimitation === null || popDelimitation === void 0 ? void 0 : popDelimitation.denmtion.codigo)) {
                     alternativa.popDelimitdenmtion = {
                         codigo: popDelimitation.denmtion.codigo,
                         name: popDelimitation.denmtion.name,
@@ -889,7 +899,7 @@ function getAlternativeComplete(idAlternative) {
                         deletedAt: popDelimitation.denmtion.deletedAt,
                     };
                 }
-                if (gArea) {
+                if (gArea && gArea.codigo) {
                     let datageo = yield datageo_model_1.default.findAll({
                         where: {
                             geoAreaId: gArea.codigo
@@ -906,7 +916,7 @@ function getAlternativeComplete(idAlternative) {
                         deletedAt: gArea.deletedAt,
                     };
                     alternativa.geoArea.dataGeo = [];
-                    if (datageo) {
+                    if (datageo && datageo.length > 0) {
                         datageo.map((dta) => {
                             let coord = {
                                 id: dta.id,
@@ -940,7 +950,7 @@ function getAlternativeComplete(idAlternative) {
                         });
                     }
                 }
-                if (pDescription) {
+                if (pDescription && pDescription.codigo) {
                     alternativa.projDesc = {
                         codigo: pDescription.codigo,
                         AlterId: pDescription.AlterId,
@@ -958,7 +968,7 @@ function getAlternativeComplete(idAlternative) {
                         deletedAt: pDescription.deletedAt,
                         execTime: null,
                     };
-                    if (pDescription.execTime)
+                    if (pDescription.execTime && pDescription.execTime.codigo)
                         alternativa.projDesc.execTime = {
                             codigo: pDescription.execTime.codigo,
                             projDescId: pDescription.execTime.projDescId,
@@ -974,10 +984,10 @@ function getAlternativeComplete(idAlternative) {
                             deletedAt: pDescription.execTime.deletedAt,
                         };
                 }
-                if (quali) {
+                if (quali && quali.codigo) {
                     alternativa.qualification = quali;
                 }
-                if (preInv) {
+                if (preInv && preInv.codigo) {
                     alternativa.preInvestment = {
                         codigo: preInv.codigo,
                         AlterId: preInv.AlterId,
@@ -994,59 +1004,6 @@ function getAlternativeComplete(idAlternative) {
                 datosResult = alternativa;
                 ;
             }
-            // let datosResult = await ideaAlternative.findAll({
-            //     where: {
-            //         sectionBIId: idAlternative
-            //     },
-            //     include: [
-            //         {
-            //             required: false,
-            //             model: preliminaryName
-            //         },
-            //         {
-            //             required: false,
-            //             model: responsibleEntity
-            //         },
-            //         {
-            //             required: false,
-            //             model: populationDelimitation,
-            //             include: [
-            //                 {
-            //                     required: false,
-            //                     model: referencePopulation
-            //                 },
-            //                 {
-            //                     required: false,
-            //                     model: denomination
-            //                 },
-            //             ]
-            //         },
-            //         {
-            //             required: false,
-            //             model: geographicArea,
-            //             include: [
-            //                 {
-            //                     required: false,
-            //                     model: coordinates
-            //                 },
-            //             ]
-            //         },
-            //         {
-            //             required: false,
-            //             model: projectDescription,
-            //             include: [
-            //                 {
-            //                     required: false,
-            //                     model: executionTime
-            //                 },
-            //             ]
-            //         },
-            //         {
-            //             required: false,
-            //             model: qualification
-            //         },
-            //     ]
-            // });
             return datosResult;
         }
         catch (error) {
@@ -1058,35 +1015,241 @@ exports.getAlternativeComplete = getAlternativeComplete;
 function fupdateIdeaAlternativeComplete(ideaAlt, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let alternative;
+            let AlternativeUpdated = false;
             let altActive = yield BancoIdeas_1.ideaAlternative.findOne({
                 where: {
                     codigo: ideaAlt.codigo
                 }
             });
-            let ideaAlternativeCreated;
-            let alternativeCreatedAsync;
             if (altActive) {
-                ideaAlt.codigo = undefined;
-                ideaAlt.state = 'CREADA';
-                ideaAlternativeCreated = yield BancoIdeas_1.ideaAlternative.create(ideaAlt, { transaction }).then((alternativeCreated) => __awaiter(this, void 0, void 0, function* () {
-                    alternativeCreatedAsync = Object.assign({}, alternativeCreated);
-                    yield altActive.destroy({ transaction });
-                    let codigoAlternativa = alternativeCreated.codigo;
-                    yield FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction);
-                    yield FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction);
-                    yield FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction);
-                    yield FcreateGeographicArea(ideaAlt.geoArea, codigoAlternativa, transaction);
-                    yield FcreateProjectDescription(ideaAlt.projDesc, codigoAlternativa, transaction);
-                })).catch((err) => __awaiter(this, void 0, void 0, function* () {
-                    yield transaction.rollback();
-                }));
-                if (alternativeCreatedAsync) {
-                    return {
-                        message: `Idea alternativa Actualizada correctamente`,
-                        alternative: alternativeCreatedAsync
-                    };
+                //#region PreName
+                if (ideaAlt.preName.codigo) {
+                    const preNameInserted = yield BancoIdeas_1.preliminaryName.findOne({
+                        where: {
+                            codigo: ideaAlt.preName.codigo
+                        }
+                    });
+                    if (preNameInserted) {
+                        const alternativePrenameA = {
+                            typeProject: ideaAlt.preName.typeProject,
+                            proccess: ideaAlt.preName.proccess,
+                            object: ideaAlt.preName.object,
+                            departament: ideaAlt.preName.departament,
+                            municipality: ideaAlt.preName.municipality,
+                            village: ideaAlt.preName.village,
+                            preliminaryName: ideaAlt.preName.preliminaryName,
+                        };
+                        const alternativePrenameB = {
+                            typeProject: preNameInserted.typeProject,
+                            proccess: preNameInserted.proccess,
+                            object: preNameInserted.object,
+                            departament: preNameInserted.departament,
+                            municipality: preNameInserted.municipality,
+                            village: preNameInserted.village,
+                            preliminaryName: preNameInserted.preliminaryName,
+                        };
+                        const preNameIsEqual = isEqual(alternativePrenameA, alternativePrenameB);
+                        if (!preNameIsEqual) {
+                            preNameInserted.typeProject = ideaAlt.preName.typeProject;
+                            preNameInserted.proccess = ideaAlt.preName.proccess;
+                            preNameInserted.object = ideaAlt.preName.object;
+                            preNameInserted.departament = ideaAlt.preName.departament;
+                            preNameInserted.municipality = ideaAlt.preName.municipality;
+                            preNameInserted.village = ideaAlt.preName.village;
+                            preNameInserted.preliminaryName = ideaAlt.preName.preliminaryName;
+                            preNameInserted.save();
+                            AlternativeUpdated = true;
+                        }
+                    }
+                    else if (!preNameInserted) {
+                        yield FcreatePreleminaryName(ideaAlt.preName, ideaAlt.codigo, transaction);
+                        AlternativeUpdated = true;
+                    }
                 }
+                //#endregion PreName
+                //#region responsibleCreated
+                if (ideaAlt.resEntity.codigo) {
+                    const responsibleCreated = yield BancoIdeas_1.responsibleEntity.findOne({
+                        where: {
+                            codigo: ideaAlt.resEntity.codigo
+                        }
+                    });
+                    if (responsibleCreated) {
+                        const alternativeA = {
+                            nameEPI: ideaAlt.resEntity.nameEPI,
+                            executionUnit: ideaAlt.resEntity.executionUnit,
+                            leaderName: ideaAlt.resEntity.leaderName,
+                            email: ideaAlt.resEntity.email,
+                            phone: ideaAlt.resEntity.phone,
+                        };
+                        const alternativeB = {
+                            nameEPI: responsibleCreated.nameEPI,
+                            executionUnit: responsibleCreated.executionUnit,
+                            leaderName: responsibleCreated.leaderName,
+                            email: responsibleCreated.email,
+                            phone: responsibleCreated.phone,
+                        };
+                        const objIsEqual = isEqual(alternativeA, alternativeB);
+                        if (!objIsEqual) {
+                            responsibleCreated.nameEPI = ideaAlt.resEntity.nameEPI;
+                            responsibleCreated.executionUnit = ideaAlt.resEntity.executionUnit;
+                            responsibleCreated.leaderName = ideaAlt.resEntity.leaderName;
+                            responsibleCreated.email = ideaAlt.resEntity.email;
+                            responsibleCreated.phone = ideaAlt.resEntity.phone;
+                            responsibleCreated.save();
+                            AlternativeUpdated = true;
+                        }
+                    }
+                    else if (!responsibleCreated) {
+                        yield FcresponsableEntity(ideaAlt.resEntity, ideaAlt.codigo, transaction);
+                        AlternativeUpdated = true;
+                    }
+                }
+                //#endregion responsibleCreated
+                //#region populationDelimitation
+                if (ideaAlt.popDelimit.codigo) {
+                    const resPopulationCreated = yield BancoIdeas_1.populationDelimitation.findOne({
+                        where: {
+                            codigo: ideaAlt.popDelimit.codigo
+                        }
+                    });
+                    if (resPopulationCreated) {
+                        const alternativeA = {
+                            totalPopulation: ideaAlt.popDelimit.totalPopulation,
+                            gender: ideaAlt.popDelimit.gender,
+                            estimateBeneficiaries: ideaAlt.popDelimit.estimateBeneficiaries,
+                            preliminaryCharacterization: ideaAlt.popDelimit.preliminaryCharacterization,
+                            coverage: ideaAlt.popDelimit.coverage,
+                        };
+                        const alternativeB = {
+                            totalPopulation: resPopulationCreated.totalPopulation,
+                            gender: resPopulationCreated.gender,
+                            estimateBeneficiaries: resPopulationCreated.estimateBeneficiaries,
+                            preliminaryCharacterization: resPopulationCreated.preliminaryCharacterization,
+                            coverage: resPopulationCreated.coverage,
+                        };
+                        const objIsEqual = isEqual(alternativeA, alternativeB);
+                        if (!objIsEqual) {
+                            resPopulationCreated.totalPopulation = ideaAlt.popDelimit.totalPopulation;
+                            resPopulationCreated.gender = ideaAlt.popDelimit.gender;
+                            resPopulationCreated.estimateBeneficiaries = ideaAlt.popDelimit.estimateBeneficiaries;
+                            resPopulationCreated.preliminaryCharacterization = ideaAlt.popDelimit.preliminaryCharacterization;
+                            resPopulationCreated.coverage = ideaAlt.popDelimit.coverage;
+                            resPopulationCreated.save();
+                            AlternativeUpdated = true;
+                        }
+                    }
+                }
+                //#endregion populationDelimitation
+                //#region populationDelimitation
+                if (ideaAlt.projDesc.codigo) {
+                    const resProjectD = yield BancoIdeas_1.projectDescription.findOne({
+                        where: {
+                            codigo: ideaAlt.projDesc.codigo
+                        }
+                    });
+                    if (resProjectD) {
+                        const alternativeA = {
+                            projectType: ideaAlt.projDesc.projectType,
+                            formulationProcess: ideaAlt.projDesc.formulationProcess,
+                            formulationProcessDescription: ideaAlt.projDesc.formulationProcessDescription,
+                            descriptionInterventions: ideaAlt.projDesc.descriptionInterventions,
+                            complexity: ideaAlt.projDesc.complexity,
+                            estimatedCost: ideaAlt.projDesc.estimatedCost,
+                            investmentCost: ideaAlt.projDesc.investmentCost,
+                            fundingSources: ideaAlt.projDesc.fundingSources,
+                            foundingSourcesName: ideaAlt.projDesc.foundingSourcesName,
+                        };
+                        const alternativeB = {
+                            projectType: resProjectD.projectType,
+                            formulationProcess: resProjectD.formulationProcess,
+                            formulationProcessDescription: resProjectD.formulationProcessDescription,
+                            descriptionInterventions: resProjectD.descriptionInterventions,
+                            complexity: resProjectD.complexity,
+                            estimatedCost: resProjectD.estimatedCost,
+                            investmentCost: resProjectD.investmentCost,
+                            fundingSources: resProjectD.fundingSources,
+                            foundingSourcesName: resProjectD.foundingSourcesName,
+                        };
+                        const objIsEqual = isEqual(alternativeA, alternativeB);
+                        if (!objIsEqual) {
+                            resProjectD.projectType = ideaAlt.projDesc.projectType;
+                            resProjectD.formulationProcess = ideaAlt.projDesc.formulationProcess;
+                            resProjectD.formulationProcessDescription = ideaAlt.projDesc.formulationProcessDescription;
+                            resProjectD.descriptionInterventions = ideaAlt.projDesc.descriptionInterventions;
+                            resProjectD.complexity = ideaAlt.projDesc.complexity;
+                            resProjectD.estimatedCost = ideaAlt.projDesc.estimatedCost;
+                            resProjectD.investmentCost = ideaAlt.projDesc.investmentCost;
+                            resProjectD.fundingSources = ideaAlt.projDesc.fundingSources;
+                            resProjectD.foundingSourcesName = ideaAlt.projDesc.foundingSourcesName;
+                            resProjectD.save();
+                            AlternativeUpdated = true;
+                            if (ideaAlt.projDesc.execTime && ideaAlt.projDesc.execTime.codigo) {
+                                const excectRes = yield BancoIdeas_1.executionTime.findOne({
+                                    where: {
+                                        codigo: ideaAlt.projDesc.execTime.codigo
+                                    }
+                                });
+                                if (excectRes) {
+                                    const alternativeA = {
+                                        tentativeTermMonth: ideaAlt.projDesc.execTime.tentativeTermMonth,
+                                        tentativeTermYear: ideaAlt.projDesc.execTime.tentativeTermYear,
+                                        executionDateMonth: ideaAlt.projDesc.execTime.executionDateMonth,
+                                        executionDateYear: ideaAlt.projDesc.execTime.executionDateYear,
+                                        finishDateMonth: ideaAlt.projDesc.execTime.finishDateMonth,
+                                        finishDateYear: ideaAlt.projDesc.execTime.finishDateYear,
+                                        annual: ideaAlt.projDesc.execTime.annual,
+                                    };
+                                    const alternativeB = {
+                                        tentativeTermMonth: excectRes.tentativeTermMonth,
+                                        tentativeTermYear: excectRes.tentativeTermYear,
+                                        executionDateMonth: excectRes.executionDateMonth,
+                                        executionDateYear: excectRes.executionDateYear,
+                                        finishDateMonth: excectRes.finishDateMonth,
+                                        finishDateYear: excectRes.finishDateYear,
+                                        annual: excectRes.annual,
+                                    };
+                                    const objIsEqual = isEqual(alternativeA, alternativeB);
+                                    if (!objIsEqual) {
+                                        excectRes.tentativeTermMonth = ideaAlt.projDesc.execTime.tentativeTermMonth;
+                                        excectRes.tentativeTermYear = ideaAlt.projDesc.execTime.tentativeTermYear;
+                                        excectRes.executionDateMonth = ideaAlt.projDesc.execTime.executionDateMonth;
+                                        excectRes.executionDateYear = ideaAlt.projDesc.execTime.executionDateYear;
+                                        excectRes.finishDateMonth = ideaAlt.projDesc.execTime.finishDateMonth;
+                                        excectRes.finishDateYear = ideaAlt.projDesc.execTime.finishDateYear;
+                                        excectRes.annual = ideaAlt.projDesc.execTime.annual;
+                                        excectRes.save();
+                                        AlternativeUpdated = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        yield FcreateProjectDescription(ideaAlt.projDesc, ideaAlt.codigo, transaction);
+                        AlternativeUpdated = true;
+                    }
+                }
+                //#endregion populationDelimitation
+                // ideaAlternativeCreated = await ideaAlternative.create(ideaAlt, { transaction }).then(async (alternativeCreated: any) => {
+                //     alternativeCreatedAsync = { ...alternativeCreated }
+                //     await altActive.destroy({ transaction });
+                //     let codigoAlternativa = alternativeCreated.codigo
+                //     await FcreatePreleminaryName(ideaAlt.preName, codigoAlternativa, transaction)
+                //     await FcresponsableEntity(ideaAlt.resEntity, codigoAlternativa, transaction)
+                //     await FcreatePopulationDemilitation(ideaAlt.popDelimit, codigoAlternativa, transaction)
+                //     await FcreateGeographicArea(ideaAlt.geoArea, codigoAlternativa, transaction)
+                //     await FcreateProjectDescription(ideaAlt.projDesc, codigoAlternativa, transaction)
+                // }).catch(async (err: any) => {
+                //     await transaction.rollback();
+                // })
+                // if (alternativeCreatedAsync) {
+                //     return {
+                //         message: `Idea alternativa Actualizada correctamente`,
+                //         alternative: alternativeCreatedAsync
+                //     };
+                // }
+                return AlternativeUpdated;
             }
             else {
                 throw `Error al actualizar Alternativa, no existe el ID enviado`;
@@ -1169,3 +1332,54 @@ function getIdeaCompleta(codigo) {
     });
 }
 exports.getIdeaCompleta = getIdeaCompleta;
+function isEqual(a, b) {
+    console.log("🚀 ~ file: sinafip.controller.ts:965 ~ isEqual ~ b", b);
+    console.log("🚀 ~ file: sinafip.controller.ts:965 ~ isEqual ~ a", a);
+    const aProps = Object.getOwnPropertyNames(a);
+    const bProps = Object.getOwnPropertyNames(b);
+    if (aProps.length !== bProps.length) {
+        return false;
+    }
+    for (let i = 0; i < aProps.length; i++) {
+        const propName = aProps[i];
+        if (a[propName] !== b[propName]) {
+            if (typeof a[propName] === 'object') {
+                if (!isEqual(a[propName], b[propName])) {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+    for (let i = 0; i < arr1.length; i++) {
+        const obj1 = arr1[i];
+        const obj2 = arr2[i];
+        const obj1Props = Object.getOwnPropertyNames(obj1);
+        const obj2Props = Object.getOwnPropertyNames(obj2);
+        if (obj1Props.length !== obj2Props.length) {
+            return false;
+        }
+        for (let j = 0; j < obj1Props.length; j++) {
+            const propName = obj1Props[j];
+            if (obj1[propName] !== obj2[propName]) {
+                if (typeof obj1[propName] === 'object') {
+                    if (!arraysEqual([obj1[propName]], [obj2[propName]])) {
+                        return false;
+                    }
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}

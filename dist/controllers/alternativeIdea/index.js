@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateIdeaAlternativeComplete = exports.getPertinencia = exports.getAlternative = exports.getPreinversion = exports.addPertinenceQuality = exports.createIdeaAlternativeSecondPart = exports.createIdeaAlternativeFirstPart = exports.createIdeaAlternativeComplete = void 0;
+exports.updateIdeaAlternativeComplete = exports.getPertinencia = exports.getOneAlternative = exports.getAlternative = exports.getPreinversion = exports.addPertinenceQuality = exports.createIdeaAlternativeSecondPart = exports.createIdeaAlternativeFirstPart = exports.createIdeaAlternativeComplete = void 0;
 const connection_1 = __importDefault(require("../../db/connection"));
 const BancoIdeas_1 = require("../../models/BancoIdeas");
 const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
@@ -123,6 +123,24 @@ const getAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getAlternative = getAlternative;
+const getOneAlternative = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let idAlternative = req.params.id;
+        let datosResult = [];
+        datosResult = yield (0, feature_1.getAlternativeComplete)(idAlternative);
+        res.status(200).json({
+            msg: "Datos Obtenidos",
+            data: datosResult,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+});
+exports.getOneAlternative = getOneAlternative;
 const getPertinencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let idAlternative = req.params.id;
@@ -239,14 +257,19 @@ function updateIdeaAlternativeComplete(req, res) {
             let fullIdeaAlternative;
             transaction = yield connection_1.default.transaction();
             ideaAlternative = yield (0, feature_1.fupdateIdeaAlternativeComplete)(req.body, transaction);
-            console.log("🚀 ~ file: index.ts:272 ~ updateIdeaAlternativeComplete ~ ideaAlternative", ideaAlternative.alternative.codigo);
             if (ideaAlternative) {
-                fullIdeaAlternative = yield (0, feature_1.getAlternativeComplete)(ideaAlternative.alternative.codigo);
-                console.log("🚀 ~ file: index.ts:274 ~ updateIdeaAlternativeComplete ~ fullIdeaAlternative", fullIdeaAlternative);
-                return res.status(200).send(fullIdeaAlternative);
+                fullIdeaAlternative = yield (0, feature_1.getAlternativeComplete)(req.body.codigo);
+                res.status(200).json({
+                    msg: "Datos Actualizados",
+                    data: fullIdeaAlternative,
+                });
             }
             else {
-                return res.status(500).send({ message: `No se pudo a.ctualizar la alternativa` });
+                fullIdeaAlternative = yield (0, feature_1.getAlternativeComplete)(req.body.codigo);
+                res.status(200).json({
+                    msg: "No se Encontraron cambios",
+                    data: fullIdeaAlternative,
+                });
             }
             // await transaction.commit()
         }

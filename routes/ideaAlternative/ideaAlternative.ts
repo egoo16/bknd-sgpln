@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addPertinenceQuality, createDenomination, createIdeaAlternativeComplete, createIdeaAlternativeFirstPart, createIdeaAlternativeSecondPart, getAlternative, getDenomination, getPertinencia, getPreinversion, listResults, updateIdeaAlternativeComplete } from "../../controllers";
+import { addPertinenceQuality, createDenomination, createIdeaAlternativeComplete, createIdeaAlternativeFirstPart, createIdeaAlternativeSecondPart, getAlternative, getDenomination, getOneAlternative, getPertinencia, getPreinversion, listResults, updateIdeaAlternativeComplete } from "../../controllers";
 import { verificaToken } from "../../middlewares/authentication";
 import { createReferencePopulation, deleteDenomination, deleteReferencePopulation, getReferencePopulation, updateDenomination, updateReferencePopulation } from '../../controllers/sinafip/list.controller';
 
@@ -21,6 +21,7 @@ preliminarRoute.put("/referencePopulation/:id", updateReferencePopulation);
 preliminarRoute.get("/get-results/", verificaToken, listResults);
 preliminarRoute.get("/preinversion/:id", getPreinversion);
 preliminarRoute.get("/:id", getAlternative);
+preliminarRoute.get("/one/:id", getOneAlternative);
 preliminarRoute.get("/pertinencia/:id", getPertinencia);
 preliminarRoute.post("/", verificaToken, createIdeaAlternativeComplete);
 preliminarRoute.post("/first", createIdeaAlternativeFirstPart);
