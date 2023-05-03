@@ -11,6 +11,7 @@ import sinafipRouter from  './sinafip/sinafip.route'
 import READ_FILE_ROUTER from "./files/readFile";
 import seguimientoRouter from "./seguimiento/seguimiento.route";
 import matrixRouter from "./matrixSettings/matrixValues.route";
+import reportRouter from "./report/report.route";
 
 const router = Router();
 
@@ -18,6 +19,7 @@ const prefix= 'api'
 // Rutas
 router.use("/api/readFile", READ_FILE_ROUTER);
 router.use("/api/upload/", UPLOAD_ROUTER);
+router.use(`/${prefix}/report/`,reportRouter)
 router.use(`/${prefix}/matrix/`,matrixRouter)
 router.use(`/${prefix}/seguimiento/`,seguimientoRouter)
 router.use(`/${prefix}/sinafip/`,sinafipRouter)
