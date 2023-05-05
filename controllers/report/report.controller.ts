@@ -88,7 +88,10 @@ export const getIdeasFitered = async (req: any, res: Response) => {
                 const element = ideasFound[index];
                 let ideaFiltered = await getAlternativesByIdea(filtros, element)
                 if (ideaFiltered) {
-                    ideasResult.push(ideaFiltered);
+                    if (ideaFiltered.alternatives && ideaFiltered.alternatives.length > 0){
+                        ideasResult.push(ideaFiltered);
+                        ideasResult.push(ideaFiltered);
+                    }
                 }
             }
         }
@@ -138,6 +141,7 @@ const getAlternativesByIdea = async (filtros: FiltroIdeaReport, idea: IdeaReport
         "projDesc"."estimatedCost",
         "projDesc"."investmentCost",
         "projDesc"."foundingSourcesName",
+        "projDesc"."projectType" as "typeProjectFormulation",
         "execTime"."executionDateMonth",
         "execTime"."executionDateYear",
         "execTime"."finishDateMonth",
@@ -194,7 +198,7 @@ const getAlternativesByIdea = async (filtros: FiltroIdeaReport, idea: IdeaReport
                 const queryToAdd = ` "preName"."municipality" = '${filtros.municipality}' `;
                 queryToSend = queryToSend + wordAnd + queryToAdd;
             }
-            if (filtros.projectType && filtros.formulationProcess != '') {
+            if (filtros.projectType && filtros.projectType != '') {
                 const queryToAdd = ` "projDesc"."projectType" = '${filtros.projectType}' `;
                 queryToSend = queryToSend + wordAnd + queryToAdd;
             }
@@ -220,16 +224,34 @@ const getAlternativesByIdea = async (filtros: FiltroIdeaReport, idea: IdeaReport
             }
         }
 
-        console.log("🚀 ~ file: report.controller.ts:223 ~ getAlternativesByIdea ~ queryToSend:", queryToSend)
         await models.query(queryToSend).spread((result: any) => { resultado = result; }).catch((error: any) => {
             throw `Ocurrio mientras se consultaba la base de datos, ${error}`;
         });
-        console.log("🚀 ~ file: report.controller.ts:200 ~ getAlternativesByIdea ~ resultado:", resultado)
 
         if (resultado.length > 0) {
+            const unifiedAlternatives: any = {};
+            for (const alt of resultado) {
+              const altKey = `${alt.codigo}_${alt.typeProject}_${alt.proccess}_${alt.object}_${alt.departament}_${alt.municipality}_${alt.nameEPI}_${alt.complexity}_${alt.estimatedCost}_${alt.investmentCost}_${alt.foundingSourcesName}_${alt.executionDateMonth}_${alt.executionDateYear}_${alt.finishDateMonth}_${alt.finishDateYear}_${alt.etapaValor}_${alt.etapaResultado}_${alt.referencePop}_${alt.denomination}`;
+              if (!unifiedAlternatives[altKey]) {
+                unifiedAlternatives[altKey] = {
+                  ...alt,
+                  type2: "",
+                  total2: 0,
+                };
+              } else {
+                if (alt.type === "Hombres") {
+                  unifiedAlternatives[altKey].type2 = "Hombres";
+                  unifiedAlternatives[altKey].total2 = alt.total;
+                } else {
+                  unifiedAlternatives[altKey].type2 = "Mujeres";
+                  unifiedAlternatives[altKey].total2 = alt.total;
+                }
+              }
+            }
             
+            const result = Object.values(unifiedAlternatives);
             let ideaFiltered = idea;
-            ideaFiltered.alternatives = resultado;
+            ideaFiltered.alternatives = result;
             return ideaFiltered;
         }
         return idea;
