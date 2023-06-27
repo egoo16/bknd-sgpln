@@ -9,6 +9,7 @@ import { modalityFinancing } from '../../models/sinafip/modalityFinancing.entity
 import { preinvDocument } from '../../models/sinafip/preinvDocument.entity';
 import { projectFunction } from '../../models/sinafip/projectFunction.entity';
 import { advEntities } from './advisedEnt';
+import typeProject from '../../models/BancoIdeas/typeProject';
 
 
 
@@ -354,7 +355,7 @@ export const updateReferencePopulation = async (req: Request, res: Response) => 
             codigo
           }
         })
-      const refToUpdated = await referencePopulation.findOne({ where: { codigo: req.params.id } });
+        const refToUpdated = await referencePopulation.findOne({ where: { codigo: req.params.id } });
 
         if (denCreated) {
           res.status(200).json({
@@ -568,5 +569,127 @@ export async function getAdvisedEntities(req: Request, res: Response) {
 
   } catch (error: any) {
     return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
+  }
+}
+
+
+export const getTypeProjects = async (req: Request, res: Response) => {
+  try {
+    let data = await typeProject.findAll();
+    if (data.length <= 0) {
+      let ref = { name: 'Desarrollo económico' };
+      let denCreated = await typeProject.create(ref)
+      ref.name = 'Desarrollo social'
+      denCreated = await typeProject.create(ref)
+      ref.name = 'Desarrollo ambiental y recursos naturales'
+      denCreated = await typeProject.create(ref)
+    }
+    data = await typeProject.findAll();
+
+    res.status(200).json({
+      msg: "Datos Obtenidos",
+      data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
+  }
+};
+
+export const createTypeProject = async (req: Request, res: Response) => {
+  try {
+    if (req.body.name) {
+      const name = req.body.name;
+      let denCreated = await typeProject.create({ name })
+
+      if (denCreated) {
+        res.status(200).json({
+          msg: "Datos Created",
+          data: denCreated,
+        });
+      }
+    }
+    else {
+      throw `Error al crear Tipo de Proyecto`;
+    }
+
+  } catch (error) {
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
+  }
+}
+
+export const deleteTypeProject = async (req: Request, res: Response) => {
+  try {
+    if (req.params.id) {
+      const refToDelete = await typeProject.findOne({ where: { id: req.params.id } });
+      if (refToDelete) {
+        const id = req.params.id;
+        let denCreated = await typeProject.destroy({
+          where: {
+            id
+          }
+        })
+
+        res.status(200).json({
+          msg: "Datos Eliminados",
+          data: refToDelete
+        });
+      } else {
+        throw `No se encontró el registro`;
+      }
+
+    }
+    else {
+      throw `Error al eliminar Tipo de Proyecto`;
+    }
+
+  } catch (error) {
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
+  }
+}
+
+export const updateTypeProject = async (req: Request, res: Response) => {
+  try {
+    if (req.body.name && req.params.id) {
+      const name = req.body.name;
+      const id = req.params.id;
+      const refToUpdate = await typeProject.findOne({ where: { id: req.params.id } });
+
+      if (refToUpdate) {
+        let denCreated = await typeProject.update({ name }, {
+          where: {
+            id
+          }
+        })
+        const refToUpdated = await typeProject.findOne({ where: { id: req.params.id } });
+
+        if (denCreated) {
+          res.status(200).json({
+            msg: "Datos Actualizados",
+            data: refToUpdated
+          });
+        }
+      } else {
+        throw `No se encontró el registro`;
+      }
+
+    }
+    else {
+      throw `Error al actualizar Tipo de Proyecto`;
+    }
+
+  } catch (error) {
+    res.status(500).json({
+      msg: "Error",
+      error,
+    });
   }
 }

@@ -22,7 +22,7 @@ const project = db.define(
         legalLand: { type: Sequelize.BOOLEAN },
         agripManage: { type: Sequelize.BOOLEAN },
         snipCode: { type: Sequelize.STRING },
-        observations: { type: Sequelize.STRING },
+        observations: { type: Sequelize.STRING(1000) },
         advance: { type: Sequelize.INTEGER },
         status: { type: Sequelize.STRING },
 

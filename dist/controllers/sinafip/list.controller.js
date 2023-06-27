@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAdvisedEntities = exports.updateModalityFinancing = exports.deleteModalityFinancing = exports.createModalityFinancing = exports.getAllmodalityFinancing = exports.updateReferencePopulation = exports.deleteReferencePopulation = exports.createReferencePopulation = exports.getReferencePopulation = exports.updateDenomination = exports.deleteDenomination = exports.createDenomination = exports.getDenomination = exports.getAllpreinvDocument = exports.getAllgeneralStudies = exports.getAllProjectFunction = exports.getAllEntities = void 0;
+exports.updateTypeProject = exports.deleteTypeProject = exports.createTypeProject = exports.getTypeProjects = exports.getAdvisedEntities = exports.updateModalityFinancing = exports.deleteModalityFinancing = exports.createModalityFinancing = exports.getAllmodalityFinancing = exports.updateReferencePopulation = exports.deleteReferencePopulation = exports.createReferencePopulation = exports.getReferencePopulation = exports.updateDenomination = exports.deleteDenomination = exports.createDenomination = exports.getDenomination = exports.getAllpreinvDocument = exports.getAllgeneralStudies = exports.getAllProjectFunction = exports.getAllEntities = void 0;
 const BancoIdeas_1 = require("../../models/BancoIdeas");
 const advisedEntity_entity_1 = __importDefault(require("../../models/seguimiento/advisedEntity.entity"));
 const subSectorization_entity_1 = __importDefault(require("../../models/seguimiento/subSectorization.entity"));
@@ -22,6 +22,7 @@ const modalityFinancing_entity_1 = require("../../models/sinafip/modalityFinanci
 const preinvDocument_entity_1 = require("../../models/sinafip/preinvDocument.entity");
 const projectFunction_entity_1 = require("../../models/sinafip/projectFunction.entity");
 const advisedEnt_1 = require("./advisedEnt");
+const typeProject_1 = __importDefault(require("../../models/BancoIdeas/typeProject"));
 function getAllEntities(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -543,3 +544,120 @@ function getAdvisedEntities(req, res) {
     });
 }
 exports.getAdvisedEntities = getAdvisedEntities;
+const getTypeProjects = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let data = yield typeProject_1.default.findAll();
+        if (data.length <= 0) {
+            let ref = { name: 'Desarrollo económico' };
+            let denCreated = yield typeProject_1.default.create(ref);
+            ref.name = 'Desarrollo social';
+            denCreated = yield typeProject_1.default.create(ref);
+            ref.name = 'Desarrollo ambiental y recursos naturales';
+            denCreated = yield typeProject_1.default.create(ref);
+        }
+        data = yield typeProject_1.default.findAll();
+        res.status(200).json({
+            msg: "Datos Obtenidos",
+            data,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+});
+exports.getTypeProjects = getTypeProjects;
+const createTypeProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (req.body.name) {
+            const name = req.body.name;
+            let denCreated = yield typeProject_1.default.create({ name });
+            if (denCreated) {
+                res.status(200).json({
+                    msg: "Datos Created",
+                    data: denCreated,
+                });
+            }
+        }
+        else {
+            throw `Error al crear Tipo de Proyecto`;
+        }
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+});
+exports.createTypeProject = createTypeProject;
+const deleteTypeProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (req.params.id) {
+            const refToDelete = yield typeProject_1.default.findOne({ where: { id: req.params.id } });
+            if (refToDelete) {
+                const id = req.params.id;
+                let denCreated = yield typeProject_1.default.destroy({
+                    where: {
+                        id
+                    }
+                });
+                res.status(200).json({
+                    msg: "Datos Eliminados",
+                    data: refToDelete
+                });
+            }
+            else {
+                throw `No se encontró el registro`;
+            }
+        }
+        else {
+            throw `Error al eliminar Tipo de Proyecto`;
+        }
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+});
+exports.deleteTypeProject = deleteTypeProject;
+const updateTypeProject = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (req.body.name && req.params.id) {
+            const name = req.body.name;
+            const id = req.params.id;
+            const refToUpdate = yield typeProject_1.default.findOne({ where: { id: req.params.id } });
+            if (refToUpdate) {
+                let denCreated = yield typeProject_1.default.update({ name }, {
+                    where: {
+                        id
+                    }
+                });
+                const refToUpdated = yield typeProject_1.default.findOne({ where: { id: req.params.id } });
+                if (denCreated) {
+                    res.status(200).json({
+                        msg: "Datos Actualizados",
+                        data: refToUpdated
+                    });
+                }
+            }
+            else {
+                throw `No se encontró el registro`;
+            }
+        }
+        else {
+            throw `Error al actualizar Tipo de Proyecto`;
+        }
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+});
+exports.updateTypeProject = updateTypeProject;

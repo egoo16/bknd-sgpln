@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductos = exports.getObjetos = exports.getProcesos = exports.getGeograficos = void 0;
+exports.getEntidades = exports.getProductos = exports.getObjetos = exports.getProcesos = exports.getGeograficos = void 0;
 const connection_1 = __importDefault(require("../../db/connection"));
 const Sequelize = require('sequelize-oracle');
 const getGeograficos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -38,7 +38,6 @@ const getGeograficos = (req, res) => __awaiter(void 0, void 0, void 0, function*
         let dato2 = data.findIndex(dato => dato.NOMBRE == 'No Aplica');
         let dato3 = data.findIndex(dato => dato.NOMBRE == 'Sin clasificar');
         let dato4 = data.findIndex(dato => dato.NOMBRE == 'MULTIREGIONAL - NACIONAL');
-        console.log("🚀 ~ file: index.ts ~ line 33 ~ getGeograficos ~ dato4", dato1, dato2, dato3, dato4);
         if (dato1 !== -1) {
             data.splice(dato1, 1);
         }
@@ -133,7 +132,6 @@ const getObjetos = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.getObjetos = getObjetos;
 const getProductos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log();
         if (!req.query.idEntidad) {
             throw 'Se esperaba Id de la Entidad';
         }
@@ -178,3 +176,46 @@ const getProductos = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getProductos = getProductos;
+const getEntidades = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let resultado = [];
+        let data = [];
+        let datar = [];
+        let query = `select * from SINIP.CG_ENTIDADES
+        where SINIP.CG_ENTIDADES."SIGLA" IS NOT NULL`;
+        yield connection_1.default.query(query).spread((result) => { resultado = result; }).catch((error) => {
+            res.status(500).json({
+                msg: "Error",
+                error,
+            });
+        });
+        if (resultado) {
+            resultado.map((res) => {
+                let dato = {
+                    idEntidad: res.ENTIDAD,
+                    nombre: res.NOMBRE,
+                    sigla: res.SIGLA
+                };
+                data.push(dato);
+            });
+            const eliminaDatosDuplicados = (arr) => {
+                const datosMap = arr.map((dato) => {
+                    return [dato.nombre, dato];
+                });
+                return [...new Map(datosMap).values()];
+            };
+            datar = eliminaDatosDuplicados(data);
+        }
+        res.status(200).json({
+            msg: "Datos Obtenidos",
+            data: datar,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+});
+exports.getEntidades = getEntidades;

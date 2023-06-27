@@ -1,13 +1,15 @@
 import { Router } from 'express'
-import { createModalityFinancing, deleteModalityFinancing, getAdvisedEntities, getAllEntities, getAllgeneralStudies, getAllmodalityFinancing, getAllpreinvDocument, getAllProjectFunction, updateModalityFinancing } from '../../controllers/sinafip/list.controller';
+import { createModalityFinancing, createTypeProject, deleteModalityFinancing, deleteTypeProject, getAdvisedEntities, getAllEntities, getAllgeneralStudies, getAllmodalityFinancing, getAllpreinvDocument, getAllProjectFunction, getTypeProjects, updateModalityFinancing, updateTypeProject } from '../../controllers/sinafip/list.controller';
 import { getAllRequest, updateRequest, getOneRequest, createRequestSinafip, updateState, createAdmissionQuanty, getDataPriorization } from '../../controllers/sinafip/sinafip.controller';
 import { verificaToken } from '../../middlewares/authentication';
+import { getEntidades } from '../../controllers';
 
 
 const sinafipRouter = Router();
 
 // Listados
 sinafipRouter.get('/entities', getAllEntities)
+sinafipRouter.get('/entidades', getEntidades)
 sinafipRouter.get('/project-function', getAllProjectFunction)
 sinafipRouter.get('/general-studies', getAllgeneralStudies)
 sinafipRouter.get('/preinv-document', getAllpreinvDocument)
@@ -17,6 +19,12 @@ sinafipRouter.get('/modality-financing', getAllmodalityFinancing)
 sinafipRouter.post("/modality-financing/", createModalityFinancing);
 sinafipRouter.delete("/modality-financing/:id", deleteModalityFinancing);
 sinafipRouter.put("/modality-financing/:id", updateModalityFinancing);
+
+// Type Project
+sinafipRouter.get('/type-projects', getTypeProjects)
+sinafipRouter.post("/type-project/", createTypeProject);
+sinafipRouter.delete("/type-project/:id", deleteTypeProject);
+sinafipRouter.put("/type-project/:id", updateTypeProject);
 
 
 sinafipRouter.get("/sector-adb/", getAdvisedEntities);

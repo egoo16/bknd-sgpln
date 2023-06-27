@@ -1,6 +1,7 @@
 export interface FiltroIdeaReport {
     yearCreated?: string;
     idEntity?: string;
+    productName?: string;
     state?: string;
     registerCode?: string;
     typeIdea?: string;

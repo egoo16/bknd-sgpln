@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getIdeasFitered = void 0;
+exports.getRegisterSinafip = exports.getIdeasFitered = void 0;
 const connection_1 = __importDefault(require("../../db/connection"));
 const models_1 = require("../../models");
 const getIdeasFitered = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -57,6 +57,16 @@ const getIdeasFitered = (req, res) => __awaiter(void 0, void 0, void 0, function
                     whereIsUsed = true;
                 }
             }
+            if (filtros.productName && filtros.productName != '') {
+                const queryIdEntity = ` "productName" = '${filtros.idEntity}'`;
+                if (whereIsUsed) {
+                    queryToSend = queryToSend + wordAnd + queryIdEntity;
+                }
+                else {
+                    queryToSend = queryToSend + wordWhere + queryIdEntity;
+                    whereIsUsed = true;
+                }
+            }
             if (filtros.yearCreated && filtros.yearCreated != '') {
                 const queryYearCreated = ` EXTRACT(YEAR FROM "createdAt") = '${filtros.yearCreated}'`;
                 if (whereIsUsed) {
@@ -90,7 +100,6 @@ const getIdeasFitered = (req, res) => __awaiter(void 0, void 0, void 0, function
                 let ideaFiltered = yield getAlternativesByIdea(filtros, element);
                 if (ideaFiltered) {
                     if (ideaFiltered.alternatives && ideaFiltered.alternatives.length > 0) {
-                        ideasResult.push(ideaFiltered);
                         ideasResult.push(ideaFiltered);
                     }
                 }
@@ -242,3 +251,101 @@ const getAlternativesByIdea = (filtros, idea) => __awaiter(void 0, void 0, void 
         throw `Ocurrio un error mientras se filtraban alternativas, ${error}`;
     }
 });
+const getRegisterSinafip = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let ideasResult = [];
+        let queryToIdeas = `
+        SELECT 
+        "institution"."entityName",
+        "institution"."executionUnit",
+        "institution"."generalStudy",
+        "studyDescriptions"."modalityFinancing",
+        "investmentProjects"."estimatedProject",
+        "request"."status",
+        "delimitPopulation"."type",
+        "delimitPopulation"."total"
+        FROM "request"
+        INNER JOIN "institution" ON "request"."id" = "institution"."requestId"
+        INNER JOIN "investmentProjects" ON "request"."id" = "investmentProjects"."requestId"
+        INNER JOIN "studyDescriptions" ON "request"."id" = "studyDescriptions"."requestId"
+        INNER JOIN "delimits" ON "request"."id" = "delimits"."requestId"
+        INNER JOIN "delimitPopulation" ON "delimits"."id" = "delimitPopulation"."delimitId"
+        
+        WHERE
+        "institution"."entityName" = 'SUPERINTENDENCIA DE ADMINISTRACION TRIBUTARIA - SAT'
+        AND "institution"."executionUnit" LIKE '%Unidad%'
+        AND "institution"."generalStudy" = 'AMBIENTAL'
+        AND "studyDescriptions"."modalityFinancing" = 'INGRESOS PROPIOS'
+        AND "delimits"."departament" = 'QUETZALTENANGO'
+        AND "delimits"."municipality" = 'CABRICAN'
+        AND "delimits"."denomination" = 'Pacientes'
+        AND "delimits"."estimatedBenef" = 57023
+        AND "investmentProjects"."estimatedProject" = 4534564564
+            `;
+        let queryToSend = '';
+        let filtros = req.query;
+        queryToSend = queryToIdeas;
+        if (filtros) {
+            const wordWhere = ` WHERE `;
+            const wordAnd = ` AND `;
+            let whereIsUsed = false;
+            if (filtros.state && filtros.state != 'TODAS') {
+                const queryStage = ` "state" like '%${filtros.state}%'`;
+                if (whereIsUsed) {
+                    queryToSend = queryToSend + wordAnd + queryStage;
+                }
+                else {
+                    queryToSend = queryToSend + wordWhere + queryStage;
+                    whereIsUsed = true;
+                }
+            }
+            if (filtros.idEntity && filtros.idEntity != '') {
+                const queryIdEntity = ` "idEntity" = '${filtros.idEntity}'`;
+                if (whereIsUsed) {
+                    queryToSend = queryToSend + wordAnd + queryIdEntity;
+                }
+                else {
+                    queryToSend = queryToSend + wordWhere + queryIdEntity;
+                    whereIsUsed = true;
+                }
+            }
+            if (filtros.yearCreated && filtros.yearCreated != '') {
+                const queryYearCreated = ` EXTRACT(YEAR FROM "createdAt") = '${filtros.yearCreated}'`;
+                if (whereIsUsed) {
+                    queryToSend = queryToSend + wordAnd + queryYearCreated;
+                }
+                else {
+                    queryToSend = queryToSend + wordWhere + queryYearCreated;
+                    whereIsUsed = true;
+                }
+            }
+            if (filtros.registerCode && filtros.registerCode != '') {
+                const queryAdd = ` "registerCode" LIKE '%${filtros.registerCode}%'`;
+                if (whereIsUsed) {
+                    queryToSend = queryToSend + wordAnd + queryAdd;
+                }
+                else {
+                    queryToSend = queryToSend + wordWhere + queryAdd;
+                    whereIsUsed = true;
+                }
+            }
+        }
+        yield connection_1.default.query(queryToSend).spread((result) => { ideasResult = result; }).catch((error) => {
+            res.status(500).json({
+                msg: "Error",
+                error,
+            });
+        });
+        res.status(200).json({
+            msg: "Datos Obtenidos",
+            data: ideasResult,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+});
+exports.getRegisterSinafip = getRegisterSinafip;

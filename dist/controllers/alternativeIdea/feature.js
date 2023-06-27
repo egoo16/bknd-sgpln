@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getIdeaCompleta = exports.fupdateIdeaAlternativeComplete = exports.getAlternativeComplete = exports.getAlternatives = exports.FcreateGeographicArea = exports.FcreateProjectDescription = exports.FcreatePopulationDemilitation = exports.FcresponsableEntity = exports.FcreatePreleminaryName = exports.FcreatePreInvestment = exports.FaddPertinenceQuality = exports.createSecondPartAlternative = exports.createFirstPartAlternative = exports.FcreateIdeaAlternativeComplete = exports.FgetPreinversion = void 0;
+const connection_1 = __importDefault(require("../../db/connection"));
 const BancoIdeas_1 = require("../../models/BancoIdeas");
 const datageo_model_1 = __importDefault(require("../../models/BancoIdeas/datageo.model"));
 const populationAlt_1 = __importDefault(require("../../models/BancoIdeas/populationAlt"));
@@ -121,7 +122,7 @@ function FgetPreinversion(idAlternativa) {
                 throw `Ocurrio un error mientras se calculaba la matriz. El rango de Etapa no fue encontrado.`;
             }
             else {
-                etapa.resultado = `Entre ${relStageRes[0].rangeMin} y ${relStageRes[0].rangeMax} `;
+                etapa.resultado = `${valueCalculated} `;
                 etapa.valor = relStageRes[0].suggestedStage;
             }
             //RESULTADO
@@ -447,14 +448,49 @@ function FcreateGeographicArea(geograpicArea, idAlternativa, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             geograpicArea.AlterId = idAlternativa;
-            let geographicAreaCreated = yield BancoIdeas_1.geographicArea.create(geograpicArea, { transaction });
-            if (geograpicArea.dataGeo) {
-                for (let data of geograpicArea.dataGeo) {
-                    data.geoAreaId = geographicAreaCreated.codigo;
-                    yield datageo_model_1.default.create(data, { transaction });
+            let geograpicToSend = {};
+            geograpicToSend.AlterId = idAlternativa;
+            geograpicToSend.oneAvailableTerrain = (geograpicArea.oneAvailableTerrain) ? 1 : 0;
+            geograpicToSend.availableTerrain = (geograpicArea.availableTerrain) ? 1 : 0;
+            geograpicToSend.investPurchase = (geograpicArea.investPurchase) ? 1 : 0;
+            console.log("🚀 ~ file: feature.ts:461 ~ FcreateGeographicArea ~ geograpicToSend:", geograpicToSend);
+            const now = new Date(); // crea una instancia de Date con la fecha y hora actuales
+            const milliseconds = now.getTime(); // obtiene el número de milisegundos transcurridos desde el 1 de enero de 1970 hasta ahora
+            console.log(milliseconds);
+            let queryToCreate = `
+        INSERT INTO "geoArea"
+         ("codigo","AlterId","oneAvailableTerrain","availableTerrain","investPurchase") 
+         VALUES 
+         ('${milliseconds}',
+         '${idAlternativa}',
+         ${geograpicToSend.oneAvailableTerrain},
+         ${geograpicToSend.availableTerrain},
+         ${geograpicToSend.investPurchase})
+        `;
+            let resultToCreateGeo;
+            let resultCreated = yield connection_1.default.query(queryToCreate).spread((result) => {
+                resultToCreateGeo = result;
+            }).catch((error) => {
+                throw `Error Durante la creacion del Area Geografica: ${error}`;
+            });
+            let geographicAreaCreated = yield BancoIdeas_1.geographicArea.findOne({
+                where: {
+                    AlterId: idAlternativa
+                },
+            });
+            console.log("🚀 ~ file: feature.ts:492 ~ FcreateGeographicArea ~ geographicAreaCreated:", geographicAreaCreated);
+            if (geographicAreaCreated && geographicAreaCreated.codigo) {
+                if (geograpicArea.dataGeo && geograpicArea.dataGeo.length > 0) {
+                    for (let data of geograpicArea.dataGeo) {
+                        console.log("🚀 ~ file: feature.ts:503 ~ FcreateGeographicArea ~ data.image:", data.image);
+                        data.geoAreaId = geographicAreaCreated.codigo;
+                        data.image = '';
+                        console.log("🚀 ~ file: feature.ts:502 ~ FcreateGeographicArea ~ data:", data);
+                        yield datageo_model_1.default.create(data, { transaction });
+                    }
                 }
+                return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };
             }
-            return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };
         }
         catch (error) {
             transaction.rollback();

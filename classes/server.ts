@@ -1,8 +1,10 @@
 import express from "express";
 import db from "../db/connection";
 import { SERVER_PORT } from "../global/environment";
-import { admissionConfig, preInvestment } from "../models";
+import { admissionConfig, advisoryDoc, advisoryEpi, project, track, visitCard } from "../models";
 import { relevanceBeneficiaries, relevanceComplexy, relevanceInvestment, relevanceStage } from "../models/matrixModels/relevanceConfig";
+import dataGeo from "../models/BancoIdeas/datageo.model";
+import typeProject from "../models/BancoIdeas/typeProject";
 
 export default class Server {
   public app: express.Application;
@@ -22,14 +24,16 @@ export default class Server {
         console.log("Database online");
       });
 
-      
-      // await admisionConfig.sync({ force: true });
-      // await relevanceInvestment.sync({ force: true });
-      // await relevanceBeneficiaries.sync({ force: true });
-      // await relevanceComplexy.sync({ force: true });
-      // await relevanceStage.sync({ force: true });
-      // await preInvestment.sync({force: true});
+      // await project.sync({ forde: true })
+      // await track.sync({ force: true });
+      // await advisoryEpi.sync({ force: true });
+      // await advisoryDoc.sync({ force: true });
+      // await visitCard.sync({ force: true });
 
+
+      // await geographicArea.sync({ force: true });
+      // await dataGeo.sync({ force: true });
+      // await typeProject.sync({ force: true });
 
       // await advisedEntity.sync({ force: true });
       // await subSectorization.sync({ force: true });

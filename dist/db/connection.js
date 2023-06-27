@@ -12,8 +12,8 @@ let db;
 //     dialect: 'oracle',
 //     // logging: false,
 // });
-db = new sequelize_oracle_1.default('osnip', 'PREINV2022', 'F6HRj3T0L3A', {
-    host: '192.168.9.14',
+db = new sequelize_oracle_1.default('desa', 'PREINV2022', 'F6HRj3T0L3A', {
+    host: '192.168.8.11',
     dialect: 'oracle',
     // logging: false,
 });

@@ -70,7 +70,7 @@ const visitCard = db.define(
         techProfEpi: { type: Sequelize.STRING },
         theirAgree: { type: Sequelize.BOOLEAN },
         specifyAnswer: { type: Sequelize.STRING },
-        observationsGeneral: { type: Sequelize.STRING },
+        observationsGeneral: { type: Sequelize.STRING(1000) },
     },
     {
         underscoded: true,

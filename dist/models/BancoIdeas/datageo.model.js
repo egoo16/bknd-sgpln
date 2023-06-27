@@ -12,7 +12,7 @@ const dataGeo = connection_1.default.define("dataGeo", {
         allowNull: false,
         defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
-    geoAreaId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
+    geoAreaId: { type: sequelize_oracle_1.default.STRING, allowNull: false },
     // Situacion Legal del posible bien
     governmentTerrain: { type: sequelize_oracle_1.default.BOOLEAN },
     registerGovernmentTerrain: { type: sequelize_oracle_1.default.BOOLEAN },

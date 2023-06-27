@@ -71,7 +71,7 @@ const visitCard = connection_1.default.define("visitCard", {
     techProfEpi: { type: sequelize_oracle_1.default.STRING },
     theirAgree: { type: sequelize_oracle_1.default.BOOLEAN },
     specifyAnswer: { type: sequelize_oracle_1.default.STRING },
-    observationsGeneral: { type: sequelize_oracle_1.default.STRING },
+    observationsGeneral: { type: sequelize_oracle_1.default.STRING(1000) },
 }, {
     underscoded: true,
     paranoid: true,

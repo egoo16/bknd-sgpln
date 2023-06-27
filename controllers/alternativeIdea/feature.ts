@@ -133,7 +133,7 @@ export async function FgetPreinversion(idAlternativa: any) {
         if (relStageRes.length <= 0) {
             throw `Ocurrio un error mientras se calculaba la matriz. El rango de Etapa no fue encontrado.`;
         } else {
-            etapa.resultado = `Entre ${relStageRes[0].rangeMin} y ${relStageRes[0].rangeMax} `;
+            etapa.resultado = `${valueCalculated} `;
             etapa.valor = relStageRes[0].suggestedStage;
         }
 
@@ -457,14 +457,57 @@ export async function FcreateProjectDescription(proDescription: any, idAlternati
 export async function FcreateGeographicArea(geograpicArea: any, idAlternativa: string, transaction: any) {
     try {
         geograpicArea.AlterId = idAlternativa
-        let geographicAreaCreated = await geographicArea.create(geograpicArea, { transaction })
-        if (geograpicArea.dataGeo) {
-            for (let data of geograpicArea.dataGeo) {
-                data.geoAreaId = geographicAreaCreated.codigo
-                await dataGeo.create(data, { transaction })
+        let geograpicToSend: any = {}
+        geograpicToSend.AlterId = idAlternativa
+        geograpicToSend.oneAvailableTerrain = (geograpicArea.oneAvailableTerrain) ? 1 : 0 
+        geograpicToSend.availableTerrain = (geograpicArea.availableTerrain) ? 1 : 0
+        geograpicToSend.investPurchase = (geograpicArea.investPurchase) ? 1 : 0
+        console.log("🚀 ~ file: feature.ts:461 ~ FcreateGeographicArea ~ geograpicToSend:", geograpicToSend)
+        const now = new Date(); // crea una instancia de Date con la fecha y hora actuales
+        const milliseconds = now.getTime(); // obtiene el número de milisegundos transcurridos desde el 1 de enero de 1970 hasta ahora
+        console.log(milliseconds);
+
+        let queryToCreate = `
+        INSERT INTO "geoArea"
+         ("codigo","AlterId","oneAvailableTerrain","availableTerrain","investPurchase") 
+         VALUES 
+         ('${milliseconds}',
+         '${idAlternativa}',
+         ${geograpicToSend.oneAvailableTerrain},
+         ${geograpicToSend.availableTerrain},
+         ${geograpicToSend.investPurchase})
+        `
+        
+        let resultToCreateGeo: any;
+
+        let resultCreated = await models.query(queryToCreate).spread((result: any) => {
+            resultToCreateGeo = result;
+        }).catch((error: any) => {
+            throw `Error Durante la creacion del Area Geografica: ${error}`;
+
+        });
+
+        let geographicAreaCreated = await geographicArea.findOne({
+            where: {
+                AlterId: idAlternativa
+            },
+        });
+        console.log("🚀 ~ file: feature.ts:492 ~ FcreateGeographicArea ~ geographicAreaCreated:", geographicAreaCreated)
+
+        if (geographicAreaCreated && geographicAreaCreated.codigo){
+
+            if (geograpicArea.dataGeo && geograpicArea.dataGeo.length > 0) {
+                for (let data of geograpicArea.dataGeo) {
+                    console.log("🚀 ~ file: feature.ts:503 ~ FcreateGeographicArea ~ data.image:", data.image)
+                    data.geoAreaId = geographicAreaCreated.codigo
+                    data.image = '';
+                    console.log("🚀 ~ file: feature.ts:502 ~ FcreateGeographicArea ~ data:", data)
+                    await dataGeo.create(data, { transaction })
+                }
             }
+            return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };
         }
-        return { geographicAreaCreated, message: `Area geografica del proyecto ingresada correctamente` };
+
     } catch (error) {
         transaction.rollback()
         //devuelve errores al cliente

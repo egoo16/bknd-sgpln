@@ -8,10 +8,9 @@ const connection_1 = __importDefault(require("../../db/connection"));
 const datageo_model_1 = __importDefault(require("./datageo.model"));
 const geographicArea = connection_1.default.define("geoArea", {
     codigo: {
-        type: sequelize_oracle_1.default.UUID,
+        type: sequelize_oracle_1.default.STRING,
         primaryKey: true,
         allowNull: false,
-        defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
     AlterId: { type: sequelize_oracle_1.default.UUID, allowNull: false },
     oneAvailableTerrain: { type: sequelize_oracle_1.default.BOOLEAN },
@@ -21,6 +20,7 @@ const geographicArea = connection_1.default.define("geoArea", {
     underscoded: true,
     paranoid: true,
     freezeTableName: true,
+    timestamps: false
 });
 geographicArea.hasMany(datageo_model_1.default, {
     foreignKey: "geoAreaId",

@@ -11,7 +11,7 @@ const dataGeo = db.define(
             allowNull: false,
             defaultValue: Sequelize.UUIDV4,
         },
-        geoAreaId: { type: Sequelize.UUID, allowNull: false },
+        geoAreaId: { type: Sequelize.STRING, allowNull: false },
 
         // Situacion Legal del posible bien
         governmentTerrain: { type: Sequelize.BOOLEAN },

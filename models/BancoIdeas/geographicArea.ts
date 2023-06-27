@@ -7,10 +7,9 @@ const geographicArea = db.define(
     "geoArea",
     {
         codigo: {
-            type: Sequelize.UUID,
+            type: Sequelize.STRING,
             primaryKey: true,
             allowNull: false,
-            defaultValue: Sequelize.UUIDV4,
         },
         AlterId: { type: Sequelize.UUID, allowNull: false },
         oneAvailableTerrain: { type: Sequelize.BOOLEAN },
@@ -22,6 +21,7 @@ const geographicArea = db.define(
         underscoded: true,
         paranoid: true,
         freezeTableName: true,
+        timestamps: false 
     }
 );
 

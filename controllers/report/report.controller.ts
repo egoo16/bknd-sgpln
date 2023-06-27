@@ -55,6 +55,15 @@ export const getIdeasFitered = async (req: any, res: Response) => {
                     whereIsUsed = true;
                 }
             }
+            if (filtros.productName && filtros.productName != '') {
+                const queryIdEntity = ` "productName" = '${filtros.idEntity}'`;
+                if (whereIsUsed) {
+                    queryToSend = queryToSend + wordAnd + queryIdEntity;
+                } else {
+                    queryToSend = queryToSend + wordWhere + queryIdEntity;
+                    whereIsUsed = true;
+                }
+            }
             if (filtros.yearCreated && filtros.yearCreated != '') {
                 const queryYearCreated = ` EXTRACT(YEAR FROM "createdAt") = '${filtros.yearCreated}'`;
                 if (whereIsUsed) {
@@ -89,7 +98,6 @@ export const getIdeasFitered = async (req: any, res: Response) => {
                 let ideaFiltered = await getAlternativesByIdea(filtros, element)
                 if (ideaFiltered) {
                     if (ideaFiltered.alternatives && ideaFiltered.alternatives.length > 0){
-                        ideasResult.push(ideaFiltered);
                         ideasResult.push(ideaFiltered);
                     }
                 }
@@ -260,3 +268,110 @@ const getAlternativesByIdea = async (filtros: FiltroIdeaReport, idea: IdeaReport
         throw `Ocurrio un error mientras se filtraban alternativas, ${error}`;
     }
 }
+
+export const getRegisterSinafip = async (req: any, res: Response) => {
+    try {
+
+        let ideasResult: any[] = [];
+
+
+        let queryToIdeas = `
+        SELECT 
+        "institution"."entityName",
+        "institution"."executionUnit",
+        "institution"."generalStudy",
+        "studyDescriptions"."modalityFinancing",
+        "investmentProjects"."estimatedProject",
+        "request"."status",
+        "delimitPopulation"."type",
+        "delimitPopulation"."total"
+        FROM "request"
+        INNER JOIN "institution" ON "request"."id" = "institution"."requestId"
+        INNER JOIN "investmentProjects" ON "request"."id" = "investmentProjects"."requestId"
+        INNER JOIN "studyDescriptions" ON "request"."id" = "studyDescriptions"."requestId"
+        INNER JOIN "delimits" ON "request"."id" = "delimits"."requestId"
+        INNER JOIN "delimitPopulation" ON "delimits"."id" = "delimitPopulation"."delimitId"
+        
+        WHERE
+        "institution"."entityName" = 'SUPERINTENDENCIA DE ADMINISTRACION TRIBUTARIA - SAT'
+        AND "institution"."executionUnit" LIKE '%Unidad%'
+        AND "institution"."generalStudy" = 'AMBIENTAL'
+        AND "studyDescriptions"."modalityFinancing" = 'INGRESOS PROPIOS'
+        AND "delimits"."departament" = 'QUETZALTENANGO'
+        AND "delimits"."municipality" = 'CABRICAN'
+        AND "delimits"."denomination" = 'Pacientes'
+        AND "delimits"."estimatedBenef" = 57023
+        AND "investmentProjects"."estimatedProject" = 4534564564
+            `;
+
+        let queryToSend = ''
+
+
+        let filtros: FiltroIdeaReport = req.query
+        queryToSend = queryToIdeas;
+
+        if (filtros) {
+
+            const wordWhere = ` WHERE `
+            const wordAnd = ` AND `
+
+            let whereIsUsed = false;
+
+            if (filtros.state && filtros.state != 'TODAS') {
+                const queryStage = ` "state" like '%${filtros.state}%'`;
+                if (whereIsUsed) {
+                    queryToSend = queryToSend + wordAnd + queryStage;
+                } else {
+                    queryToSend = queryToSend + wordWhere + queryStage;
+                    whereIsUsed = true;
+                }
+            }
+            if (filtros.idEntity && filtros.idEntity != '') {
+                const queryIdEntity = ` "idEntity" = '${filtros.idEntity}'`;
+                if (whereIsUsed) {
+                    queryToSend = queryToSend + wordAnd + queryIdEntity;
+                } else {
+                    queryToSend = queryToSend + wordWhere + queryIdEntity;
+                    whereIsUsed = true;
+                }
+            }
+            if (filtros.yearCreated && filtros.yearCreated != '') {
+                const queryYearCreated = ` EXTRACT(YEAR FROM "createdAt") = '${filtros.yearCreated}'`;
+                if (whereIsUsed) {
+                    queryToSend = queryToSend + wordAnd + queryYearCreated;
+                } else {
+                    queryToSend = queryToSend + wordWhere + queryYearCreated;
+                    whereIsUsed = true;
+                }
+            }
+            if (filtros.registerCode && filtros.registerCode != '') {
+                const queryAdd = ` "registerCode" LIKE '%${filtros.registerCode}%'`;
+                if (whereIsUsed) {
+                    queryToSend = queryToSend + wordAnd + queryAdd;
+                } else {
+                    queryToSend = queryToSend + wordWhere + queryAdd;
+                    whereIsUsed = true;
+                }
+            }
+        }
+
+        await models.query(queryToSend).spread((result: any) => { ideasResult = result; }).catch((error: any) => {
+            res.status(500).json({
+                msg: "Error",
+                error,
+            });
+        });
+
+
+
+        res.status(200).json({
+            msg: "Datos Obtenidos",
+            data: ideasResult,
+        });
+    } catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+};

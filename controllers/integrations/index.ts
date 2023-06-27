@@ -29,7 +29,6 @@ export const getGeograficos = async (req: Request, res: Response) => {
         let dato2 = data.findIndex(dato => dato.NOMBRE == 'No Aplica');
         let dato3 = data.findIndex(dato => dato.NOMBRE == 'Sin clasificar');
         let dato4 = data.findIndex(dato => dato.NOMBRE == 'MULTIREGIONAL - NACIONAL');
-        console.log("🚀 ~ file: index.ts ~ line 33 ~ getGeograficos ~ dato4", dato1,dato2,dato3,dato4)
         if (dato1 !== -1) {
             data.splice(dato1, 1);
         }
@@ -133,7 +132,6 @@ export const getObjetos = async (req: Request, res: Response) => {
 export const getProductos = async (req: Request, res: Response) => {
     try {
 
-        console.log();
         if (!req.query.idEntidad) {
             throw 'Se esperaba Id de la Entidad'
         }
@@ -159,6 +157,55 @@ export const getProductos = async (req: Request, res: Response) => {
                     codigo: res.SPPRO$ID_PRODUCTO,
                     nombre: res.SPPRO$DESCRIPCION,
                     idEntidad: res.SPPRO$INSTO,
+                }
+                data.push(dato);
+            })
+            const eliminaDatosDuplicados = (arr: any) => {
+                const datosMap = arr.map((dato: any) => {
+                    return [dato.nombre, dato]
+                });
+                return [...new Map(datosMap).values()];
+            }
+            datar = eliminaDatosDuplicados(data);
+        }
+
+        res.status(200).json({
+            msg: "Datos Obtenidos",
+            data: datar,
+        });
+    } catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+};
+
+export const getEntidades = async (req: Request, res: Response) => {
+    try {
+
+
+
+        let resultado: any[] = [];
+        let data: any[] = [];
+        let datar: any[] = [];
+
+        let query = `select * from SINIP.CG_ENTIDADES
+        where SINIP.CG_ENTIDADES."SIGLA" IS NOT NULL`;
+
+        await models.query(query).spread((result: any) => { resultado = result; }).catch((error: any) => {
+            res.status(500).json({
+                msg: "Error",
+                error,
+            });
+        });
+
+        if (resultado) {
+            resultado.map((res: any) => {
+                let dato = {
+                    idEntidad: res.ENTIDAD,
+                    nombre: res.NOMBRE,
+                    sigla: res.SIGLA
                 }
                 data.push(dato);
             })
