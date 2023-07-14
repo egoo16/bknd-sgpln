@@ -24,15 +24,16 @@ class Server {
     dbConnection() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield connection_1.default.authenticate().then(() => {
-                    // await db.sync({ force: true }).then(() => {
+                // await db.authenticate().then(() => {
+                yield connection_1.default.sync({ force: true }).then(() => {
                     // await db.sync().then(() => {
                     console.log("Database online");
                 });
                 // await project.sync({ forde: true })
-                // await track.sync({ force: true });
+                // await comment.sync({ forde: true })
                 // await advisoryEpi.sync({ force: true });
                 // await advisoryDoc.sync({ force: true });
+                // await track.sync({ force: true });
                 // await visitCard.sync({ force: true });
                 // await geographicArea.sync({ force: true });
                 // await dataGeo.sync({ force: true });

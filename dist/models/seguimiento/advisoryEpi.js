@@ -25,8 +25,8 @@ const advisoryEpi = connection_1.default.define("advisoryEpi", {
     place: { type: sequelize_oracle_1.default.STRING },
     objective: { type: sequelize_oracle_1.default.STRING },
     devAdv: { type: sequelize_oracle_1.default.STRING },
-    conclusions: { type: sequelize_oracle_1.default.STRING(500) },
-    commitments: { type: sequelize_oracle_1.default.STRING(500) },
+    conclusions: { type: sequelize_oracle_1.default.STRING(1000) },
+    commitments: { type: sequelize_oracle_1.default.STRING(1000) },
     specialist: { type: sequelize_oracle_1.default.STRING },
     doc: { type: sequelize_oracle_1.default.STRING },
 }, {

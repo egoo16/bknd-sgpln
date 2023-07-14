@@ -24,8 +24,8 @@ const advisoryDoc = db.define(
         analysisDate: { type: Sequelize.STRING },
         advDate: { type: Sequelize.STRING },
         assistant: { type: Sequelize.STRING },
-        conclusions: { type: Sequelize.STRING(500) },
-        recomend: { type: Sequelize.STRING(500) },
+        conclusions: { type: Sequelize.STRING(1000) },
+        recomend: { type: Sequelize.STRING(1000) },
     },
     {
         underscoded: true,

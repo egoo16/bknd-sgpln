@@ -7,7 +7,7 @@ const comment = db.define(
         id: { type: Sequelize.UUID, primaryKey: true, allowNull: false, defaultValue: Sequelize.UUIDV4, },
         advisoryDocId: { type: Sequelize.UUID },
         theme: { type: Sequelize.STRING },
-        description: { type: Sequelize.STRING },
+        description: { type: Sequelize.STRING(1000) },
     },
     {
         underscoded: true,

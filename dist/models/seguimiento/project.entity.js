@@ -22,7 +22,7 @@ const project = connection_1.default.define("project", {
     legalLand: { type: sequelize_oracle_1.default.BOOLEAN },
     agripManage: { type: sequelize_oracle_1.default.BOOLEAN },
     snipCode: { type: sequelize_oracle_1.default.STRING },
-    observations: { type: sequelize_oracle_1.default.STRING(1000) },
+    observations: { type: sequelize_oracle_1.default.STRING(1100) },
     advance: { type: sequelize_oracle_1.default.INTEGER },
     status: { type: sequelize_oracle_1.default.STRING },
 }, {

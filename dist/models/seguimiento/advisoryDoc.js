@@ -25,8 +25,8 @@ const advisoryDoc = connection_1.default.define("advisoryDoc", {
     analysisDate: { type: sequelize_oracle_1.default.STRING },
     advDate: { type: sequelize_oracle_1.default.STRING },
     assistant: { type: sequelize_oracle_1.default.STRING },
-    conclusions: { type: sequelize_oracle_1.default.STRING(500) },
-    recomend: { type: sequelize_oracle_1.default.STRING(500) },
+    conclusions: { type: sequelize_oracle_1.default.STRING(1000) },
+    recomend: { type: sequelize_oracle_1.default.STRING(1000) },
 }, {
     underscoded: true,
     paranoid: true,
