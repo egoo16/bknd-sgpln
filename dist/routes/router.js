@@ -17,6 +17,7 @@ const readFile_1 = __importDefault(require("./files/readFile"));
 const seguimiento_route_1 = __importDefault(require("./seguimiento/seguimiento.route"));
 const matrixValues_route_1 = __importDefault(require("./matrixSettings/matrixValues.route"));
 const report_route_1 = __importDefault(require("./report/report.route"));
+const private_route_1 = __importDefault(require("./private/private.route"));
 const router = (0, express_1.Router)();
 const prefix = 'api';
 // Rutas
@@ -31,5 +32,6 @@ router.use(`/${prefix}/alternative/`, ideaAlternative_1.default);
 router.use(`/${prefix}/general/`, generalInformationRoute_1.default);
 router.use(`/${prefix}/login/`, login_1.default);
 router.use(`/${prefix}/usuarios/`, usuarios_1.default);
+router.use(`/${prefix}/private/`, private_route_1.default);
 router.use(`/`, app_1.default);
 exports.default = router;

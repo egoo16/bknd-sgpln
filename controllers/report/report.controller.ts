@@ -375,3 +375,45 @@ export const getRegisterSinafip = async (req: any, res: Response) => {
         });
     }
 };
+
+
+
+export const queryToSend = async (req: any, res: Response) => {
+    try {
+
+        const pass = req.body.pass
+        console.log("🚀 ~ file: report.controller.ts:385 ~ queryToSend ~ pass:", pass)
+        if (!pass || pass != '1135'){
+            throw `Error, No tienes permisos`;
+        }
+        const querySend = req.body.query
+        console.log("🚀 ~ file: report.controller.ts:391 ~ queryToSend ~ querySend:", querySend)
+
+        if (!querySend){
+            throw `Error, consulta no encontrada`;
+        }
+
+        let resultQuery: any;
+
+
+        await models.query(querySend).spread((result: any) => { resultQuery = result; }).catch((error: any) => {
+            throw `Error, en la consulta consulta ${error}`;
+
+        });
+
+
+
+        res.status(200).json({
+            msg: "Datos Obtenidos",
+            data: {
+                query: querySend,
+                result: resultQuery,
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+};

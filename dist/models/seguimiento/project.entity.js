@@ -11,7 +11,7 @@ const project = connection_1.default.define("project", {
         type: sequelize_oracle_1.default.UUID, primaryKey: true, allowNull: false, defaultValue: sequelize_oracle_1.default.UUIDV4,
     },
     author: { type: sequelize_oracle_1.default.STRING },
-    correlative: { type: sequelize_oracle_1.default.INTEGER, autoIncrement: true },
+    correlative: { type: sequelize_oracle_1.default.INTEGER },
     process: { type: sequelize_oracle_1.default.STRING },
     sector: { type: sequelize_oracle_1.default.STRING },
     depto: { type: sequelize_oracle_1.default.STRING },

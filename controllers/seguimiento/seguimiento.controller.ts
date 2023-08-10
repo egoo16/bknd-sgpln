@@ -13,9 +13,39 @@ export async function createProject(req: Request, res: Response) {
         projectModel.status = 'REGISTER';
         console.log("🚀 ~ file: seguimiento.controller.ts:20 ~ createProject ~ projectModel", projectModel)
         let allTracks: any = [];
+        let resultQuery: any;
 
 
-        const projectCreated = await project.create({ ...projectModel }, {transaction});
+        let maxCorrelative = 0
+
+
+        if (req.body.isMinistry == 1) {
+            const querySend = `SELECT MAX("project"."correlative") AS FROM "project" WHERE "project"."isMinistry" = 1`
+            await models.query(querySend).spread((result: any) => { resultQuery = result; }).catch((error: any) => {
+                throw `Error, en la consulta consulta ${error}`;
+
+            });
+            const max = resultQuery![0]["MAX(\"PROJECT\".\"CORRELATIVE\")AS"];
+
+            maxCorrelative = max
+        }
+        if (req.body.isMinistry == 0) {
+            const querySend = `SELECT MAX("project"."correlative") AS FROM "project" WHERE "project"."isMinistry" = 0`
+            await models.query(querySend).spread((result: any) => { resultQuery = result; }).catch((error: any) => {
+                throw `Error, en la consulta consulta ${error}`;
+
+            });
+            const max = resultQuery![0]["MAX(\"PROJECT\".\"CORRELATIVE\")AS"];
+
+            maxCorrelative = max
+        }
+
+
+        req.body.correlative = maxCorrelative + 1
+
+
+
+        const projectCreated = await project.create({ ...projectModel }, { transaction });
         let proj = {
             id: projectCreated.id,
             author: projectCreated.author,
@@ -71,6 +101,141 @@ export async function createProject(req: Request, res: Response) {
     }
 }
 
+export async function editProject(req: Request, res: Response) {
+    try {
+
+        if (req.params.id) {
+
+            let projectToEdit = await project.findOne({ where: { id: req.params.id } });
+
+
+            if (projectToEdit) {
+
+                const projectModel = req.body;
+                console.log("🚀 ~ file: seguimiento.controller.ts:20 ~ createProject ~ projectModel", projectModel)
+
+                projectToEdit.author = projectModel.author;
+                projectToEdit.process = projectModel.process;
+                projectToEdit.sector = projectModel.sector;
+                projectToEdit.depto = projectModel.depto;
+                projectToEdit.munic = projectModel.munic;
+                projectToEdit.nameProject = projectModel.nameProject;
+                projectToEdit.ministry = projectModel.ministry;
+                projectToEdit.isMinistry = projectModel.isMinistry;
+                projectToEdit.legalLand = projectModel.legalLand;
+                projectToEdit.agripManage = projectModel.agripManage;
+                projectToEdit.snipCode = projectModel.snipCode;
+                projectToEdit.observations = projectModel.observations;
+
+                const result = await projectToEdit.save()
+
+                res.status(200).json({
+                    msg: "Datos Editados Correctamente",
+                    data: projectToEdit,
+                    result,
+                });
+
+            } else {
+                throw `No se encontró el registro`;
+            }
+        }
+
+        else {
+            throw `Error al eliminar Projecto`;
+        }
+
+    } catch (error: any) {
+        return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
+    }
+}
+
+export const deleteProject = async (req: Request, res: Response) => {
+    try {
+        if (req.params.id) {
+
+            const projectToDelete = await project.findOne({ where: { id: req.params.id } });
+            if (projectToDelete) {
+
+                const codigo = req.params.id;
+                let projCreated = await project.destroy({
+                    where: {
+                        id: projectToDelete.id
+                    }
+                })
+
+                res.status(200).json({
+                    msg: "Datos Eliminados",
+                    data: projCreated
+                });
+            } else {
+                throw `No se encontró el registro`;
+            }
+        }
+
+        else {
+            throw `Error al eliminar Projecto`;
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+}
+
+export const deleteTrack = async (req: Request, res: Response) => {
+    try {
+        if (req.params.id) {
+
+
+            let trackFind = await track.findOne({
+                where: {
+                    id: req.params.id
+                }
+            })
+
+            if (!trackFind) {
+                throw new Error("No se Encontro el Track ");
+            }
+
+            let projectUd = await project.findOne({
+                where: {
+                    id: trackFind.projectId
+                }
+            })
+            if (projectUd) {
+                projectUd.advance = 0;
+                await projectUd.save()
+
+            } else {
+                throw new Error("No se Encontro el proyecto ");
+            }
+
+            let trackDeleted = await track.destroy({
+                where: {
+                    id: trackFind.id
+                }
+            })
+
+            res.status(200).json({
+                msg: "Datos Eliminados",
+                data: trackDeleted
+            });
+        }
+
+        else {
+            throw `Error: No se encontró ID`;
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+}
+
 export async function addTrack(req: Request, res: Response) {
     let transaction = await models.transaction()
     try {
@@ -105,7 +270,7 @@ async function createTrack(trackModel: any, projectId: string, transaction: any)
                 projectUd.status = 'FINISHED';
             }
             projectUd.advance = totalProgress;
-            await projectUd.save({transaction})
+            await projectUd.save({ transaction })
 
         } else {
             throw new Error("No se Encontro el proyecto ");
@@ -115,24 +280,24 @@ async function createTrack(trackModel: any, projectId: string, transaction: any)
         if (trackModel.advisoryEpi) {
             let advEpi = trackModel.advisoryEpi;
             advEpi.doc = '';
-            let advEpiCreated = await advisoryEpi.create({ ...advEpi, trackId: trackCreated.id }, {transaction});
+            let advEpiCreated = await advisoryEpi.create({ ...advEpi, trackId: trackCreated.id }, { transaction });
         }
         if (trackModel.advisoryDoc) {
             let advDoc = trackModel.advisoryDoc;
             let cments = []
             cments = trackModel.advisoryDoc.comments;
-            let advEpiCreated = await advisoryDoc.create({ ...advDoc, trackId: trackCreated.id }, {transaction});
+            let advEpiCreated = await advisoryDoc.create({ ...advDoc, trackId: trackCreated.id }, { transaction });
             if (cments.length > 0) {
                 const cmProm = await Promise.all(cments.map(async (cmt: any) => {
                     cmt.advisoryDocId = advEpiCreated.id
-                    const response = await comment.create({ ...cmt }, {transaction});
+                    const response = await comment.create({ ...cmt }, { transaction });
                 }))
             }
         }
         if (trackModel.visitCard) {
 
             let vsCard = trackModel.visitCard;
-            let vsCardCreated = await visitCard.create({ ...vsCard, trackId: trackCreated.id }, {transaction});
+            let vsCardCreated = await visitCard.create({ ...vsCard, trackId: trackCreated.id }, { transaction });
             // Variables de otras tablas
             let accessRds = [];
             let mtransport = [];
@@ -157,7 +322,7 @@ async function createTrack(trackModel: any, projectId: string, transaction: any)
             if (accessRds.length > 0) {
                 const resProm = await Promise.all(accessRds.map(async (obj: any) => {
                     obj.visitCardId = vsCardCreated.id
-                    const response = await accessRoads.create({ ...obj }, {transaction});
+                    const response = await accessRoads.create({ ...obj }, { transaction });
                 }))
             }
 
@@ -165,41 +330,41 @@ async function createTrack(trackModel: any, projectId: string, transaction: any)
             if (mtransport.length > 0) {
                 const resProm = await Promise.all(mtransport.map(async (obj: any) => {
                     obj.visitCardId = vsCardCreated.id
-                    const response = await meansTransport.create({ ...obj }, {transaction});
+                    const response = await meansTransport.create({ ...obj }, { transaction });
                 }))
             }
 
             if (srvInf.length > 0) {
                 const resProm = await Promise.all(srvInf.map(async (obj: any) => {
                     obj.visitCardId = vsCardCreated.id
-                    const response = await serviceInf.create({ ...obj },{transaction});
+                    const response = await serviceInf.create({ ...obj }, { transaction });
                 }))
             }
 
             if (dsters.length > 0) {
                 const resProm = await Promise.all(dsters.map(async (obj: any) => {
                     obj.visitCardId = vsCardCreated.id
-                    const response = await disasters.create({ ...obj }, {transaction});
+                    const response = await disasters.create({ ...obj }, { transaction });
                 }))
             }
 
             if (thrTypes.length > 0) {
                 const resProm = await Promise.all(thrTypes.map(async (obj: any) => {
                     obj.visitCardId = vsCardCreated.id
-                    const response = await threatTypes.create({ ...obj }, {transaction});
+                    const response = await threatTypes.create({ ...obj }, { transaction });
                 }))
             }
 
             if (imgVst.length > 0) {
                 const resProm = await Promise.all(imgVst.map(async (obj: any) => {
                     obj.visitCardId = vsCardCreated.id
-                    const response = await imgVisit.create({ ...obj }, {transaction});
+                    const response = await imgVisit.create({ ...obj }, { transaction });
                 }))
             }
             if (avlOrg.length > 0) {
                 const resProm = await Promise.all(avlOrg.map(async (obj: any) => {
                     obj.visitCardId = vsCardCreated.id
-                    const response = await availableOrg.create({ ...obj }, {transaction});
+                    const response = await availableOrg.create({ ...obj }, { transaction });
                 }))
             }
 
@@ -209,6 +374,358 @@ async function createTrack(trackModel: any, projectId: string, transaction: any)
         throw `Error al ingresar Track: ${error}`;
     }
 }
+
+export async function editTrack(req: Request, res: Response) {
+    try {
+        if (!req.params.id) {
+            throw `Error: No se encontró ID`;
+        }
+        const idProject = req.params.id
+        const trackModel = req.body;
+        console.log("🚀 ~ file: seguimiento.controller.ts:385 ~ editTrack ~ trackModel:", trackModel)
+
+        let trackCreated = await updateTrack(trackModel, idProject);
+
+        const response = await getProjectCompleto(idProject)
+        return res.status(201).send(response)
+    } catch (error: any) {
+        return res.status(error.codigo || 500).send({ message: `${error.message || error}` })
+    }
+}
+
+async function updateTrack(trackModel: any, projectId: string) {
+    try {
+
+        let projectUd = await project.findOne({
+            where: {
+                id: projectId
+            }
+        })
+        if (projectUd) {
+            const a = parseInt(trackModel.iapa);
+            const b = parseInt(trackModel.iapb);
+            const c = parseInt(trackModel.iapc);
+            const totalProgress = a + b + c;
+            if (totalProgress == 100) {
+                projectUd.status = 'FINISHED';
+            }
+            projectUd.advance = totalProgress;
+            await projectUd.save()
+
+        } else {
+            throw new Error("No se Encontro la Asesoria ");
+        }
+        if (!trackModel.id) {
+            throw new Error("No se Encontro ID para la Asesoria ");
+        }
+
+        const trackToEdit = await track.findOne({
+            where: {
+                id: trackModel.id
+            }
+        })
+        if (!trackToEdit) {
+            throw new Error("No se Encontro la Asesoria ");
+        }
+        trackToEdit.iapa = trackModel.iapa;
+        trackToEdit.iapb = trackModel.iapb;
+        trackToEdit.iapc = trackModel.iapc;
+        trackToEdit.activity = trackModel.activity;
+        trackToEdit.reportDate = trackModel.reportDate;
+        await trackToEdit.save();
+
+        // const trackCreated = await track.create({ ...trackModel, projectId });
+        if (trackModel.advisoryEpi) {
+            const advEpi = trackModel.advisoryEpi;
+
+            const advEpiFind = await advisoryEpi.findOne({
+                where: {
+                    id: advEpi.id
+                }
+            })
+            if (!advEpiFind) {
+                throw new Error(`No se Encontro la Asesoria a la EPI con ID ${advEpi.id}`);
+            }
+            advEpiFind.goal = advEpi.goal;
+            advEpiFind.action = advEpi.action;
+            advEpiFind.unitSpecific = advEpi.unitSpecific;
+            advEpiFind.sectorization = advEpi.sectorization;
+            advEpiFind.subSectorization = advEpi.subSectorization;
+            advEpiFind.advTheme = advEpi.advTheme;
+            advEpiFind.participantName = advEpi.participantName;
+            advEpiFind.participantPosition = advEpi.participantPosition;
+            advEpiFind.menAttended = advEpi.menAttended;
+            advEpiFind.womenAttended = advEpi.womenAttended;
+            advEpiFind.totalAttended = advEpi.totalAttended;
+            advEpiFind.advDate = advEpi.advDate;
+            advEpiFind.reportDate = advEpi.reportDate;
+            advEpiFind.counselingModality = advEpi.counselingModality;
+            advEpiFind.place = advEpi.place;
+            advEpiFind.objective = advEpi.objective;
+            advEpiFind.devAdv = advEpi.devAdv;
+            advEpiFind.conclusions = advEpi.conclusions;
+            advEpiFind.commitments = advEpi.commitments;
+            advEpiFind.specialist = advEpi.specialist;
+
+            await advEpiFind.save();
+
+            // advEpi.doc = '';
+            // let advEpiCreated = await advisoryEpi.create({ ...advEpi, trackId: trackModel.id });
+        }
+        if (trackModel.advisoryDoc) {
+            const advDoc = trackModel.advisoryDoc;
+
+            const advDocFind = await advisoryDoc.findOne({
+                where: {
+                    id: advDoc.id
+                }
+            })
+            if (!advDocFind) {
+                throw new Error(`No se Encontro la Asesoria al Documento con ID: ${advDoc.id} `);
+            }
+
+            advDocFind.goal = advDoc.goal;
+            advDocFind.action = advDoc.action;
+            advDocFind.unitSpecific = advDoc.unitSpecific;
+            advDocFind.sectorization = advDoc.sectorization;
+            advDocFind.subSectorization = advDoc.subSectorization;
+            advDocFind.menAttended = advDoc.menAttended;
+            advDocFind.womenAttended = advDoc.womenAttended;
+            advDocFind.totalAttended = advDoc.totalAttended;
+            advDocFind.counselingModality = advDoc.counselingModality;
+            advDocFind.advTheme = advDoc.advTheme;
+            advDocFind.snipCode = advDoc.snipCode;
+            advDocFind.projectName = advDoc.projectName;
+            advDocFind.participant = advDoc.participant;
+            advDocFind.analysisDate = advDoc.analysisDate;
+            advDocFind.advDate = advDoc.advDate;
+            advDocFind.assistant = advDoc.assistant;
+            advDocFind.conclusions = advDoc.conclusions;
+            advDocFind.recomend = advDoc.recomend;
+
+            await advDocFind.save()
+
+            // let advEpiCreated = await advisoryDoc.create({ ...advDoc, trackId: trackCreated.id });
+
+
+            let cments = []
+            cments = trackModel.advisoryDoc.comments;
+
+
+            let commentsDeleted = await comment.destroy({
+                where: {
+                    advisoryDocId: advDoc.id
+                }
+            })
+
+            if (cments.length > 0) {
+                const cmProm = await Promise.all(cments.map(async (cmt: any) => {
+                    delete cmt.id
+                    cmt.advisoryDocId = advDoc.id
+                    const response = await comment.create({ ...cmt });
+                }))
+            }
+        }
+        if (trackModel.visitCard) {
+
+            const vsCard = trackModel.visitCard;
+
+            const advVisitFind = await visitCard.findOne({
+                where: {
+                    id: vsCard.id
+                }
+            })
+            if (!advVisitFind) {
+                throw new Error(`No se Encontro la Visita de Campo con ID: ${vsCard.id} `);
+            }
+
+            advVisitFind.codePreinv = vsCard.codePreinv;
+            advVisitFind.visitDate = vsCard.visitDate;
+            advVisitFind.deptoDel = vsCard.deptoDel;
+            advVisitFind.specialistName = vsCard.specialistName;
+            advVisitFind.proposalName = vsCard.proposalName;
+            advVisitFind.mountAprox = vsCard.mountAprox;
+            advVisitFind.region = vsCard.region;
+            advVisitFind.depto = vsCard.depto;
+            advVisitFind.municip = vsCard.municip;
+            advVisitFind.address = vsCard.address;
+            advVisitFind.typeAddress = vsCard.typeAddress;
+            advVisitFind.catLocation = vsCard.catLocation;
+            advVisitFind.typeClimate = vsCard.typeClimate;
+            advVisitFind.avgTemperature = vsCard.avgTemperature;
+            advVisitFind.distanceKm = vsCard.distanceKm;
+            advVisitFind.nameHeadboard = vsCard.nameHeadboard;
+            advVisitFind.isDrinkingWater = vsCard.isDrinkingWater;
+            advVisitFind.isDrainageNetwork = vsCard.isDrainageNetwork;
+            advVisitFind.isElectricity = vsCard.isElectricity;
+            advVisitFind.isPhoneService = vsCard.isPhoneService;
+            advVisitFind.isDrinkableWhater = vsCard.isDrinkableWhater;
+            advVisitFind.garbageDisposal = vsCard.garbageDisposal;
+            advVisitFind.latitud = vsCard.latitud;
+            advVisitFind.longitud = vsCard.longitud;
+            advVisitFind.gtmx = vsCard.gtmx;
+            advVisitFind.gtmy = vsCard.gtmy;
+            advVisitFind.elevation = vsCard.elevation;
+            advVisitFind.msnm = vsCard.msnm;
+            advVisitFind.infRealEstate = vsCard.infRealEstate;
+            advVisitFind.groundConditions = vsCard.groundConditions;
+            advVisitFind.approximateSlope = vsCard.approximateSlope;
+            advVisitFind.soilType = vsCard.soilType;
+            advVisitFind.realEstateArea = vsCard.realEstateArea;
+            advVisitFind.northMeasure = vsCard.northMeasure;
+            advVisitFind.southMeasure = vsCard.southMeasure;
+            advVisitFind.eastMeasure = vsCard.eastMeasure;
+            advVisitFind.westMeasure = vsCard.westMeasure;
+            advVisitFind.northBorder = vsCard.northBorder;
+            advVisitFind.southBorder = vsCard.southBorder;
+            advVisitFind.eastBorder = vsCard.eastBorder;
+            advVisitFind.westBorder = vsCard.westBorder;
+            advVisitFind.legalSituation = vsCard.legalSituation;
+            advVisitFind.basicServRS = vsCard.basicServRS;
+            advVisitFind.isElectricityRS = vsCard.isElectricityRS;
+            advVisitFind.isPhoneRS = vsCard.isPhoneRS;
+            advVisitFind.isDrainageRS = vsCard.isDrainageRS;
+            advVisitFind.isDrinkingWRS = vsCard.isDrinkingWRS;
+            advVisitFind.garbageRS = vsCard.garbageRS;
+            advVisitFind.isReqFinance = vsCard.isReqFinance;
+            advVisitFind.desReqFinance = vsCard.desReqFinance;
+            advVisitFind.appStatus = vsCard.appStatus;
+            advVisitFind.techNameEpi = vsCard.techNameEpi;
+            advVisitFind.techPosEpi = vsCard.techPosEpi;
+            advVisitFind.techProfEpi = vsCard.techProfEpi;
+            advVisitFind.theirAgree = vsCard.theirAgree;
+            advVisitFind.specifyAnswer = vsCard.specifyAnswer;
+            advVisitFind.observationsGeneral = vsCard.observationsGeneral;
+
+            await advVisitFind.save()
+
+
+            // let vsCardCreated = await visitCard.create({ ...vsCard, trackId: trackCreated.id });
+            
+            
+            
+            // Variables de otras tablas
+            let accessRds = [];
+            let mtransport = [];
+            let srvInf = [];
+            let dsters = [];
+            let thrTypes = [];
+            let imgVst = [];
+            let avlOrg = [];
+
+            // asignacion de variables 
+
+            accessRds = trackModel.visitCard.accessRoads
+            mtransport = trackModel.visitCard.meanstransport
+            srvInf = trackModel.visitCard.serviceInf
+            dsters = trackModel.visitCard.disasters
+            thrTypes = trackModel.visitCard.threatTypes
+            imgVst = trackModel.visitCard.imgVisit
+            avlOrg = trackModel.visitCard.availableOrg
+
+            // Creacion de Registros
+            console.log("🚀 ~ file: seguimiento.controller.ts:157 ~ createTrack ~ accessRds.length", accessRds.length)
+            if (accessRds.length > 0) {
+
+                let rowsDeleted = await accessRoads.destroy({
+                    where: {
+                        visitCardId: vsCard.id
+                    }
+                })
+
+                const resProm = await Promise.all(accessRds.map(async (obj: any) => {
+                    delete obj.id
+                    obj.visitCardId = vsCard.id
+                    const response = await accessRoads.create({ ...obj });
+                }))
+            }
+
+            console.log("🚀 ~ file: seguimiento.controller.ts:165 ~ createTrack ~ mtransport.length", mtransport)
+            if (mtransport.length > 0) {
+                let rowsDeleted = await meansTransport.destroy({
+                    where: {
+                        visitCardId: vsCard.id
+                    }
+                })
+
+                const resProm = await Promise.all(mtransport.map(async (obj: any) => {
+                    delete obj.id
+                    obj.visitCardId = vsCard.id
+                    const response = await meansTransport.create({ ...obj });
+                }))
+            }
+
+            if (srvInf.length > 0) {
+                let rowsDeleted = await serviceInf.destroy({
+                    where: {
+                        visitCardId: vsCard.id
+                    }
+                })
+                const resProm = await Promise.all(srvInf.map(async (obj: any) => {
+                    delete obj.id
+                    obj.visitCardId = vsCard.id
+                    const response = await serviceInf.create({ ...obj });
+                }))
+            }
+
+            if (dsters.length > 0) {
+                let rowsDeleted = await disasters.destroy({
+                    where: {
+                        visitCardId: vsCard.id
+                    }
+                })
+                const resProm = await Promise.all(dsters.map(async (obj: any) => {
+                    delete obj.id
+                    obj.visitCardId = vsCard.id
+                    const response = await disasters.create({ ...obj });
+                }))
+            }
+
+            if (thrTypes.length > 0) {
+                let rowsDeleted = await threatTypes.destroy({
+                    where: {
+                        visitCardId: vsCard.id
+                    }
+                })
+                const resProm = await Promise.all(thrTypes.map(async (obj: any) => {
+                    delete obj.id
+                    obj.visitCardId = vsCard.id
+                    const response = await threatTypes.create({ ...obj });
+                }))
+            }
+
+            if (imgVst.length > 0) {
+                let rowsDeleted = await imgVisit.destroy({
+                    where: {
+                        visitCardId: vsCard.id
+                    }
+                })
+                const resProm = await Promise.all(imgVst.map(async (obj: any) => {
+                    delete obj.id
+                    obj.visitCardId = vsCard.id
+                    const response = await imgVisit.create({ ...obj });
+                }))
+            }
+            if (avlOrg.length > 0) {
+                let rowsDeleted = await availableOrg.destroy({
+                    where: {
+                        visitCardId: vsCard.id
+                    }
+                })
+                const resProm = await Promise.all(avlOrg.map(async (obj: any) => {
+                    delete obj.id
+                    obj.visitCardId = vsCard.id
+                    const response = await availableOrg.create({ ...obj });
+                }))
+            }
+
+        }
+        return trackToEdit;
+    } catch (error: any) {
+        throw `Error al Actualizar Track: ${error}`;
+    }
+}
+
 
 export async function getProjectById(req: Request, res: Response) {
     try {
@@ -246,10 +763,14 @@ export async function getAllProjects(req: Request, res: Response) {
                 where.status = filtros.status;
             }
             if (filtros.departamento) {
-                where.depto = filtros.departamento;
+                where.depto = {
+                    $like: `%${filtros.departamento}%`
+                }
             }
             if (filtros.municipio) {
-                where.munic = filtros.municipio;
+                where.munic = {
+                    $like: `%${filtros.municipio}%`
+                }
             }
             if (filtros.mes) {
                 let year = 2022

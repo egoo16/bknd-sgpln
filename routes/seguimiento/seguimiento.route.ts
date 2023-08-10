@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { getAdvisedEntities } from '../../controllers';
-import { addTrack, createProject, getAllProjects, getProjectById } from '../../controllers/seguimiento/seguimiento.controller';
+import { addTrack, createProject, deleteProject, deleteTrack, editProject, editTrack, getAllProjects, getProjectById } from '../../controllers/seguimiento/seguimiento.controller';
 
 
 const seguimientoRouter = Router();
@@ -9,7 +9,12 @@ const seguimientoRouter = Router();
 seguimientoRouter.post('/project/new', createProject)
 seguimientoRouter.get('/project/get-all', getAllProjects)
 seguimientoRouter.get('/project/:id', getProjectById)
+seguimientoRouter.put('/project/:id', editProject)
 seguimientoRouter.post('/project/track/:id', addTrack)
+seguimientoRouter.put('/project/track/:id', editTrack)
+seguimientoRouter.delete('/project/:id', deleteProject)
+seguimientoRouter.delete('/track/:id', deleteTrack)
+
 
 // sinafipRouter.delete('/request/delete/:id', deleteOneRequest)
 

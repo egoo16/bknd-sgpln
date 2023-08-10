@@ -12,6 +12,7 @@ import READ_FILE_ROUTER from "./files/readFile";
 import seguimientoRouter from "./seguimiento/seguimiento.route";
 import matrixRouter from "./matrixSettings/matrixValues.route";
 import reportRouter from "./report/report.route";
+import privateRouter from "./private/private.route";
 
 const router = Router();
 
@@ -28,6 +29,7 @@ router.use(`/${prefix}/alternative/`, ideaAlternative);
 router.use(`/${prefix}/general/`, generalRouter);
 router.use(`/${prefix}/login/`, loginRouter);
 router.use(`/${prefix}/usuarios/`, usuarioRouter);
+router.use(`/${prefix}/private/`, privateRouter);
 router.use(`/`, appRouter);
 
 export default router;

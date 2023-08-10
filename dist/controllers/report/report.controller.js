@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRegisterSinafip = exports.getIdeasFitered = void 0;
+exports.queryToSend = exports.getRegisterSinafip = exports.getIdeasFitered = void 0;
 const connection_1 = __importDefault(require("../../db/connection"));
 const models_1 = require("../../models");
 const getIdeasFitered = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -349,3 +349,35 @@ const getRegisterSinafip = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getRegisterSinafip = getRegisterSinafip;
+const queryToSend = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const pass = req.body.pass;
+        console.log("🚀 ~ file: report.controller.ts:385 ~ queryToSend ~ pass:", pass);
+        if (!pass || pass != '1135') {
+            throw `Error, No tienes permisos`;
+        }
+        const querySend = req.body.query;
+        console.log("🚀 ~ file: report.controller.ts:391 ~ queryToSend ~ querySend:", querySend);
+        if (!querySend) {
+            throw `Error, consulta no encontrada`;
+        }
+        let resultQuery;
+        yield connection_1.default.query(querySend).spread((result) => { resultQuery = result; }).catch((error) => {
+            throw `Error, en la consulta consulta ${error}`;
+        });
+        res.status(200).json({
+            msg: "Datos Obtenidos",
+            data: {
+                query: querySend,
+                result: resultQuery,
+            }
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: "Error",
+            error,
+        });
+    }
+});
+exports.queryToSend = queryToSend;
