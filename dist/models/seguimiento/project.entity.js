@@ -25,6 +25,7 @@ const project = connection_1.default.define("project", {
     observations: { type: sequelize_oracle_1.default.STRING(1100) },
     advance: { type: sequelize_oracle_1.default.INTEGER },
     status: { type: sequelize_oracle_1.default.STRING },
+    createdAt: { type: sequelize_oracle_1.default.DATE, field: 'createdAt' }
 }, {
     underscoded: true,
     paranoid: true,

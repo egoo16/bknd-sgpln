@@ -16,6 +16,7 @@ const track = connection_1.default.define("track", {
     activity: { type: sequelize_oracle_1.default.STRING },
     reportDate: { type: sequelize_oracle_1.default.STRING },
     projectId: { type: sequelize_oracle_1.default.UUID },
+    createdAt: { type: sequelize_oracle_1.default.DATE, field: 'createdAt' }
 }, {
     underscoded: true,
     paranoid: true,

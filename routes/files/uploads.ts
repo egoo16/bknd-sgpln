@@ -44,7 +44,7 @@ UPLOAD_ROUTER.put('/:type/:id', (req: any, res: Response) => {
     const extFile = nameFile[nameFile.length - 1];
 
     // Extensiones permitidas
-    const validExts = ['png', 'jpg', 'gif', 'jpeg', 'pdf'];
+    const validExts = ['png', 'jpg', 'gif', 'jpeg', 'pdf', 'docx', 'xlsx'];
 
     if (validExts.indexOf(extFile) < 0) {
         return res.status(400).json({

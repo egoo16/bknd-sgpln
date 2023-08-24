@@ -215,7 +215,7 @@ function addTrack(req, res) {
             const idProject = req.params.id;
             const trackModel = req.body;
             let trackCreated = yield createTrack(trackModel, idProject, transaction);
-            const response = yield getProjectCompleto(idProject);
+            const response = yield getProjectCompleto(idProject, false);
             transaction.commit();
             return res.status(201).send(response);
         }
@@ -679,6 +679,7 @@ exports.getProjectById = getProjectById;
 function getAllProjects(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            let lastTrack = false;
             let where = {};
             let filtros = req.query;
             console.log("🚀 ~ file: seguimiento.controller.ts:155 ~ getAllProjects ~ filtros", filtros);
@@ -702,33 +703,46 @@ function getAllProjects(req, res) {
                     };
                 }
                 if (filtros.mes) {
-                    let year = 2022;
-                    let nextYear = 2022;
+                    let year = 0;
                     if (filtros.year) {
                         year = parseInt(filtros.year);
-                        nextYear = parseInt(filtros.year);
                     }
                     else {
-                        year = 2022;
+                        const fechaActual = new Date();
+                        year = fechaActual.getFullYear();
                     }
-                    let month = parseInt(filtros.mes);
-                    let nextMonth = month + 1;
-                    if (nextMonth > 12) {
-                        nextMonth = 1;
-                        nextYear = year + 1;
-                    }
-                    where.createdAt = { $between: [new Date(`${filtros.mes}-1-${year}`), new Date(`${nextMonth}-1-${nextYear}`)] };
+                    ;
+                    const month = parseInt(filtros.mes);
+                    // Construye la fecha de inicio del mes
+                    const primerDiaMes = new Date(year, month - 1, 1);
+                    // Construye la fecha de fin del mes
+                    const ultimoDiaMes = new Date(year, month, 0);
+                    // Formatea las fechas en el formato "YYYY-MM-DD"
+                    const formattedPrimerDiaMes = `${primerDiaMes.getFullYear()}-${(month < 10 ? '0' : '') + month}-01`;
+                    const formattedUltimoDiaMes = `${ultimoDiaMes.getFullYear()}-${(month < 10 ? '0' : '') + month}-${ultimoDiaMes.getDate()}`;
+                    where.createdAt = {
+                        $between: [
+                            new Date(`${formattedPrimerDiaMes}`),
+                            new Date(`${formattedUltimoDiaMes} 23:59:59`)
+                        ]
+                    };
+                }
+                if (filtros.isLastTrack) {
+                    console.log("🚀 ~ file: seguimiento.controller.ts:805 ~ getAllProjects ~ filtros.isLastTrack:", filtros.isLastTrack);
+                    lastTrack = filtros.isLastTrack;
                 }
                 if (filtros.entidad) {
                     where.ministry = filtros.entidad;
                 }
-                const projects = yield seguimiento_1.project.findAll({ where, order: '"createdAt" DESC' });
+                let projects = [];
+                projects = yield seguimiento_1.project.findAll({ where, order: '"project"."correlative" DESC' });
                 if (projects.length > 0) {
                     const resProm = yield Promise.all(projects.map((project) => __awaiter(this, void 0, void 0, function* () {
-                        const response = yield getProjectCompleto(project.id);
+                        const response = yield getProjectCompleto(project.id, lastTrack);
                         projectsResponse.push(response);
                     })));
-                    projectsResponse.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                    projectsResponse.sort((a, b) => b.correlative - a.correlative);
+                    // projectsResponse.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                     return res.status(201).send({ projects: projectsResponse });
                 }
                 else {
@@ -736,12 +750,13 @@ function getAllProjects(req, res) {
                 }
             }
             else {
-                const projects = yield seguimiento_1.project.findAll({ order: '"createdAt" DESC' });
+                const projects = yield seguimiento_1.project.findAll({ order: '"project"."correlative" DESC' });
                 if (projects.length > 0) {
                     const resProm = yield Promise.all(projects.map((project) => __awaiter(this, void 0, void 0, function* () {
                         const response = yield getProjectCompleto(project.id);
                         projectsResponse.push(response);
                     })));
+                    projectsResponse.sort((a, b) => b.correlative - a.correlative);
                     return res.status(201).send({ projects: projectsResponse });
                 }
                 else {
@@ -755,8 +770,8 @@ function getAllProjects(req, res) {
     });
 }
 exports.getAllProjects = getAllProjects;
-function getProjectCompleto(idProject) {
-    var _a, _b, _c;
+function getProjectCompleto(idProject, isLastTrack) {
+    var _a, _b, _c, _d, _e;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const projectFind = yield seguimiento_1.project.findOne({
@@ -773,94 +788,37 @@ function getProjectCompleto(idProject) {
             if (projectFind) {
                 let allData = [];
                 if (((_b = projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks) === null || _b === void 0 ? void 0 : _b.length) > 0 || ((_c = projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks) === null || _c === void 0 ? void 0 : _c.length)) {
-                    allData = yield Promise.all(projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks.map((trackI) => __awaiter(this, void 0, void 0, function* () {
-                        let advEpiFind = yield seguimiento_1.advisoryEpi.findOne({ where: { trackId: trackI.id } });
-                        if (advEpiFind) {
-                            let trackResult = {
-                                id: trackI.id,
-                                iapa: trackI.iapa,
-                                iapb: trackI.iapb,
-                                iapc: trackI.iapc,
-                                activity: trackI.activity,
-                                reportDate: trackI.reportDate,
-                                projectId: trackI.projectId,
-                                createdAt: trackI.createdAt,
-                                updatedAt: trackI.updatedAt,
-                                deletedAt: trackI.deletedAt,
-                                advisoryEpi: advEpiFind
-                            };
-                            return trackResult;
-                        }
-                        let advDocFind = yield seguimiento_1.advisoryDoc.findOne({ where: { trackId: trackI.id } });
-                        if (advDocFind) {
-                            let cmnts = [];
-                            cmnts = yield seguimiento_1.comment.findAll({
-                                where: {
-                                    advisoryDocId: advDocFind.id,
-                                }
-                            });
-                            const advDocModel = {
-                                id: advDocFind.id,
-                                trackId: advDocFind.trackId,
-                                goal: advDocFind.goal,
-                                action: advDocFind.action,
-                                unitSpecific: advDocFind.unitSpecific,
-                                sectorization: advDocFind.sectorization,
-                                subSectorization: advDocFind.subSectorization,
-                                menAttended: advDocFind.menAttended,
-                                womenAttended: advDocFind.womenAttended,
-                                totalAttended: advDocFind.totalAttended,
-                                counselingModality: advDocFind.counselingModality,
-                                advTheme: advDocFind.advTheme,
-                                snipCode: advDocFind.snipCode,
-                                projectName: advDocFind.projectName,
-                                participant: advDocFind.participant,
-                                analysisDate: advDocFind.analysisDate,
-                                advDate: advDocFind.advDate,
-                                assistant: advDocFind.assistant,
-                                conclusions: advDocFind.conclusions,
-                                recomend: advDocFind.recomend,
-                                comments: cmnts
-                            };
-                            let trackResult = {
-                                id: trackI.id,
-                                iapa: trackI.iapa,
-                                iapb: trackI.iapb,
-                                iapc: trackI.iapc,
-                                activity: trackI.activity,
-                                reportDate: trackI.reportDate,
-                                projectId: trackI.projectId,
-                                createdAt: trackI.createdAt,
-                                updatedAt: trackI.updatedAt,
-                                deletedAt: trackI.deletedAt,
-                                advisoryDoc: advDocModel
-                            };
-                            return trackResult;
-                        }
-                        let findVsCard = yield seguimiento_1.visitCard.findOne({ where: { trackId: trackI.id } });
-                        if (findVsCard) {
-                            let cardVisit = yield getVisitCardComplete(findVsCard.id);
-                            if (cardVisit) {
+                    console.log("🚀 ~ file: seguimiento.controller.ts:858 ~ getProjectCompleto ~ projectFind?.tracks?.length:", (_d = projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks) === null || _d === void 0 ? void 0 : _d.length);
+                    if (isLastTrack) {
+                        if (((_e = projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks) === null || _e === void 0 ? void 0 : _e.length) > 1) {
+                            const tracksReduce = [];
+                            projectFind.tracks.forEach((element) => {
                                 let trackResult = {
-                                    id: trackI.id,
-                                    iapa: trackI.iapa,
-                                    iapb: trackI.iapb,
-                                    iapc: trackI.iapc,
-                                    activity: trackI.activity,
-                                    reportDate: trackI.reportDate,
-                                    projectId: trackI.projectId,
-                                    createdAt: trackI.createdAt,
-                                    updatedAt: trackI.updatedAt,
-                                    deletedAt: trackI.deletedAt,
-                                    visitCard: cardVisit
+                                    id: element.id,
+                                    iapa: element.iapa,
+                                    iapb: element.iapb,
+                                    iapc: element.iapc,
+                                    activity: element.activity,
+                                    reportDate: element.reportDate,
+                                    projectId: element.projectId,
+                                    createdAt: element.createdAt,
+                                    updatedAt: element.updatedAt,
+                                    deletedAt: element.deletedAt,
                                 };
-                                return trackResult;
-                            }
+                                tracksReduce.push(trackResult);
+                            });
+                            const mostRecentTrack = tracksReduce.reduce((mostRecent, current) => {
+                                const mostRecentDate = new Date(mostRecent.createAt);
+                                const currentDate = new Date(current.createAt);
+                                return currentDate > mostRecentDate ? current : mostRecent;
+                            }, projectFind.tracks[0]);
+                            projectFind.tracks = [mostRecentTrack];
                         }
-                        if (!advEpiFind && !advDocFind) {
-                            return trackI;
-                        }
-                    })));
+                        allData = yield getDataTrackComplete(projectFind);
+                    }
+                    else {
+                        allData = yield getDataTrackComplete(projectFind);
+                    }
                     // const allTracks = await track.findAll({
                     //     where: { id: projectFind.id },
                     //     order: '"createdAt" DESC'
@@ -923,6 +881,104 @@ function getProjectCompleto(idProject) {
         }
         catch (error) {
             throw `Error al obtener Proyecto completo: ${error}`;
+        }
+    });
+}
+function getDataTrackComplete(projectFind) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const dataProje = yield Promise.all(projectFind === null || projectFind === void 0 ? void 0 : projectFind.tracks.map((trackI) => __awaiter(this, void 0, void 0, function* () {
+                let advEpiFind = yield seguimiento_1.advisoryEpi.findOne({ where: { trackId: trackI.id } });
+                if (advEpiFind) {
+                    let trackResult = {
+                        id: trackI.id,
+                        iapa: trackI.iapa,
+                        iapb: trackI.iapb,
+                        iapc: trackI.iapc,
+                        activity: trackI.activity,
+                        reportDate: trackI.reportDate,
+                        projectId: trackI.projectId,
+                        createdAt: trackI.createdAt,
+                        updatedAt: trackI.updatedAt,
+                        deletedAt: trackI.deletedAt,
+                        advisoryEpi: advEpiFind
+                    };
+                    return trackResult;
+                }
+                let advDocFind = yield seguimiento_1.advisoryDoc.findOne({ where: { trackId: trackI.id } });
+                if (advDocFind) {
+                    let cmnts = [];
+                    cmnts = yield seguimiento_1.comment.findAll({
+                        where: {
+                            advisoryDocId: advDocFind.id,
+                        }
+                    });
+                    const advDocModel = {
+                        id: advDocFind.id,
+                        trackId: advDocFind.trackId,
+                        goal: advDocFind.goal,
+                        action: advDocFind.action,
+                        unitSpecific: advDocFind.unitSpecific,
+                        sectorization: advDocFind.sectorization,
+                        subSectorization: advDocFind.subSectorization,
+                        menAttended: advDocFind.menAttended,
+                        womenAttended: advDocFind.womenAttended,
+                        totalAttended: advDocFind.totalAttended,
+                        counselingModality: advDocFind.counselingModality,
+                        advTheme: advDocFind.advTheme,
+                        snipCode: advDocFind.snipCode,
+                        projectName: advDocFind.projectName,
+                        participant: advDocFind.participant,
+                        analysisDate: advDocFind.analysisDate,
+                        advDate: advDocFind.advDate,
+                        assistant: advDocFind.assistant,
+                        conclusions: advDocFind.conclusions,
+                        recomend: advDocFind.recomend,
+                        comments: cmnts
+                    };
+                    let trackResult = {
+                        id: trackI.id,
+                        iapa: trackI.iapa,
+                        iapb: trackI.iapb,
+                        iapc: trackI.iapc,
+                        activity: trackI.activity,
+                        reportDate: trackI.reportDate,
+                        projectId: trackI.projectId,
+                        createdAt: trackI.createdAt,
+                        updatedAt: trackI.updatedAt,
+                        deletedAt: trackI.deletedAt,
+                        advisoryDoc: advDocModel
+                    };
+                    return trackResult;
+                }
+                let findVsCard = yield seguimiento_1.visitCard.findOne({ where: { trackId: trackI.id } });
+                if (findVsCard) {
+                    let cardVisit = yield getVisitCardComplete(findVsCard.id);
+                    if (cardVisit) {
+                        let trackResult = {
+                            id: trackI.id,
+                            iapa: trackI.iapa,
+                            iapb: trackI.iapb,
+                            iapc: trackI.iapc,
+                            activity: trackI.activity,
+                            reportDate: trackI.reportDate,
+                            projectId: trackI.projectId,
+                            createdAt: trackI.createdAt,
+                            updatedAt: trackI.updatedAt,
+                            deletedAt: trackI.deletedAt,
+                            visitCard: cardVisit
+                        };
+                        return trackResult;
+                    }
+                }
+                if (!advEpiFind && !advDocFind) {
+                    return trackI;
+                }
+            })));
+            return dataProje;
+        }
+        catch (error) {
+            throw `Error al obtener Datos completa: ${error}`;
         }
     });
 }

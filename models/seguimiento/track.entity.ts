@@ -15,6 +15,8 @@ const track = db.define(
         activity: { type: Sequelize.STRING },
         reportDate: { type: Sequelize.STRING },
         projectId: { type: Sequelize.UUID },
+        createdAt: {type: Sequelize.DATE, field: 'createdAt'}
+
     },
     {
         underscoded: true,

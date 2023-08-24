@@ -25,6 +25,7 @@ const project = db.define(
         observations: { type: Sequelize.STRING(1100) },
         advance: { type: Sequelize.INTEGER },
         status: { type: Sequelize.STRING },
+        createdAt: {type: Sequelize.DATE, field: 'createdAt'}
 
     },
     {
